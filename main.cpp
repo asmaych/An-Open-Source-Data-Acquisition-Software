@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 #include "SerialComm.h"
-//hyhy
+
 
 class MyFrame : public wxFrame
 {
