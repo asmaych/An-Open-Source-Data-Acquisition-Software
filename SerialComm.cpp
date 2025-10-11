@@ -56,99 +56,119 @@ const std::vector<std::string>& SerialComm::getPorts() const
 
 bool SerialComm::handshake(std::string portname)
 {
-	//the first thing to do is to attempt to open a port with a string name sent as a parameter:
+
+	try
+	{
+		//the first thing to do is to attempt to open a port with a string name sent as a parameter:
 	
-	/* Call sp_get_port_by_name() to find the port. The port
-         * pointer will be updated to refer to the port found. 
-	 *
-	 * NOTE: since sp_get_port_by_name() takes a first 
-	 * parameter as a c-style string, we convert the incoming 
-	 * string portname during the function call*/
-        check(sp_get_port_by_name(portname.c_str(), &port));
-
-
-	/*Here, we open the port, using the port struct defined 
-	 * above in the previous step.*/
-	check(sp_open(port, SP_MODE_READ_WRITE));
-
-	/*Next, we instantiate the values for our internal variable
-	 * default_config, so that we can load this config into the
-	 * newly opened port*/
-
-	//allocate memory for the default_config:
-        check(sp_new_config(&default_config));
-
-	//setting the port parameters for default_config
-        check(sp_set_config_baudrate(default_config, 9600));
-        check(sp_set_config_bits(default_config, 8));
-        check(sp_set_config_parity(default_config, SP_PARITY_NONE));
-        check(sp_set_config_stopbits(default_config, 1));
-        check(sp_set_config_flowcontrol(default_config, SP_FLOWCONTROL_NONE));
-
-	/*Now we load the port config into the port we are using to 
-	 * communicate*/
-	check(sp_set_config(port, default_config));
-
-	std::string data = "Hello World!!";
-
-	//convert the string to char*
-	const char* data_char = toCharPtr(data);
-
-	int size = strlen(data_char);
-                
-	/* We'll allow a 1 second timeout for send and receive. */
-	unsigned int timeout = 1000;
-         
-	/* On success, sp_blocking_write() and sp_blocking_read()
-         * return the number of bytes sent/received before the
-         * timeout expired. We'll store that result here. */
-        int result;
-                
-	/* Send data. */
-        printf("Sending '%s' (%d bytes) on port %s.\n",
-               data, size, sp_get_port_name(port));
-        
-	result = check(sp_blocking_write(port, data_char, size, timeout));
-                
-	/* Check whether we sent all of the data. */
-       	if (result == size)
-       		printf("Sent %d bytes successfully.\n", size);
-    	else
-       		printf("Timed out, %d/%d bytes sent.\n", result, size);
-
-	/*Now, we want to receive information from the connected
-	 * device.
-	 */
-
-	/*Allocate memory for the C-string to store the expected 
-	 * returned value
-	 */
-	char *buf = (char*)malloc(size + 1);
-
-	/*Next, we need to read from the port using a function call
-	 *pri=ovided by the library*/
-       	printf("Receiving %d bytes on port %s.\n",
-           	size, sp_get_port_name(port));
-     	result = check(sp_blocking_read(port, buf, size, timeout));
-
-	/*sp_blocking_read() returns the number of bytes that are actually
-	 * read. We can use this to compare with the number of expected bytes
-	 * to determine if there was a problem.
-	 */
-      	if (result == size)
-         	printf("Received %d bytes successfully.\n", size);
-    	else
-   	 	printf("Timed out, %d/%d bytes received.\n", result, size);
-
+		/* Call sp_get_port_by_name() to find the port. The port
+        	 * pointer will be updated to refer to the port found. 
+		 *
+		 * NOTE: since sp_get_port_by_name() takes a first 
+		 * parameter as a c-style string, we convert the incoming 
+		 * string portname during the function call*/
+        	check(sp_get_port_by_name(portname.c_str(), &port));
 	
-	/* Next, we check to see if the actual data sent matches the data
-	 * we sent to the port. The connected device should read the data
-	 * sent, and return the exact same data back to the host device.
-	 */
-	buf[result] = '\0';
-	printf("Recieved '%s'.\n", buf);
-   
-	return true;
+	
+		/*Here, we open the port, using the port struct defined 
+		 * above in the previous step.*/
+		check(sp_open(port, SP_MODE_READ_WRITE));
+	
+		/*Next, we instantiate the values for our internal variable
+		 * default_config, so that we can load this config into the
+		 * newly opened port*/
+	
+		//allocate memory for the default_config:
+	        check(sp_new_config(&default_config));
+	
+		//setting the port parameters for default_config
+	        check(sp_set_config_baudrate(default_config, 9600));
+	        check(sp_set_config_bits(default_config, 8));
+	        check(sp_set_config_parity(default_config, SP_PARITY_NONE));
+	        check(sp_set_config_stopbits(default_config, 1));
+	        check(sp_set_config_flowcontrol(default_config, SP_FLOWCONTROL_NONE));
+	
+		/*Now we load the port config into the port we are using to 
+		 * communicate*/
+		check(sp_set_config(port, default_config));
+	
+		std::string data = "Hello World!!";
+	
+		//convert the string to char*
+		const char* data_char = toCharPtr(data);
+	
+		int size = strlen(data_char);
+	                
+		/* We'll allow a 1 second timeout for send and receive. */
+		unsigned int timeout = 1000;
+	         
+		/* On success, sp_blocking_write() and sp_blocking_read()
+	         * return the number of bytes sent/received before the
+	         * timeout expired. We'll store that result here. */
+	        int result;
+	                
+		/* Send data. */
+	        printf("Sending '%s' (%d bytes) on port %s.\n",
+	               data, size, sp_get_port_name(port));
+	        
+		result = check(sp_blocking_write(port, data_char, size, timeout));
+	                
+		/* Check whether we sent all of the data. */
+	       	if (result == size)
+	       		printf("Sent %d bytes successfully.\n", size);
+	    	else
+	       		printf("Timed out, %d/%d bytes sent.\n", result, size);
+	
+		/*Now, we want to receive information from the connected
+		 * device.
+		 */
+	
+		/*Allocate memory for the C-string to store the expected 
+		 * returned value
+		 */
+		char *buf = (char*)malloc(size + 1);
+	
+		/*Next, we need to read from the port using a function call
+		 *pri=ovided by the library*/
+	       	printf("Receiving %d bytes on port %s.\n",
+	           	size, sp_get_port_name(port));
+	     	result = check(sp_blocking_read(port, buf, size, timeout));
+	
+		/*sp_blocking_read() returns the number of bytes that are actually
+		 * read. We can use this to compare with the number of expected bytes
+		 * to determine if there was a problem.
+		 */
+	      	if (result == size)
+	         	printf("Received %d bytes successfully.\n", size);
+	    	else
+		{
+			printf("Timed out, %d/%d bytes received.\n", result, size);
+
+			/* Before we throw an exception, we make sure to close the 
+			 * opened port session, otherwise subsequent attempts to
+			 * use this port will be unsuccessful.*/
+			cleanPort();
+
+			throw std::runtime_error("FUCK YOOUUUUU");
+		}
+	   			
+	
+		
+		/* Next, we check to see if the actual data sent matches the data
+		 * we sent to the port. The connected device should read the data
+		 * sent, and return the exact same data back to the host device.
+		 */
+		buf[result] = '\0';
+			printf("Recieved '%s'.\n", buf);
+  	 
+		return true;
+		
+		}
+		catch(const std::runtime_error& e)
+		{
+			std::cout << "caught exception" << e.what() << std::endl;
+			return false;
+		}
 }
 
 bool SerialComm::cleanPort()
