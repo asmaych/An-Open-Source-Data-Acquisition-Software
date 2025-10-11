@@ -7,6 +7,7 @@
  * This class is basically my "status manager". It keeps track of all messages, warnings, and errors that different parts of DAQ send out (right now we just have - SerialComm).
  * Each message is connected to an "owner" like SerialComm, and it also has an ID, in case we want to identify or update specific messages later.
 */
+
 class DisplayStatus
 {
   public:
