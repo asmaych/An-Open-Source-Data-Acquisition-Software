@@ -25,7 +25,16 @@ class SerialComm
 		//This ensures data integrity and efficiency (avoids copies)
 		const std::vector<std::string>& getPorts() const;
 
-		//this function will 
+		/* This function opens a specified port for communication using
+		 * serial communication. The parameters are set to a default
+		 * value, and a packet of data is sent to the connected device.
+		 *
+		 * if the device returns the same packet of data, then the 
+		 * handshake is a success, as successful communication has
+		 * occurred. Otherwise, the operation was not a success,
+		 * and we will need to re-attempt the handshake somehow.
+		 *
+		 * Further functionalities and customizations TBD*/
 		bool handshake(std::string portname);
 
 		/* This is a helper function that closes the comm port
@@ -85,3 +94,4 @@ class SerialComm
 };
 
 #endif
+
