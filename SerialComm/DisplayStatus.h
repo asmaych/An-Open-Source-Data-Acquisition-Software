@@ -10,7 +10,8 @@
 class DisplayStatus
 {
   public:
-     struct Message{
+     struct Message
+     {
       int id;
       std::string owner; //the class that sent the message
       std::string content; //the message text
