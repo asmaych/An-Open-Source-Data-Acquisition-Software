@@ -1,4 +1,5 @@
 #pragma once
+//pragma once is used to make sure that the header file is included only once per compilation (if displaystatus was already included skip it)
 #include <iostream>
 #include <vector>
 #include <string>
@@ -64,7 +65,8 @@ class DisplayStatus
       }
     return filtered;
     }
-    
+
+  //clear all messages
     void clear()
     {
       message.clear();
@@ -72,7 +74,7 @@ class DisplayStatus
     }
   
   private:
-      std::vector<Message> messages; //we store all message entries in a vector
+      std::vector<Message> messages; //we store all message entries in a dynamic array (vector) that can grow in size as needed
 };
     
 
