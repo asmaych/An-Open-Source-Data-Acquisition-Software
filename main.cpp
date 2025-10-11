@@ -4,7 +4,6 @@
 #include <string>
 #include "SerialComm.h"
 
-
 class MyFrame : public wxFrame
 {
 public:
