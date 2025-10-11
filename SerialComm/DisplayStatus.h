@@ -4,8 +4,8 @@
 #include <string>
 
 /* 
- * This class is basically my "status manager". It keeps track of all messages, warnings, and errors that different parts of DAQ send out (right now we just have - SerialComm).
- * Each message is connected to an "owner" like SerialComm, and it also has an ID, in case we want to identify or update specific messages later.
+ * This class is a "status manager". It keeps track of all messages, warnings, and errors that different parts of DAQ send out (right now only - SerialComm).
+ * Each message is connected to an "owner" like SerialComm, and it also has an ID, in case we want to identify or update specific messages later, a type (info, warning...) and a content.
 */
 
 class DisplayStatus
@@ -13,7 +13,7 @@ class DisplayStatus
   public:
      struct Message
      {
-      int id;
+      int id; //the message id
       std::string owner; //the class that sent the message
       std::string content; //the message text
       std::string type; //the message type - warning, info, error...
