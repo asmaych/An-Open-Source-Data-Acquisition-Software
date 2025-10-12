@@ -20,7 +20,7 @@ class DisplayStatus
       std::string type; //the message type - warning, info, error...
      };
   
-    DisplayStatus();
+    DisplayStatus(); //default
     
     //Add a general message with id, owner and msg
     void AddMessage(int id, const std::string& owner, const std::string& message)
@@ -30,14 +30,14 @@ class DisplayStatus
     }
     
     //Add a warning message
-    void AddWarning(int id, const wxString& owner, const wxString& message);
+    void AddWarning(int id, const  std::string& owner, const  std::string& message);
     {
       message.push_back({id, owner, message, "WARNING"});
       std::cout << "[WARNING][" << owner << "][" << id << "]: " << message << std:endl;
     }
     
     //Add an error message 
-    void AddError(int id, const wxString& owner, const wxString& message);
+    void AddError(int id, const  std::string& owner, const  std::string& message);
     {
       message.push_back({id, owner, message, "ERROR"});
       std::cout << "[ERROR][" << owner << "][" << id << "]: " << message << std:endl;
