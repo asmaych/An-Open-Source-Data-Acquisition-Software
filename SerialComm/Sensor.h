@@ -10,69 +10,35 @@ class Sensor
           const std::string& type,
           const std::string& name,
           const std::string& unit,
-          const std::pair<double, double>& inputVoltageRange = {0.0, 5.0},
-          const std::pair<double, double>& outputVoltageRange = {0.0, 10.0},
+          const std::pair<double, double>& inputVoltageRange,
+          const std::pair<double, double>& outputVoltageRange,
           const std::string& datasheet = "N/A",
-          SerialComm* serial);
+          SerialComm* serial,
+          DisplayStatus* displayStatus);
 
-    //Setting the serial communication link with SerialComm
-    void attachSerial(SerialComm* comm);
+    //Setters
+    void setName(const std::string& newName){}
+    void setType(const std::string& newType){}
+    void setUnit(const std::string& newUnit){}
+    void setInputRange(double min, double max){}
+    void setOutputRange(double min, double max){}
+    void setDatasheet(const std::string& path){}
+  
+     //Getters
+    int getID() const{}
+    std::string getType() const{}
+    std::string getName() const{}
+    std::string getUnit() const{}
+    std::pair<double, double> getInputRange() const{}
+    std::pair<double, double> getOutputRange() const{}
+    std::string getDatasheet() const{}
 
-    //Reading sensor data from the serial port
-    bool readFromSerial();
 
-   //Getters
-  int getID() const{
-      return id;
-    }
-  std::string getType() const{
-        return type;
-    }
-  std::string getName() const{
-        return name;
-    }
-  std::string getUnit() const{
-        return unit;
-    }
-  std::pair<double, double> getInputRange() const{
-        return inputVoltageRange;
-    }
-  std::pair<double, double> getOutputRange() const{
-        return outputVoltageRange;
-    }
-  std::string getDatasheet() const{
-        return datasheet;
-    }
-  double getLastReading() const{
-        return lastReading;
-    }
 
-  //Setters
-  void setName(const std::string& newName){
-      name = newName;
-    }
-  void setType(const std::string& newType){
-      type = newType;
-    }
-  void setUnit(const std::string& newUnit){
-      unit = newUnit;
-    }
-  void setInputRange(double min, double max){
-      inputMin = min;
-      inputMax = max;
-    }
-  void setOutputRange(double min, double max){
-      outputMin = min;
-      outputMax = max;
-    }
-  void setDatasheet(const std::string& path){
-      datasheet = path;
-    }
-
-  //Reading
-  std::string readSensorData();
-  //Display all sensor info
-  void DisplayInfo() const;          
+    //Reading
+    std::string readSensorData();
+    //Display all sensor info
+    void DisplayInfo() const;          
 
 
  Private:
@@ -83,6 +49,7 @@ class Sensor
   std::pair<double, double>& inputVoltageRange; //{0.0 , 5.0}
   std::pair<double, double>& outputVoltageRange; //{0.0 , 12.0}
   std::string datasheet; //Link or file path to datasheet
-  double lastReading;  //Stores latest sensor reading
+  //double lastReading;  //Stores latest sensor reading
   SerialComm* serial; //Pointer to SerialComm for reading data
+  DisplayStatus* displayStatus;
 };
