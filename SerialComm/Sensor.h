@@ -11,8 +11,9 @@ class Sensor
           const std::string& name,
           const std::string& unit,
           const std::pair<double, double>& inputVoltageRange = {0.0, 5.0},
-          const std::pair<double, double>& outputVoltageRange = {0.0, 12.0},
-          const std::string& datasheet = "N/A");
+          const std::pair<double, double>& outputVoltageRange = {0.0, 10.0},
+          const std::string& datasheet = "N/A",
+          SerialComm* serial);
 
     //Setting the serial communication link with SerialComm
     void attachSerial(SerialComm* comm);
@@ -69,11 +70,11 @@ class Sensor
     }
 
   //Reading
+  std::string readSensorData();
+  //Display all sensor info
+  void DisplayInfo() const;          
 
-          
- 
 
- 
  Private:
   int id; // Unique sensor ID
   std::string name; //"TMP45"
