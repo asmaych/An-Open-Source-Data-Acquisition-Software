@@ -25,14 +25,14 @@ class DisplayStatus
     //Add a general message with id, owner and msg
     void AddMessage(int id, const std::string& owner, const std::string& message)
     {
-      message.push_back({id, owner, message, "INFO"});
+      messages.push_back({id, owner, message, "INFO"});
       std::cout << "[INFO][" << owner << "][" << id << "]: " << message << std:endl;
     }
     
     //Add a warning message
     void AddWarning(int id, const  std::string& owner, const  std::string& message);
     {
-      message.push_back({id, owner, message, "WARNING"});
+      messages.push_back({id, owner, message, "WARNING"});
       std::cout << "[WARNING][" << owner << "][" << id << "]: " << message << std:endl;
     }
     
@@ -69,7 +69,7 @@ class DisplayStatus
   //clear all messages
     void clear()
     {
-      message.clear();
+      messages.clear();
       std::cout << "[INFO] DisplayStatus: All messages cleared." << std::endl;
     }
   
