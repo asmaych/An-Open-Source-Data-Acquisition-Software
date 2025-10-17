@@ -77,6 +77,7 @@ class DisplayStatus
     // we store all message entries in a dynamic array (vector) that can grow in size as needed, 
     // where we can look up a message by owner or ID with a time complexity of O(n) cause it has to scan the vector
     std::vector<Message> messages; 
+
     /* On the other hand, a hashmap stores elements as key-value pairs, lookup by key is O(1) average (fast)
        It can directly access messages by ID or owner (key) without scanning
        Its memory is a bit higher than a vector because it stores  uckets, pointers, and metadata for the hash table.
@@ -84,6 +85,7 @@ class DisplayStatus
        of messages and frequent queries by ID and owner, then we need to go with the hash Map! (Asma)
     WHAT DO YOU THINK JOEEEEE!!!!
     */
+
     /* The size of one message:
         int id - 4 bytes
         str owner - 32 bytes
