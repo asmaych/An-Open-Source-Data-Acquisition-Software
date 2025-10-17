@@ -22,25 +22,25 @@ class DisplayStatus
   
     DisplayStatus(); //default
     
-    //Add a general message with id, owner and msg
+    //Add a general INFO message to the vector with the parameters (id, owner and msg) using push_back = append = add to the end
     void AddMessage(int id, const std::string& owner, const std::string& message)
     {
       messages.push_back({id, owner, message, "INFO"});
-      std::cout << "[INFO][" << owner << "][" << id << "]: " << message << std:endl;
+      std::cout << "[INFO][" << owner << "][" << id << "]: " << message << std::endl;
     }
     
     //Add a warning message
-    void AddWarning(int id, const  std::string& owner, const  std::string& message);
+    void AddWarning(int id, const  std::string& owner, const  std::string& message)
     {
       messages.push_back({id, owner, message, "WARNING"});
-      std::cout << "[WARNING][" << owner << "][" << id << "]: " << message << std:endl;
+      std::cout << "[WARNING][" << owner << "][" << id << "]: " << message << std::endl;
     }
     
     //Add an error message 
-    void AddError(int id, const  std::string& owner, const  std::string& message);
+    void AddError(int id, const  std::string& owner, const  std::string& message)
     {
-      message.push_back({id, owner, message, "ERROR"});
-      std::cout << "[ERROR][" << owner << "][" << id << "]: " << message << std:endl;
+      messages.push_back({id, owner, message, "ERROR"});
+      std::cout << "[ERROR][" << owner << "][" << id << "]: " << message << std::endl;
     }
     
     //showAll will print all the messages stored so far with all the details (owner, content...)
@@ -74,7 +74,29 @@ class DisplayStatus
     }
   
   private:
-      std::vector<Message> messages; //we store all message entries in a dynamic array (vector) that can grow in size as needed
+    // we store all message entries in a dynamic array (vector) that can grow in size as needed, 
+    // where we can look up a message by owner or ID with a time complexity of O(n) cause it has to scan the vector
+    std::vector<Message> messages; 
+    /* On the other hand, a hashmap stores elements as key-value pairs, lookup by key is O(1) average (fast)
+       It can directly access messages by ID or owner (key) without scanning
+       Its memory is a bit higher than a vector because it stores  uckets, pointers, and metadata for the hash table.
+       => For me, since our DAS will have hundreds or low thousands of messages, then a vector is fine and simple, but if we re expecting tens or hundreds of thousands
+       of messages and frequent queries by ID and owner, then we need to go with the hash Map! (Asma)
+    WHAT DO YOU THINK JOEEEEE!!!!
+    */
+    /* The size of one message:
+        int id - 4 bytes
+        str owner - 32 bytes
+        str content - 32 bytes
+        str type - 32 bytes
+     => Total = 100 bytes ( can vary depending on the str length)
+      Let's assume the vector capacity is 1.5 x current size = 50%  in worst case while growing.
+      So, if we have 1000 messages => 1000 x 100 bytes = 100 000 bytes (approximately 100KB) 
+      with extra vector capaicty (approx 100KB)
+      Overhead will be approx 50%
+
+      In the case of the Hashmap ( data: ~100KB, extra pointers & buckets: ~20-40KB, Total: ~120-140KB)
+      */
 };
     
 
