@@ -94,8 +94,12 @@ class DisplayStatus
      => Total = 100 bytes ( can vary depending on the str length)
       Let's assume the vector capacity is 1.5 x current size = 50%  in worst case while growing.
       So, if we have 1000 messages => 1000 x 100 bytes = 100 000 bytes (approximately 100KB) 
-      with extra vector capaicty (approx 100KB)
-      Overhead will be approx 50%
+      Extra capaicty (worst case): If the vector grows to 1.5x its size, it allocates space for 1500 messages: 
+      1500 × 100 = 150 000 bytes 
+      But only 1000 are used, so 50 000 bytes are unused.
+      Overhead:
+      This unused memory is the overhead, which is:
+      50 000 / 100 000 = 0.5 = 50% 
 
       In the case of the Hashmap ( data: ~100KB, extra pointers & buckets: ~20-40KB, Total: ~120-140KB)
       */
