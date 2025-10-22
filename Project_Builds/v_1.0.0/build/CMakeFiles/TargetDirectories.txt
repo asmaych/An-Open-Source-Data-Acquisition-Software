@@ -1,0 +1,3 @@
+/home/T14s/Desktop/Classes/Capstone stuff/main_1.0.0/build/CMakeFiles/daq_capstone.dir
+/home/T14s/Desktop/Classes/Capstone stuff/main_1.0.0/build/CMakeFiles/edit_cache.dir
+/home/T14s/Desktop/Classes/Capstone stuff/main_1.0.0/build/CMakeFiles/rebuild_cache.dir
