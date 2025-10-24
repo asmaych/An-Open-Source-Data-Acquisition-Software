@@ -1,3 +1,4 @@
+include_directories(${PROJECT_SOURCE_DIR}/build/libserialport-0.1.2)
 cmake_minimum_required(VERSION 3.10)
 project(daq_capstone)
 
