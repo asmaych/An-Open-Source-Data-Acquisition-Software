@@ -38,7 +38,7 @@ class SerialComm
 		 * and we will need to re-attempt the handshake somehow.
 		 *
 		 * Further functionalities and customizations TBD*/
-		bool handshake(std::string portname);
+		bool handshake(const std::string& portname = "");
 
 		/* This is a helper function that closes the comm port
 		 * and frees the memory associated with all the data-
