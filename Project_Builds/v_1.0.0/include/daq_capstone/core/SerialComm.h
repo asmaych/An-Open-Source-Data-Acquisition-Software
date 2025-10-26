@@ -26,7 +26,9 @@ class SerialComm
 		//declaring a getter method that returns the port list as a vector
 		//we set it as a const and simply return a reference to the original.
 		//This ensures data integrity and efficiency (avoids copies)
-		const std::vector<std::string>& getPorts() const;
+		//const std::vector<std::string>& getPorts() const;
+		const std::vector<std::string>& getPortDescriptions() const;
+		const std::vector<std::string>& getPortNames() const;	
 
 		/* This function opens a specified port for communication using
 		 * serial communication. The parameters are set to a default
