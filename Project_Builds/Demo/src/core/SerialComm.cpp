@@ -33,7 +33,7 @@ void SerialComm::scanPorts()
 	//if there was some kind of error listing ports, we will throw an exception:
 	if (result != SP_OK)
 	{
-		throw std::runtime_error("Problem connecting with the port");
+		throw std::runtime_error("Problem scanning ports");
 	}
 
 	//garbage cleanup and data safety:
@@ -54,9 +54,14 @@ void SerialComm::scanPorts()
 /*This function takes no parameters, but returns a read-only reference to the internal vector containing
  * the names of all available serial ports.
  */
-const std::vector<std::string>& SerialComm::getPorts() const
+const std::vector<std::string>& SerialComm::getPortNames() const
 {
 	return port_name_list;
+}
+
+struct sp_port ** SerialComm::getPortList() const
+{
+	return port_list;
 }
 
 bool SerialComm::handshake(std::string portname)

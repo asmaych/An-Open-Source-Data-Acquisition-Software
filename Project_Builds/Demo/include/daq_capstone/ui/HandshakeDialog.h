@@ -2,6 +2,7 @@
 #include <memory>	//include for smart pointers
 #include <wx/wx.h>
 #include "SerialComm.h"
+#include <libserialport.h>
 
 class HandshakeDialog : public wxDialog
 {

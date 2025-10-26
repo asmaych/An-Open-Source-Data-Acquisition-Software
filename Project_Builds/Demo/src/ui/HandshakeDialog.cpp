@@ -2,6 +2,7 @@
 #include <memory>
 #include <wx/wx.h>
 #include <wx/combobox.h>
+#include <libserialport.h>
 #include "SerialComm.h"
 #include <vector>
 
@@ -24,13 +25,17 @@ HandshakeDialog::HandshakeDialog(wxWindow* parent, const wxString& title, Serial
     	this->serialComm = serialComm;
 
     	//get the ports and store them in a vector:
-    	std::vector<std::string> ports = serialComm->getPorts();
+    	//std::vector<std::string> portnames = serialComm->getPortNames();
+
+	//get the actual list of ports:
+	struct sp_port ** ports = serialComm->getPortList();
+
 
     	//now create a selection and populate it with the ports
     	wxComboBox* portChoice = new wxComboBox(this, wxID_ANY);
-    	for (const std::string& port : ports)
+    	for (int i=0; ports[i] != nullptr; i++)
     	{
-    		portChoice->Append(port);
+    		portChoice->Append(sp_get_port_description(ports[i]));
     	}
 
 	mainSizer->Add(portChoice, 0, wxEXPAND | wxALL, 10);
