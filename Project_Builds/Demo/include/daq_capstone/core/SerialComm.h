@@ -10,6 +10,8 @@
 //explicitly declaring the library for libserialport:
 #include <libserialport.h>
 
+enum PORT_STATUS { PORT_OPEN, PORT_CLOSED };
+
 class SerialComm
 {
 	public:
@@ -43,13 +45,13 @@ class SerialComm
 		 * and we will need to re-attempt the handshake somehow.
 		 *
 		 * Further functionalities and customizations TBD*/
-		bool handshake(std::string portname);
+		void handshake(std::string portname);
 
 		/* This is a helper function that closes the comm port
 		 * and frees the memory associated with all the data-
 		 * structures used in the port operation
 		 */
-		bool cleanPort();
+		void cleanPort();
 
 
 		/*This is a helper function that uses an enum provided
@@ -85,7 +87,7 @@ class SerialComm
 		 *
 		 * We will only open communication via a single port, and this is
 		 * that port that will always be used, unconditionally.*/
-		struct sp_port *port;
+		struct sp_port *port = nullptr;
 
 		/* Helper function that takes a std::string as an input
 		 * and returns a char* string as output. This is necessary
@@ -99,6 +101,8 @@ class SerialComm
 		 */
 		const char* toCharPtr(const std::string& s);
 
+		/* Adding a variable to keep track of the port status*/
+		PORT_STATUS port_status = PORT_CLOSED;
 };
 
 #endif
