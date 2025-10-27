@@ -201,6 +201,30 @@ src/ui/HandshakeDialog.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/ui/HandshakeDialog.cpp.s
 .PHONY : src/ui/HandshakeDialog.cpp.s
 
+src/ui/LEDPanel.o: src/ui/LEDPanel.cpp.o
+.PHONY : src/ui/LEDPanel.o
+
+# target to build an object file
+src/ui/LEDPanel.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/ui/LEDPanel.cpp.o
+.PHONY : src/ui/LEDPanel.cpp.o
+
+src/ui/LEDPanel.i: src/ui/LEDPanel.cpp.i
+.PHONY : src/ui/LEDPanel.i
+
+# target to preprocess a source file
+src/ui/LEDPanel.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/ui/LEDPanel.cpp.i
+.PHONY : src/ui/LEDPanel.cpp.i
+
+src/ui/LEDPanel.s: src/ui/LEDPanel.cpp.s
+.PHONY : src/ui/LEDPanel.s
+
+# target to generate assembly for a file
+src/ui/LEDPanel.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/ui/LEDPanel.cpp.s
+.PHONY : src/ui/LEDPanel.cpp.s
+
 src/ui/MainFrame.o: src/ui/MainFrame.cpp.o
 .PHONY : src/ui/MainFrame.o
 
@@ -267,6 +291,9 @@ help:
 	@echo "... src/ui/HandshakeDialog.o"
 	@echo "... src/ui/HandshakeDialog.i"
 	@echo "... src/ui/HandshakeDialog.s"
+	@echo "... src/ui/LEDPanel.o"
+	@echo "... src/ui/LEDPanel.i"
+	@echo "... src/ui/LEDPanel.s"
 	@echo "... src/ui/MainFrame.o"
 	@echo "... src/ui/MainFrame.i"
 	@echo "... src/ui/MainFrame.s"

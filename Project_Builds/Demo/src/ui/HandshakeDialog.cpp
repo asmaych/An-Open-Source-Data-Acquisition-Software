@@ -7,6 +7,7 @@
 #include <vector>
 #include <unordered_map>
 #include <format>
+#include "SerialEvents.h"
 
 
 HandshakeDialog::HandshakeDialog(wxWindow* parent, const wxString& title, SerialComm* serialComm)
@@ -63,6 +64,8 @@ HandshakeDialog::HandshakeDialog(wxWindow* parent, const wxString& title, Serial
 
 void HandshakeDialog::onPortChosen(wxCommandEvent& event)
 {
+	if (!handshakecompleted)
+	{
 	//first, make sure that the user actually selected something:
 	int selection = portChoice->GetSelection();
 	if (selection == wxNOT_FOUND)
@@ -91,11 +94,20 @@ void HandshakeDialog::onPortChosen(wxCommandEvent& event)
 	{
 
 		//make the call to SerialComm::Handshake
-		serialComm->handshake(portname);
+		if (serialComm->handshake(portname))
+		{
 			
-		//if the execution gets here, then the handshake was successful,
-		//so we write an informative message to the status bar
-		status->SetLabel("Handshake successful!");
+			//if the execution gets here, then the handshake was successful,
+			//so we write an informative message to the status bar
+			status->SetLabel("Handshake successful!");
+			handshakecompleted = true;
+
+
+			//now set the trigger for handshake success
+			wxThreadEvent evt(wxEVT_HANDSHAKE);
+			evt.SetPayload(true);
+			wxQueueEvent(this->GetParent(), evt.Clone());
+		}
 	}
 	catch(const std::exception& e)
 	{
@@ -104,5 +116,10 @@ void HandshakeDialog::onPortChosen(wxCommandEvent& event)
 	catch(...)
 	{
 		wxLogError("An unkown Error occurred.");
+	}
+	}
+	else
+	{
+		wxLogStatus("Handshake already successful!");
 	}
 }

@@ -6,6 +6,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/daq_capstone.dir/src/core/SerialComm.cpp.o.d"
   "CMakeFiles/daq_capstone.dir/src/ui/HandshakeDialog.cpp.o"
   "CMakeFiles/daq_capstone.dir/src/ui/HandshakeDialog.cpp.o.d"
+  "CMakeFiles/daq_capstone.dir/src/ui/LEDPanel.cpp.o"
+  "CMakeFiles/daq_capstone.dir/src/ui/LEDPanel.cpp.o.d"
   "CMakeFiles/daq_capstone.dir/src/ui/MainFrame.cpp.o"
   "CMakeFiles/daq_capstone.dir/src/ui/MainFrame.cpp.o.d"
   "CMakeFiles/daq_capstone.dir/src/ui/ProjectFrame.cpp.o"

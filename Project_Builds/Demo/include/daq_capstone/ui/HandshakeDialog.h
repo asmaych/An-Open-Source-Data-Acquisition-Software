@@ -28,4 +28,6 @@ private:
 
     void onPortChosen(wxCommandEvent& event);
 
+    bool handshakecompleted = false;
+
 };

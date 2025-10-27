@@ -6,16 +6,39 @@
 #include <wx/wx.h>
 #include "SerialComm.h"
 
+#include <thread>
+#include <atomic>
+#include "LEDPanel.h"
+#include <wx/thread.h>
+#include <mutex>
+
+
+
 class ProjectFrame : public wxFrame
 {
 	public:
 		ProjectFrame(wxWindow* parent, const wxString& title);
+		~ProjectFrame();
 
 
 	private:
-		void onHandshake(wxCommandEvent& evt);
-
+		//class attributes
 		std::unique_ptr<SerialComm> serialComm;
+		std::thread ioThread;
+		std::atomic<bool> running{false};
+		LEDPanel* ledIndicator = nullptr;
+		bool handshakecomplete = false;
+		std::mutex serialMutex;
+
+		//event handlers
+		void onHandshake(wxCommandEvent& evt);
+		void onSerialUpdate(wxThreadEvent& evt);
+		void onHandshakeSuccess(wxThreadEvent& evt);
+
+		//helper functions
+		void startBackgroundPolling();
+		void stopBackgroundPolling();
+
 
 };
 

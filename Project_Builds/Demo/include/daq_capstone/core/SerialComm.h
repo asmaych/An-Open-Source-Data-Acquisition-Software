@@ -45,7 +45,7 @@ class SerialComm
 		 * and we will need to re-attempt the handshake somehow.
 		 *
 		 * Further functionalities and customizations TBD*/
-		void handshake(std::string portname);
+		bool handshake(std::string portname);
 
 		/* This is a helper function that closes the comm port
 		 * and frees the memory associated with all the data-
@@ -59,6 +59,12 @@ class SerialComm
 		 * may occur as a result of using library function calls
 		 */
 		int check(enum sp_return result);
+
+		int getReading();
+
+		void writeData(std::string message);
+
+		void flush();
 
 
 
@@ -103,6 +109,8 @@ class SerialComm
 
 		/* Adding a variable to keep track of the port status*/
 		PORT_STATUS port_status = PORT_CLOSED;
+
+		bool handshakeresult = false;
 };
 
 #endif

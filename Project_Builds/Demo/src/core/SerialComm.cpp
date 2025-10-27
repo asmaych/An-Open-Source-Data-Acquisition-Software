@@ -27,7 +27,7 @@ SerialComm::~SerialComm()
 {
 	sp_free_port_list(port_list);
 	sp_free_config(default_config);
-	//cleanPort();
+	cleanPort();
 
 }
 
@@ -57,7 +57,7 @@ struct sp_port ** SerialComm::getPortList() const
 	return port_list;
 }
 
-void SerialComm::handshake(std::string portname)
+bool SerialComm::handshake(std::string portname)
 {
 
 	/* We'll allow a 1 second timeout for send and receive. */
@@ -162,12 +162,14 @@ void SerialComm::handshake(std::string portname)
 		//TODO
 		//REMOVE THIS AND BROADCAST TO STATUS
 	        printf("Received %d bytes successfully.\n", size);
+		handshakeresult = true;
 	}
 	else
 	{
 		//TODO
 		//REMOVE THIS AND BROADCAST TO STATUS
 		printf("Timed out, %d/%d bytes received.\n", result, size);
+
 	}
 
 
@@ -181,18 +183,78 @@ void SerialComm::handshake(std::string portname)
 
 	free(buf);
 
-	cleanPort();
+	return handshakeresult;
 
+	//cleanPort();
+
+
+}
+
+void SerialComm::writeData(std::string message)
+{
+	const char* data = message.c_str();
+	int result = sp_blocking_write(port, data, strlen(data), 500);
+
+	printf("Wrote %d chars: '%s'", strlen(data), data);
+}
+
+void SerialComm::flush()
+{
+	if (port_status == PORT_OPEN)
+	{
+		sp_flush(port, SP_BUF_INPUT);
+		sp_flush(port, SP_BUF_OUTPUT);
+	}
+}
+
+int SerialComm::getReading()
+{
+	if (port_status == PORT_CLOSED)
+	{
+		throw std::runtime_error("Error: Attempt to poll data from closed port");
+	}
+
+	//prompt the arduino for a value:
+	const char* prompt = "Request\n";
+
+	int bytes_written = sp_blocking_write(port, prompt, strlen(prompt), 500);
+
+	printf("Wrote: %d bytes, '%s'\n", bytes_written, prompt);
+
+	char* buf = (char*)malloc(2);
+
+	int bytes_read = sp_blocking_read(port, buf, 1, 1500);
+
+	printf("%d/1 bytes read \n", bytes_read);
+
+	if (bytes_read == 0)
+	{
+		throw std::runtime_error("Error: No data read from port");
+	}
+	else if (bytes_read < 0)
+	{
+		throw std::runtime_error("Error: problem reading from port");
+	}
+	buf[bytes_read] = '\0';
+
+	std::cout << "Raw value from arduino: " << buf << "\n";
+
+	int value = buf[0];
+
+	printf("Value read from Arduino: %d\n",value);
+
+	free(buf);
+
+	return value;
 
 }
 
 void SerialComm::cleanPort()
 {
+		sp_flush(port, static_cast<sp_buffer>(SP_BUF_INPUT | SP_BUF_OUTPUT));
 		check(sp_close(port));
 		port_status = PORT_CLOSED;
 		sp_free_port(port);
-		sp_flush(port, static_cast<sp_buffer>(SP_BUF_INPUT | SP_BUF_OUTPUT));
-
 }
 
 /* Helper function for error handling. */

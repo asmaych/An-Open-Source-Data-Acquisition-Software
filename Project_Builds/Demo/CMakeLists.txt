@@ -25,6 +25,7 @@ add_executable(daq_capstone
     	src/ui/ProjectFrame.cpp
 	src/core/SerialComm.cpp
 	src/ui/HandshakeDialog.cpp
+	src/ui/LEDPanel.cpp
 )
 
 # Find and link libserialport
