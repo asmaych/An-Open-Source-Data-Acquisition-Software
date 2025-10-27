@@ -217,7 +217,7 @@ int SerialComm::getReading()
 	//prompt the arduino for a value:
 	const char* prompt = "Request\n";
 
-	int bytes_written = sp_blocking_write(port, prompt, strlen(prompt), 500);
+	int bytes_written = sp_blocking_write(port, prompt, strlen(prompt), 100);
 
 	printf("Wrote: %d bytes, '%s'\n", bytes_written, prompt);
 

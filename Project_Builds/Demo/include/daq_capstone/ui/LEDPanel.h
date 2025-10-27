@@ -10,7 +10,7 @@ class LEDPanel : public wxPanel
 
 	private:
 		//class attributes
-		bool m_state;
+		bool m_state = false;
 
 		//event handler
 		void onPaint(wxPaintEvent& evt);

@@ -137,7 +137,7 @@ void ProjectFrame::startBackgroundPolling()
 				std::cout << "right before the thread timer\n";
 
 				//add a little pause
-				std::this_thread::sleep_for(std::chrono::milliseconds(200));
+				std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
 				std::cout << "After the thread timer\n";
 			}

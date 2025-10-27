@@ -2,14 +2,15 @@
 #include <wx/wx.h>
 
 LEDPanel::LEDPanel(wxWindow* parent)
-	: wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize), m_state(false)
+	: wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize)
 {
+	SetMinSize(wxSize(50,50));
 	Bind(wxEVT_PAINT, &LEDPanel::onPaint, this);
 }
 
-void LEDPanel::setState(bool on)
+void LEDPanel::setState(bool state)
 {
-	m_state = on;
+	m_state = state;
 	Refresh();
 }
 
