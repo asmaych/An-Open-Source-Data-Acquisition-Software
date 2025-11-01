@@ -1,0 +1,3 @@
+/home/T14s/Desktop/Classes/Capstone stuff/GitHub/An-Open-Source-Data-Acquisition-Software/Project_Builds/Demo/build/CMakeFiles/daq_capstone.dir
+/home/T14s/Desktop/Classes/Capstone stuff/GitHub/An-Open-Source-Data-Acquisition-Software/Project_Builds/Demo/build/CMakeFiles/edit_cache.dir
+/home/T14s/Desktop/Classes/Capstone stuff/GitHub/An-Open-Source-Data-Acquisition-Software/Project_Builds/Demo/build/CMakeFiles/rebuild_cache.dir
