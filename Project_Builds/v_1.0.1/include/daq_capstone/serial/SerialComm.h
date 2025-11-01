@@ -85,7 +85,7 @@ class SerialComm
 		 *
 		 * This particular instance will represent the default communication
 		 * parameters used for communication with arduino devices.*/
-		struct sp_port_config *default_config;
+		 struct sp_port_config *default_config;
 
 		/* This struct represents a "port" object that can be used by
 		 * libserialport library. It is being declared as a private variable
@@ -93,7 +93,7 @@ class SerialComm
 		 *
 		 * We will only open communication via a single port, and this is
 		 * that port that will always be used, unconditionally.*/
-		struct sp_port *port;
+		struct sp_port *port = nullptr;
 
 		/* Helper function that takes a std::string as an input
 		 * and returns a char* string as output. This is necessary

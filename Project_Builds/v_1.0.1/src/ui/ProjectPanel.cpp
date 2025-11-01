@@ -8,37 +8,34 @@
 
 #include "LEDPanel.h"
 
-#include "SerialEvents.h"
+#include "Events.h"
 
 wxDEFINE_EVENT(wxEVT_SERIAL_UPDATE, wxThreadEvent);
 wxDEFINE_EVENT(wxEVT_HANDSHAKE, wxThreadEvent);
 
-#include "ProjectFrame.h"
+#include "ProjectPanel.h"
 
 #include <mutex>
 
 
-ProjectFrame::ProjectFrame(wxWindow* parent, const wxString& title)
-	: wxFrame(parent, wxID_ANY, title, wxDefaultPosition, wxSize(300, 200))
+ProjectPanel::ProjectPanel(wxWindow* parent, const wxString& title)
+	: wxPanel(parent, wxID_ANY)
 {
 
 	//Each Project should have an instance of the SerialComm Class:
 	serialComm = std::make_unique<SerialComm>();
 
-	//Create the main display and panel:
-	wxPanel* panel = new wxPanel(this);
-
 	//make a sizer for the controls
 	wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
 
 	//make the status LED display panel
-	ledIndicator = new LEDPanel(panel);
+	ledIndicator = new LEDPanel(this);
 
 	
 	//make a button that opens the dialogue for handshake
 	wxButton* open_handshake =  new wxButton
 		(
-		 panel,
+		 this,
 		 wxID_ANY,
 		 "Connect to sensor controller",
 		 wxPoint(20, 20),
@@ -49,17 +46,17 @@ ProjectFrame::ProjectFrame(wxWindow* parent, const wxString& title)
 	mainSizer->Add(ledIndicator, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 10);
 
 	//bind button press to an event handler that can call the handshake
-	open_handshake->Bind(wxEVT_BUTTON, &ProjectFrame::onHandshake, this);
+	open_handshake->Bind(wxEVT_BUTTON, &ProjectPanel::onHandshake, this);
 
 	//bind the custom event to its handler
-	Bind(wxEVT_SERIAL_UPDATE, &ProjectFrame::onSerialUpdate, this);
-	Bind(wxEVT_HANDSHAKE, &ProjectFrame::onHandshakeSuccess, this);
+	Bind(wxEVT_SERIAL_UPDATE, &ProjectPanel::onSerialUpdate, this);
+	Bind(wxEVT_HANDSHAKE, &ProjectPanel::onHandshakeSuccess, this);
 
-	panel->SetSizerAndFit(mainSizer);
+	SetSizerAndFit(mainSizer);
 
 }
 
-ProjectFrame::~ProjectFrame()
+ProjectPanel::~ProjectPanel()
 {
 	/* This destructor is explicitly implemented so that the threads 
 	 * created during runtime get shut down when the ProjectFrame
@@ -68,7 +65,7 @@ ProjectFrame::~ProjectFrame()
 	stopBackgroundPolling();
 }
 
-void ProjectFrame::onHandshake(wxCommandEvent& evt)
+void ProjectPanel::onHandshake(wxCommandEvent& evt)
 {
 	wxLogStatus("Initiating handshake dialogue:");
 
@@ -80,7 +77,7 @@ void ProjectFrame::onHandshake(wxCommandEvent& evt)
 	handshaker->Show();
 }
 
-void ProjectFrame::onSerialUpdate(wxThreadEvent& evt)
+void ProjectPanel::onSerialUpdate(wxThreadEvent& evt)
 {
 	std::cout <<"we get here\n";
 	int reading = evt.GetInt();
@@ -97,7 +94,7 @@ void ProjectFrame::onSerialUpdate(wxThreadEvent& evt)
 		wxLogStatus("Reading updated: %d",reading);
 }
 
-void ProjectFrame::onHandshakeSuccess(wxThreadEvent& evt)
+void ProjectPanel::onHandshakeSuccess(wxThreadEvent& evt)
 {
 	bool success = evt.GetPayload<bool>();
 	if (success)
@@ -111,7 +108,7 @@ void ProjectFrame::onHandshakeSuccess(wxThreadEvent& evt)
 	}
 }
 
-void ProjectFrame::startBackgroundPolling()
+void ProjectPanel::startBackgroundPolling()
 {
 	//set the class variable boolean to true
 	running = true;
@@ -144,7 +141,7 @@ void ProjectFrame::startBackgroundPolling()
 		});
 }
 
-void ProjectFrame::stopBackgroundPolling()
+void ProjectPanel::stopBackgroundPolling()
 {
 	running = false;
 

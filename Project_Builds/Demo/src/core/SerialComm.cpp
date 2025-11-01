@@ -21,13 +21,30 @@ SerialComm::SerialComm()
 	//the first thing we need to do is determine which, if any, ports are available. We want to query this
 	//and store a list of ports names that we can open a line of communication with.
 	scanPorts();
+
+	//set the default config for port communication:
+
+	//allocate memory for the default_config:
+       	check(sp_new_config(&default_config));
+
+	//setting the port parameters for default_config
+	check(sp_set_config_baudrate(default_config, 9600));
+	check(sp_set_config_bits(default_config, 8));
+        check(sp_set_config_parity(default_config, SP_PARITY_NONE));
+        check(sp_set_config_stopbits(default_config, 1));
+        check(sp_set_config_flowcontrol(default_config, SP_FLOWCONTROL_NONE));
+
 }
 
 SerialComm::~SerialComm()
 {
+	//we can run these first commands, because they run automatically on constructor
 	sp_free_port_list(port_list);
 	sp_free_config(default_config);
-	cleanPort();
+
+	//but for this one, we only need it if the pointer port has been assigned
+	if (port != nullptr)
+		cleanPort();
 
 }
 
@@ -78,7 +95,6 @@ bool SerialComm::handshake(std::string portname)
 	}
 
 
-
 	//the first thing to do is to attempt to open a port with a string name sent as a parameter:
 
 	/* Call sp_get_port_by_name() to find the port. The port
@@ -89,30 +105,18 @@ bool SerialComm::handshake(std::string portname)
 	 * string portname during the function call*/
         check(sp_get_port_by_name(portname.c_str(), &port));
 
+
 	/*Here, we open the port, using the port struct defined
 	 * above in the previous step.*/
 	std::cout << "Opening port\n";
 	check(sp_open(port, SP_MODE_READ_WRITE));
 	port_status = PORT_OPEN;
 
-	/*Next, we instantiate the values for our internal variable
-	 * default_config, so that we can load this config into the
-	 * newly opened port*/
-
-	//allocate memory for the default_config:
-       	check(sp_new_config(&default_config));
-
-	//setting the port parameters for default_config
-	check(sp_set_config_baudrate(default_config, 9600));
-	check(sp_set_config_bits(default_config, 8));
-        check(sp_set_config_parity(default_config, SP_PARITY_NONE));
-        check(sp_set_config_stopbits(default_config, 1));
-        check(sp_set_config_flowcontrol(default_config, SP_FLOWCONTROL_NONE));
-
-	/*Now we load the port config into the port we are using to
-	 * communicate*/
+	//now load the port_config into the port
 	check(sp_set_config(port, default_config));
 
+
+	
 	std::string data = "Hello";
 
 	//convert the string to char*
