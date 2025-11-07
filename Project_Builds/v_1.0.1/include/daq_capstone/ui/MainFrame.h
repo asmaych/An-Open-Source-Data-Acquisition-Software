@@ -20,8 +20,10 @@ class MainFrame : public wxFrame
 		//EVENT HANDLERS
 		//----------------------------------------------------
 		void onNewProject(wxCommandEvent& evt);
-
-
+		void onOpenProject(wxCommandEvent& evt);
+		void onAddSensor(wxCommandEvent& evt);
+		void onRemoveSensor(wxCommandEvent& evt);
+	
 		//----------------------------------------------------
 		//CLASS ATTRIBUTES
 		//----------------------------------------------------
@@ -36,5 +38,19 @@ class MainFrame : public wxFrame
 
 		//declare the sidebar
 		Sidebar* sidebar = nullptr;
+
+		//Toolbar pointer (new) = stores a pointer to the toobar so u can access it later 
+		wxToolBar* toolbar = nullptr;
+
+		//command IDs for toolbar buttons, wxwidgets needs unique IDs to link clicks to handlers
+		enum {
+			ID_NewProject = wxID_HIGHEST + 1,
+			ID_OpenProject,
+			ID_AddSensor,
+			ID_RemoveSensor
+		     };
+
+		//wxDECLARE_EVENT_TABLE(); //connects menu/toolbar events to handlers (tells wxwidget that this class will have 
+					// an event table in the .cpp file where we bind button clicks
 
 };

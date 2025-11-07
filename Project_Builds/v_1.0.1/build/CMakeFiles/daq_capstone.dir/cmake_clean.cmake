@@ -2,6 +2,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/daq_capstone.dir/link.d"
   "CMakeFiles/daq_capstone.dir/src/App.cpp.o"
   "CMakeFiles/daq_capstone.dir/src/App.cpp.o.d"
+  "CMakeFiles/daq_capstone.dir/src/sensor/Sensor.cpp.o"
+  "CMakeFiles/daq_capstone.dir/src/sensor/Sensor.cpp.o.d"
   "CMakeFiles/daq_capstone.dir/src/serial/SerialComm.cpp.o"
   "CMakeFiles/daq_capstone.dir/src/serial/SerialComm.cpp.o.d"
   "CMakeFiles/daq_capstone.dir/src/ui/HandshakeDialog.cpp.o"

@@ -6,11 +6,13 @@ set(CMAKE_CXX_STANDARD 20)
 
 include_directories(
 	${PROJECT_SOURCE_DIR}/src
+	${PROJECT_SOURCE_DIR}/src/sensor
 	${PROJECT_SOURCE_DIR}/src/serial
 	${PROJECT_SOURCE_DIR}/src/ui
 	${PROJECT_SOURCE_DIR}/src/processing
 	${PROJECT_SOURCE_DIR}/include/daq_capstone/
 	${PROJECT_SOURCE_DIR}/include/daq_capstone/serial
+	${PROJECT_SOURCE_DIR}/include/daq_capstone/sensor
 	${PROJECT_SOURCE_DIR}/include/daq_capstone/ui
 	${PROJECT_SOURCE_DIR}/include/daq_capstone/processing
 
@@ -19,6 +21,7 @@ include_directories(
 # Add the source files
 add_executable(daq_capstone
     	src/App.cpp
+	src/sensor/Sensor.cpp
     	src/ui/MainFrame.cpp
     	src/ui/ProjectPanel.cpp
 	src/serial/SerialComm.cpp

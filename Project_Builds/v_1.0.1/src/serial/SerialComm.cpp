@@ -222,8 +222,48 @@ int SerialComm::getReading()
         int bytes_written = sp_blocking_write(port, prompt, strlen(prompt), 100);
 
         printf("Wrote: %d bytes, '%s'\n", bytes_written, prompt);
+	
+	//I am commenting this part cause i am trying to read a full response until new line "\n"
+	std::string response;
+	char c;
+	int total_read = 0;
 
-        char* buf = (char*)malloc(2);
+	while (true)
+	{
+		int bytes_read = sp_blocking_read(port, &c,1, 500); //Read one byte at a time (500)
+		if(bytes_read <=0){
+			break;
+		}
+		//if newline symbol reached = end message
+		if (c == '\n'){
+			break;
+		}
+		//ignore carriage return '1' '0' '2' '3' '\r' '\n' 
+		if (c == '\r'){
+			continue;
+		}
+		response += c;
+		total_read += bytes_read;
+	}
+	if(response.empty()){
+		throw std::runtime_error("Error: No valid data read from port");
+	}
+	//Display what we got (the string)
+        std::cout << "Raw value from Arduino: " << response << "\n";
+
+        //Convert to integer
+        int value = 0;
+         try
+         {
+            value = std::stoi(response);
+         }
+         catch (...)
+         {
+            std::cerr << "Error converting response to int: '" << response << "'\n";
+            value = 0;
+          }
+
+ /*       char* buf = (char*)malloc(2);
 
         int bytes_read = sp_blocking_read(port, buf, 1, 1500);
 
@@ -242,10 +282,11 @@ int SerialComm::getReading()
         std::cout << "Raw value from arduino: " << buf << "\n";
 
         int value = buf[0];
-
+*/
+	//display the int we read
         printf("Value read from Arduino: %d\n",value);
 
-        free(buf);
+//        free(buf);
 
         return value;
 
