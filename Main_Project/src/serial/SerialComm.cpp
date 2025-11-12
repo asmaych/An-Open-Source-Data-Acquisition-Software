@@ -1,6 +1,3 @@
-//
-// Created by T14s on 10/22/25.
-//
 #include "libserialport.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,10 +8,6 @@
 #include <format>
 #include <chrono>
 #include <thread>
-
-
-
-
 
 SerialComm::SerialComm()
 {
@@ -221,9 +214,45 @@ int SerialComm::getReading()
 
         int bytes_written = sp_blocking_write(port, prompt, strlen(prompt), 100);
 
-        printf("Wrote: %d bytes, '%s'\n", bytes_written, prompt);
+	if(bytes_written <= 0)
+		throw std::runtime_error("Failed to send request");
 
-        char* buf = (char*)malloc(2);
+	std::string response;
+	char c;
+
+	while (true)
+	{
+		int bytes_read = sp_blocking_read(port, &c,1, 500); //Read one byte at a time (500)
+		if(bytes_read <=0){
+			break;
+		}
+		//if newline symbol reached = end message
+		if (c == '\n'){
+			break;
+		}
+		//ignore carriage return '1' '0' '2' '3' '\r' '\n' 
+		if (c == '\r'){
+			continue;
+		}
+		response += c;
+	}
+	if(response.empty()){
+		throw std::runtime_error("Error: No valid data read from port");
+	}
+	
+	int value = 0;
+	try{
+		value = std::stoi(response);
+	}
+	catch(...){
+		value = 0;
+	}
+
+	//Display what we got (the string)
+        std::cout << "Value read from Arduino: " << value << "\n";
+	return value;
+
+ /*       char* buf = (char*)malloc(2);
 
         int bytes_read = sp_blocking_read(port, buf, 1, 1500);
 
@@ -242,12 +271,13 @@ int SerialComm::getReading()
         std::cout << "Raw value from arduino: " << buf << "\n";
 
         int value = buf[0];
+*/
+	//display the int we read
+        //printf("Value read from Arduino: %d\n",value);
 
-        printf("Value read from Arduino: %d\n",value);
+//        free(buf);
 
-        free(buf);
-
-        return value;
+        //return value;
 
 }
 

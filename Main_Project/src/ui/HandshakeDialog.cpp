@@ -42,7 +42,7 @@ HandshakeDialog::HandshakeDialog(wxWindow* parent, const wxString& title, Serial
 
 		//also add an entry to to hashmap that links the
 		//description with the pointer to the port object
-		portMap[port_desc] = ports[i];
+		portMap[port_desc] = sp_get_port_name(ports[i]);
     	}
 
 	mainSizer->Add(portChoice, 0, wxEXPAND | wxALL, 10);
@@ -75,8 +75,8 @@ void HandshakeDialog::onPortChosen(wxCommandEvent& event)
 	}
 
 	//store the name (not description) of the port selected:
-	std::string portname = 
-		sp_get_port_name(portMap[std::string(portChoice->GetStringSelection().mb_str())]);
+	std::string desc = portChoice -> GetStringSelection().ToStdString();
+	std::string portname = portMap[desc];
 
 	//This line takes the string selected by the user in the drop-down,
 	//and uses it as the key in the class attribute hashmap 
