@@ -1,37 +1,28 @@
-#define BUTTON_PIN 2  // Button input pin
-
-bool beginReceived = false;  // Tracks if "Begin" was received
+#include <Arduino.h>
 
 void setup() {
   Serial.begin(9600);
-  pinMode(BUTTON_PIN, INPUT_PULLUP);
+
+  // wait for serial connection
+  while (!Serial) {
+    ; // wait for serial port to connect
+  }
+  Serial.println("ESP32 ready!");
 }
 
 void loop() {
-  if (Serial.available()) {
-    String input = Serial.readStringUntil('\n');
-    input.trim();
-
-    if (!beginReceived) {
-      // Echo back everything until "Begin"
-      Serial.println(input);
-      if (input.equalsIgnoreCase("Begin")) {
-        beginReceived = true;
-        flushSerial();
-      }
-    } else {
-      // After "Begin", only respond to "Request"
-      if (input.equalsIgnoreCase("Request")) {
-          int buttonState = digitalRead(BUTTON_PIN);
-          Serial.write(buttonState == LOW ? 1 : 0);
-      }
+    if (Serial.available()) {
+        String input = Serial.readStringUntil('\n');
+        input.trim();
+        
+        if (input == "Request") {
+            int sensorValue = analogRead(2);  // read potentiometer
+            Serial.println(sensorValue);       // send numeric value
+        } 
+        else {
+            Serial.print("Echo: ");
+            Serial.println(input); // echo any other input
+        }
     }
-  }
 }
-
-void flushSerial() {
-  while (Serial.available() > 0) {
-    Serial.read();
-  }
-}
-
+ 
