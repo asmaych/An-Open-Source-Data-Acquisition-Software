@@ -17,7 +17,7 @@ private:
     SerialComm* serialComm;
 
     //this will be used to map a port selection with an actual port object
-    std::unordered_map<std::string, struct sp_port*> portMap;
+    std::unordered_map<std::string, std::string> portMap;
 
     //declaring the dropdown menu so it can be used across the class
     wxComboBox* portChoice;

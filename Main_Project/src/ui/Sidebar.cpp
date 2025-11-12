@@ -1,34 +1,50 @@
 #include <wx/wx.h>
 #include "Sidebar.h"
 #include "Events.h"
+#include "MainFrame.h"
 
-//define the custom event:
-wxDEFINE_EVENT(wxEVT_PROJECT_NEW, wxCommandEvent);
+/*  SIdebar is a vertical panel with buttons for common project actions as New Project, Load Project.
+    By clicking "New Project", we post an event, thus MainFrame creates a tab.
 
-Sidebar::Sidebar(wxWindow* parent) : wxPanel(parent, wxID_ANY)
+*/
+
+Sidebar::Sidebar(MainFrame* parent) 
+	: wxPanel(parent, wxID_ANY), m_parent(parent)
 {
-	//choose vertical alignment so that items stack down the sidebar
+	//Create vertical box sizer to layout buttons vertically
 	wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 	
-	//make a button for creating project:
+	//Create NewProject
 	wxButton* new_project_button = new wxButton(this, wxID_ANY, "New Project");
 
-	//make a button for loading a project:
-	//TODO: implement functionality
-	wxButton* load_project_button = new wxButton(this, wxID_ANY, "Load Project");
+	//Bind button click event to Sidebar::OnNewProject
+	new_project_button -> Bind(wxEVT_BUTTON, &Sidebar::OnNewProject, this);
 
-	//now add both buttons to the sizer
-	sizer->Add(new_project_button, 0, wxALL | wxEXPAND, 10);
-	sizer->Add(load_project_button, 0, wxALL | wxEXPAND, 10);
+	//Add button to sizer with some spacing
+	sizer -> Add(new_project_button, 0, wxEXPAND | wxALL, 5);
 
-	SetSizer(sizer);
+	//now we do the same for LoadProject
+        wxButton* load_project_button = new wxButton(this, wxID_ANY, "Load Project");
 
-	//EVENT TRIGGERS:
-	new_project_button->Bind(wxEVT_BUTTON, [this](wxCommandEvent&)
-		{
-			wxCommandEvent evt(wxEVT_PROJECT_NEW);
-			evt.SetEventObject(this);
-			wxPostEvent(GetParent(), evt);		
-		});
-	
+        load_project_button -> Bind(wxEVT_BUTTON, &Sidebar::OnLoadProject, this);
+
+        sizer -> Add(load_project_button, 0, wxEXPAND | wxALL, 5);
+	//setSizer for layout
+	SetSizerAndFit(sizer);
+}
+/* Event handler for both "New Project" button & "Load Project" button
+   when clicking NewProject, sidebar calls MainFrame's function to create a new project.
+   when clicking LOadProject, the sidebar will call the MainFrame's function to load an existing project.
+*/
+
+void Sidebar::OnNewProject(wxCommandEvent& evt){
+	if(m_parent){ //safety check
+		m_parent -> onNewProject(evt); //calls mainFRame handler
+	}
+}
+
+void Sidebar::OnLoadProject(wxCommandEvent& evt){
+	if(m_parent){ 
+		m_parent -> onOpenProject(evt);
+	}
 }
