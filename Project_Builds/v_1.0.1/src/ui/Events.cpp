@@ -1,0 +1,9 @@
+#include "Events.h"
+
+wxDEFINE_EVENT(wxEVT_SERIAL_UPDATE, wxThreadEvent);
+wxDEFINE_EVENT(wxEVT_HANDSHAKE, wxThreadEvent);
+wxDEFINE_EVENT(wxEVT_PROJECT_NEW, wxCommandEvent);
+wxDEFINE_EVENT(wxEVT_START_EXPERIMENT, wxCommandEvent);
+wxDEFINE_EVENT(wxEVT_STOP_EXPERIMENT, wxCommandEvent);
+wxDEFINE_EVENT(wxEVT_COLLECT_DATA, wxCommandEvent);
+wxDEFINE_EVENT(wxEVT_GRAPH_DATA, wxCommandEvent);

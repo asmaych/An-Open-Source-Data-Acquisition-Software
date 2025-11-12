@@ -153,6 +153,102 @@ src/App.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/App.cpp.s
 .PHONY : src/App.cpp.s
 
+src/data/DataSession.o: src/data/DataSession.cpp.o
+.PHONY : src/data/DataSession.o
+
+# target to build an object file
+src/data/DataSession.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/data/DataSession.cpp.o
+.PHONY : src/data/DataSession.cpp.o
+
+src/data/DataSession.i: src/data/DataSession.cpp.i
+.PHONY : src/data/DataSession.i
+
+# target to preprocess a source file
+src/data/DataSession.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/data/DataSession.cpp.i
+.PHONY : src/data/DataSession.cpp.i
+
+src/data/DataSession.s: src/data/DataSession.cpp.s
+.PHONY : src/data/DataSession.s
+
+# target to generate assembly for a file
+src/data/DataSession.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/data/DataSession.cpp.s
+.PHONY : src/data/DataSession.cpp.s
+
+src/data/DataTableWindow.o: src/data/DataTableWindow.cpp.o
+.PHONY : src/data/DataTableWindow.o
+
+# target to build an object file
+src/data/DataTableWindow.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/data/DataTableWindow.cpp.o
+.PHONY : src/data/DataTableWindow.cpp.o
+
+src/data/DataTableWindow.i: src/data/DataTableWindow.cpp.i
+.PHONY : src/data/DataTableWindow.i
+
+# target to preprocess a source file
+src/data/DataTableWindow.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/data/DataTableWindow.cpp.i
+.PHONY : src/data/DataTableWindow.cpp.i
+
+src/data/DataTableWindow.s: src/data/DataTableWindow.cpp.s
+.PHONY : src/data/DataTableWindow.s
+
+# target to generate assembly for a file
+src/data/DataTableWindow.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/data/DataTableWindow.cpp.s
+.PHONY : src/data/DataTableWindow.cpp.s
+
+src/data/GraphWindow.o: src/data/GraphWindow.cpp.o
+.PHONY : src/data/GraphWindow.o
+
+# target to build an object file
+src/data/GraphWindow.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o
+.PHONY : src/data/GraphWindow.cpp.o
+
+src/data/GraphWindow.i: src/data/GraphWindow.cpp.i
+.PHONY : src/data/GraphWindow.i
+
+# target to preprocess a source file
+src/data/GraphWindow.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.i
+.PHONY : src/data/GraphWindow.cpp.i
+
+src/data/GraphWindow.s: src/data/GraphWindow.cpp.s
+.PHONY : src/data/GraphWindow.s
+
+# target to generate assembly for a file
+src/data/GraphWindow.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.s
+.PHONY : src/data/GraphWindow.cpp.s
+
+src/data/LiveDataWindow.o: src/data/LiveDataWindow.cpp.o
+.PHONY : src/data/LiveDataWindow.o
+
+# target to build an object file
+src/data/LiveDataWindow.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o
+.PHONY : src/data/LiveDataWindow.cpp.o
+
+src/data/LiveDataWindow.i: src/data/LiveDataWindow.cpp.i
+.PHONY : src/data/LiveDataWindow.i
+
+# target to preprocess a source file
+src/data/LiveDataWindow.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.i
+.PHONY : src/data/LiveDataWindow.cpp.i
+
+src/data/LiveDataWindow.s: src/data/LiveDataWindow.cpp.s
+.PHONY : src/data/LiveDataWindow.s
+
+# target to generate assembly for a file
+src/data/LiveDataWindow.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.s
+.PHONY : src/data/LiveDataWindow.cpp.s
+
 src/sensor/Sensor.o: src/sensor/Sensor.cpp.o
 .PHONY : src/sensor/Sensor.o
 
@@ -200,6 +296,30 @@ src/serial/SerialComm.s: src/serial/SerialComm.cpp.s
 src/serial/SerialComm.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/serial/SerialComm.cpp.s
 .PHONY : src/serial/SerialComm.cpp.s
+
+src/ui/Events.o: src/ui/Events.cpp.o
+.PHONY : src/ui/Events.o
+
+# target to build an object file
+src/ui/Events.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/ui/Events.cpp.o
+.PHONY : src/ui/Events.cpp.o
+
+src/ui/Events.i: src/ui/Events.cpp.i
+.PHONY : src/ui/Events.i
+
+# target to preprocess a source file
+src/ui/Events.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/ui/Events.cpp.i
+.PHONY : src/ui/Events.cpp.i
+
+src/ui/Events.s: src/ui/Events.cpp.s
+.PHONY : src/ui/Events.s
+
+# target to generate assembly for a file
+src/ui/Events.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/ui/Events.cpp.s
+.PHONY : src/ui/Events.cpp.s
 
 src/ui/HandshakeDialog.o: src/ui/HandshakeDialog.cpp.o
 .PHONY : src/ui/HandshakeDialog.o
@@ -333,12 +453,27 @@ help:
 	@echo "... src/App.o"
 	@echo "... src/App.i"
 	@echo "... src/App.s"
+	@echo "... src/data/DataSession.o"
+	@echo "... src/data/DataSession.i"
+	@echo "... src/data/DataSession.s"
+	@echo "... src/data/DataTableWindow.o"
+	@echo "... src/data/DataTableWindow.i"
+	@echo "... src/data/DataTableWindow.s"
+	@echo "... src/data/GraphWindow.o"
+	@echo "... src/data/GraphWindow.i"
+	@echo "... src/data/GraphWindow.s"
+	@echo "... src/data/LiveDataWindow.o"
+	@echo "... src/data/LiveDataWindow.i"
+	@echo "... src/data/LiveDataWindow.s"
 	@echo "... src/sensor/Sensor.o"
 	@echo "... src/sensor/Sensor.i"
 	@echo "... src/sensor/Sensor.s"
 	@echo "... src/serial/SerialComm.o"
 	@echo "... src/serial/SerialComm.i"
 	@echo "... src/serial/SerialComm.s"
+	@echo "... src/ui/Events.o"
+	@echo "... src/ui/Events.i"
+	@echo "... src/ui/Events.s"
 	@echo "... src/ui/HandshakeDialog.o"
 	@echo "... src/ui/HandshakeDialog.i"
 	@echo "... src/ui/HandshakeDialog.s"

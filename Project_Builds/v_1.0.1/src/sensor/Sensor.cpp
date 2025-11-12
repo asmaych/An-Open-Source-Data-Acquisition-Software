@@ -1,4 +1,4 @@
-#include "Sensor.h"
+#include "sensor/Sensor.h"
 
 //Constructor
 Sensor::Sensor(const std::string& name, int id)

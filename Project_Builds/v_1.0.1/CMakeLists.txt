@@ -8,6 +8,7 @@ include_directories(
 	${PROJECT_SOURCE_DIR}/src
 	${PROJECT_SOURCE_DIR}/src/sensor
 	${PROJECT_SOURCE_DIR}/src/serial
+	${PROJECT_SOURCE_DIR}/src/data
 	${PROJECT_SOURCE_DIR}/src/ui
 	${PROJECT_SOURCE_DIR}/src/processing
 	${PROJECT_SOURCE_DIR}/include/daq_capstone/
@@ -22,12 +23,17 @@ include_directories(
 add_executable(daq_capstone
     	src/App.cpp
 	src/sensor/Sensor.cpp
+	src/data/DataTableWindow.cpp
+	src/data/LiveDataWindow.cpp
+	src/data/GraphWindow.cpp
+	src/data/DataSession.cpp
     	src/ui/MainFrame.cpp
     	src/ui/ProjectPanel.cpp
 	src/serial/SerialComm.cpp
 	src/ui/HandshakeDialog.cpp
 	src/ui/LEDPanel.cpp
 	src/ui/Sidebar.cpp
+	src/ui/Events.cpp
 )
 
 # Find and link libserialport

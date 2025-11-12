@@ -1,81 +1,47 @@
-#include <wx/wx.h>
-
-#include "HandshakeDialog.h"
-#include "SerialComm.h"
-
-#include <thread>
-#include <atomic>
-
-#include "LEDPanel.h"
-
-#include "Events.h"
-
-wxDEFINE_EVENT(wxEVT_SERIAL_UPDATE, wxThreadEvent);
-wxDEFINE_EVENT(wxEVT_HANDSHAKE, wxThreadEvent);
-
+#include <wx/msgdlg.h>
 #include "ProjectPanel.h"
-
-#include <mutex>
-
+#include "Events.h"
+#include "HandshakeDialog.h"
+#include "data/GraphWindow.h"
+#include "data/DataTableWindow.h"
+#include "data/DataSession.h"
+#include "sensor/Sensor.h"
+#include "serial/SerialComm.h"
+#include <chrono>
+#include <iostream>
+#include <thread>
 
 ProjectPanel::ProjectPanel(wxWindow* parent, const wxString& title)
 	: wxPanel(parent, wxID_ANY)
 {
 
-	//Each Project should have an instance of the SerialComm Class:
-	serialComm = std::make_unique<SerialComm>();
-
-	//make a sizer for the controls
-	wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
-
-	//make the status LED display panel
-	ledIndicator = new LEDPanel(this);
-
-	
-	//make a button that opens the dialogue for handshake
-	wxButton* connect_button =  new wxButton
-		(
-		 this,
-		 wxID_ANY,
-		 "Connect to sensor controller"
-		);
-
-	mainSizer->Add(connect_button, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 10);
-	
-	//mainSizer->Add(ledIndicator, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 10);
-	
-	//Sensor Management buttons: add/remove
-	wxBoxSizer* sensorButtons = new wxBoxSizer(wxHORIZONTAL);
-	wxButton* addSensor = new wxButton(this, wxID_ANY, "Add Sensor");
-	wxButton* removeSensor = new wxButton(this, wxID_ANY, "Remove Sensor");
-	sensorButtons->Add(addSensor, 0, wxALL, 5);
-	sensorButtons->Add(removeSensor, 0, wxALL, 5);
-	mainSizer->Add(sensorButtons, 0, wxALIGN_CENTER_HORIZONTAL);
-
 	//SensorList as a Table
-	sensorList = new wxListCtrl(this, wxID_ANY, wxDefaultPosition, wxSize(500, 200), wxLC_REPORT | wxLC_SINGLE_SEL);
+	m_sensorList = new wxListCtrl(this, wxID_ANY, wxDefaultPosition, wxSize(400, 200), wxLC_REPORT | wxLC_SINGLE_SEL);
 	
 	//Add columns for table
-	sensorList -> InsertColumn(0, "Name");
-	sensorList -> InsertColumn(1, "Type");
-	sensorList -> InsertColumn(2, "Unit");
-	sensorList -> InsertColumn(3, "Last Reading");
+	m_sensorList -> InsertColumn(0, "Sensor Name");
+	m_sensorList -> InsertColumn(1, "Type");
+	m_sensorList -> InsertColumn(2, "Unit");
+	m_sensorList -> InsertColumn(3, "Last Reading");
+	
+	m_connect_button = new wxButton(this, wxID_ANY, "Connect");
 
-	//the two main buttons for adding and removing a sensor
-	mainSizer->Add(sensorList, 0, wxALL | wxEXPAND, 10);
-	mainSizer->Add(ledIndicator, 0, wxALL | wxEXPAND, 10);
-
-	//bind buttons
-	connect_button->Bind(wxEVT_BUTTON, &ProjectPanel::onHandshake,this);
-	addSensor->Bind(wxEVT_BUTTON, &ProjectPanel::onAddSensor,this);
-	removeSensor->Bind(wxEVT_BUTTON, &ProjectPanel::onRemoveSensor,this);
-
-	//bind the custom event to its handler
-	Bind(wxEVT_SERIAL_UPDATE, &ProjectPanel::onSerialUpdate, this);
-	Bind(wxEVT_HANDSHAKE, &ProjectPanel::onHandshakeSuccess, this);
-
+	wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
+	mainSizer -> Add(m_sensorList, 1, wxEXPAND | wxALL, 6);
+	mainSizer -> Add(m_connect_button, 0, wxALIGN_CENTER | wxALL, 6);
 	SetSizerAndFit(mainSizer);
 
+	//Create SerialComm instance for this project (not connected yet)
+	m_serial = std::make_unique<SerialComm>();
+
+	// Bind the Connect button to open the handshake dialog
+	m_connect_button->Bind(wxEVT_BUTTON, [this](wxCommandEvent&){
+		openConnectDialog();
+	});
+
+	// Bind the custom handshake success event to its handler
+	Bind(wxEVT_SERIAL_UPDATE, &ProjectPanel::onSerialUpdate, this);
+	Bind(wxEVT_HANDSHAKE, &ProjectPanel::onHandshakeSuccess, this);
 }
 
 ProjectPanel::~ProjectPanel()
@@ -87,113 +53,82 @@ ProjectPanel::~ProjectPanel()
 	stopBackgroundPolling();
 }
 
-// AddSensor button clicked
-void ProjectPanel::onAddSensor(wxCommandEvent& evt)
-{
-	//create a new sensor object, each roject has its own sensors
-	auto sensor = std::make_unique<Sensor>("Sensor"+ std::to_string(sensors.size() + 1), sensors.size()+1);
-	
-	//Append to vector
-	sensors.push_back(std::move(sensor));
-
-	//Update table visually
-	long index = sensorList->InsertItem(sensorList->GetItemCount(), sensors.back()->getName());
-	//sensorList->SetItem(index, 1, sensors.back()->getType());
-        //sensorList->SetItem(index, 2, sensors.back()->getUnit());
-        sensorList->SetItem(index, 3, "N/A");
-}
-
-
-
-//RemoveSensor button clicked
-void ProjectPanel::onRemoveSensor(wxCommandEvent& evt)
-{
-	long selected = sensorList -> GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-	/* GetNextItem is a method of wxListCntrl (that displays the table), GetNextItem(long item, int geometry, int state)
-	   item is the starting index, if u pass -1 that means the search should start from the top of the list (first item)
-	   geometry tells it where to search next, usually we use wxLIST_NEXT_ALL which means search all items
-	   state is a filter telling it what kind of item we are looking for - wx_STATE_SELECTED means return the index of the first
-           selected items
-	=> here it is saying look through all items in sensorList, find the first one that's currently selected, if found
-	   (not equal 1) remove that sensor object from the internal sensor vec,emove its row from visual list
-	*/
-	if(selected != -1){
-		sensors.erase(sensors.begin() + selected);
-	/* erase is a method that removes the sensor pointed to, we are passing sensors.begin()+selected because sensors.begin()
-	   returns an iterator pointing to the first element of the list/vec while §selected moves that pointer to the selected 
- 	   sensor to erase it
-	*/
-		sensorList->DeleteItem(selected);
-	//we delete it visually
-	}
-}
-
 //open Handshake dialog
-void ProjectPanel::onHandshake(wxCommandEvent& evt)
+void ProjectPanel::openConnectDialog()
 {
-	wxLogStatus("Initiating handshake dialogue:");
-
-	//TODO
-	//now instantiate the thing that does the handshaking
-	//
-	//Pass a raw pointer to the SerialComm object here, to avoid transferring ownership
-	HandshakeDialog* handshaker = new HandshakeDialog(this, "Handshaker", serialComm.get());
+	//if handshake already done, let the user know
+	if (handshakeComplete) {
+		wxMessageBox("Already connected to microprocessor.", "Info");
+		return;
+	}
+	//create the dialog and show it
+	HandshakeDialog* handshaker = new HandshakeDialog(this, "Select serial port", m_serial.get());
 	handshaker->Show();
 }
 
-//called when handshake successful 
 void ProjectPanel::onHandshakeSuccess(wxThreadEvent& evt)
 {
-        bool success = evt.GetPayload<bool>();
-        if (success)
-        {
-                //prompt the arduino to move to the next phase
-                //std::lock_guard<std::mutex> lock(serialMutex);
-                //serialComm->writeData("Begin\n");
-
-                //std::cout << "\n\n" << "test" << "\n\n";
-                startBackgroundPolling();
-        }
+    bool success = evt.GetPayload<bool>(); //evt is a thread event and GetPayload<bool> gets the result of the handshake (T=success)
+    if (success)
+    {
+	handshakeComplete = true;
+        wxLogStatus("Handshake successful - ready to poll!");
+        // Start polling sensors now that the connection is ready
+        startBackgroundPolling();
+    }
+    else
+    {
+        wxLogError("Handshake failed!");
+    }
 }
+
 
 //Background thread function to poll sensor readings: a loop that periodically requests data from the microprocessor
 void ProjectPanel::startBackgroundPolling()
 {
-        //set the class variable boolean to true
-        running = true;
+        if(!handshakeComplete){
+		wxLogWarning("Cannot start polling: not connected");
+		return;
+	}
 
-        ioThread = std::thread([this]()
-                {
-                        while (running)
-                {
-                                std::cout << "thread iteration: we call SerialComm::writeData()\n";
-
-                                std::lock_guard<std::mutex> lock(serialMutex);
-                                //loop through all sensors and get readings
-				for(size_t i = 0; i < sensors.size(); i++){
-					 int value = serialComm->getReading(); //poll hardware
-					 sensors[i]->setReading(value);  //update model
-                                		
-					 //update GUI - trip the event and run the update:
-                               		  wxThreadEvent evt(wxEVT_SERIAL_UPDATE);
-                                	  evt.SetInt(value);
-                                	  wxQueueEvent(this, evt.Clone());
+	if (running.exchange(true)){
+		//polling already active (exchange sets running to true and returns the previous value)
+		return;
+	}
+	
+	//we start a new thread that runs in the background [this] lets the thread access the class's members as sensor
+        ioThread = std::thread([this]() {
+                        while (running.load()) //while running is true (load thread-safe)
+                	{
+				// we lock the serialComm so only one thread can access the hardware at a time which prevents
+				// conflicts if multiple threads try to read/write at once
+                               std::lock_guard<std::mutex> lock(serialMutex);
+                               // Loop through sensors
+            		       for (size_t i = 0; i < sensors.size(); i++) {
+         		       		int value = m_serial->getReading(); // poll hardware
+             			  	 sensors[i]->setReading(value);      // update the sensor object with the new reading
+					
+					//send /add the value to all live windows so they display real-time data
+					for (auto& window : m_liveWindows) {
+					    window->addValue(value);   // direct update
+					}
 				}
-                                 //add a little pause
-                                std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
-                        }
-                });
+          		// small sleep to avoid overwhelming the arduino/esp32
+         		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+      			}
+        });
 }
-
+	
 
 //Stops backgrounf polling thread
 void ProjectPanel::stopBackgroundPolling()
 {
-        running = false;
-
+        running.store(false);
+	
+	//we check if the background thread actually exists and is running
         if (ioThread.joinable())
         {
+		//wait for it to finish its work safely before exiting it
                 ioThread.join();
         }
 }
@@ -202,19 +137,153 @@ void ProjectPanel::stopBackgroundPolling()
 void ProjectPanel::onSerialUpdate(wxThreadEvent& evt)
 {
 	int value = evt.GetInt();
-
-	if (value == 1)
-	{
-		ledIndicator->setState(true);
-	}
-	else if (value == 0)
-	{
-		ledIndicator->setState(false);
-	}
-	else
-		wxLogStatus("Reading updated: %d",value);
+	wxLogStatus("Reading updated: %d",value);
 	
-	//TODO: UPdate table values if needed
+	long selected = m_sensorList -> GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+	if( selected != -1){
+		//set text in the second column if present, but we are keeping it simple for now
+		m_sensorList->SetItem(selected, 1, wxString::Format("%d", value));
+	}
+}
+
+
+// Helper to get selected sensor index
+int ProjectPanel::getSelectedSensorIndex() const
+{
+	//we search the list of sensrs from top till we find the first item that is selected
+	long item = m_sensorList -> GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+
+	//if no items (-1) return -1 else return the row index of the selected sensor(convert the long returned by getNext to an int)
+	if(item == -1){
+		return -1;
+	}
+	return static_cast<int>(item);
+}
+
+
+//	TOOLBAR ACTIONS
+
+//Start live reading
+void ProjectPanel::startSelectedSensor()
+{
+	int index = getSelectedSensorIndex();
+	if(index == -1){
+		wxMessageBox("Please select a sensor first.", "No sensor", wxICON_INFORMATION);
+		return;
+	}
+	
+	 // create a live window for the selected sensor
+	// we get the data session for that sensor using m_sessions[index].get (the vector of sessions) 
+	// which contains the data session of thesensor
+         auto live = std::make_unique<LiveDataWindow>(this, m_sessions[index].get());
+         live->Show();
+         m_liveWindows.push_back(std::move(live)); //we store it so it won't get deleted automatically
+         startBackgroundPolling();
+}
+
+//Stop live reading
+void ProjectPanel::stopSelectedSensor()
+{
+        int index = getSelectedSensorIndex();
+        if(index == -1){
+                wxMessageBox("Please select a sensor first.");
+                return;
+        }
+       stopBackgroundPolling();
+	wxLogStatus("Stopped sensor polling."); 
+        //ASMAAAA COMEBACKKKK
+}
+
+//Collect data
+void ProjectPanel::collectSelectedSensor()
+{
+        int index = getSelectedSensorIndex();
+        if(index == -1){
+               wxMessageBox("Please select a sensor first.", "No sensor", wxICON_INFORMATION);
+                return;
+        }
+        // we first check if there is a session at the selected index(m_sessions.size()>index
+	// and if that session actually exists (not null) the implmentation is vice versa
+	if (m_sessions.size() <= static_cast<size_t>(index) || !m_sessions[index]) {
+		wxMessageBox("No data collected yet for this sensor!", "No data", wxICON_INFORMATION);
+		return;
+	}
+        //open a data table window and pass the pointer to the sata session so the table knows which values to display
+	DataTableWindow* table = new DataTableWindow(this,m_sessions[index].get());
+	table -> Show();
+}
+
+
+
+//Graph data
+void ProjectPanel::graphSelectedSensor()
+{
+        int index = getSelectedSensorIndex();
+        if(index == -1){
+                wxMessageBox("Please select a sensor first.", "No sensor", wxICON_INFORMATION);
+                return;
+        }
+
+	if (m_sessions.size() <= static_cast<size_t>(index) || !m_sessions[index]) {
+                wxMessageBox("No data collected yet for this sensor!", "No data", wxICON_INFORMATION);
+                return;
+        }
+        
+        //Open a graph window
+	GraphWindow* graph = new GraphWindow(this, m_sessions[index].get());
+	graph -> Show();
+}
+
+//Open panel with add/remove sensor buttons
+void ProjectPanel::openSensorPanel()
+{
+	// Simple dialog: if there are no sensors, ask to add one
+        if (sensors.empty()) {
+     	        // create a sensor with a simple name
+        	auto s = std::make_unique<Sensor>("Sensor1", 1);
+        	sensors.push_back(std::move(s));
+
+		auto session = std::make_unique<DataSession>("Sensor1");
+		m_sessions.push_back(std::move(session));
+
+       		long index = m_sensorList->InsertItem(m_sensorList->GetItemCount(), "Sensor1");
+        	wxLogStatus("Sensor1 added.");
+       		return;
+        }
+
+    	// Otherwise prompt user to add numbered sensor
+   	long nextId = static_cast<long>(sensors.size()) + 1;
+  	wxString name = wxString::Format("Sensor%ld", nextId);
+   	auto s = std::make_unique<Sensor>(std::string(name.mb_str()), static_cast<int>(nextId));
+    	m_sensorList->InsertItem(m_sensorList->GetItemCount(), name);
+    	sensors.push_back(std::move(s));
+    	auto session = std::make_unique<DataSession>(std::string(name.mb_str()));
+	m_sessions.push_back(std::move(session));
+	wxLogStatus("Added %s", name);
+}
+
+//Add/Remove sensor
+void ProjectPanel::onAddSensor(wxCommandEvent& evt) 
+{
+	openSensorPanel();
+}
+
+
+void ProjectPanel::onRemoveSensor(wxCommandEvent& evt) 
+{
+	// we remove both the sensor and its session (also in the gui)
+	int index = getSelectedSensorIndex();
+	if(index==-1){
+		wxMessageBox("Select a sensor to remove.", "No sensor", wxICON_INFORMATION);
+		return;
+	}
+	
+	sensors.erase(sensors.begin() + index);
+	if(m_sessions.size() > static_cast<size_t>(index)){
+		m_sessions.erase(m_sessions.begin() + index);
+	}
+	m_sensorList -> DeleteItem(index);
+	wxLogStatus("Sensor removed.");
 }
 
 

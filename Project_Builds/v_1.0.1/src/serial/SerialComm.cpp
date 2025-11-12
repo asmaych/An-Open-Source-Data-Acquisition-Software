@@ -1,6 +1,3 @@
-//
-// Created by T14s on 10/22/25.
-//
 #include "libserialport.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,10 +8,6 @@
 #include <format>
 #include <chrono>
 #include <thread>
-
-
-
-
 
 SerialComm::SerialComm()
 {
@@ -221,12 +214,11 @@ int SerialComm::getReading()
 
         int bytes_written = sp_blocking_write(port, prompt, strlen(prompt), 100);
 
-        printf("Wrote: %d bytes, '%s'\n", bytes_written, prompt);
-	
-	//I am commenting this part cause i am trying to read a full response until new line "\n"
+	if(bytes_written <= 0)
+		throw std::runtime_error("Failed to send request");
+
 	std::string response;
 	char c;
-	int total_read = 0;
 
 	while (true)
 	{
@@ -243,25 +235,22 @@ int SerialComm::getReading()
 			continue;
 		}
 		response += c;
-		total_read += bytes_read;
 	}
 	if(response.empty()){
 		throw std::runtime_error("Error: No valid data read from port");
 	}
-	//Display what we got (the string)
-        std::cout << "Raw value from Arduino: " << response << "\n";
+	
+	int value = 0;
+	try{
+		value = std::stoi(response);
+	}
+	catch(...){
+		value = 0;
+	}
 
-        //Convert to integer
-        int value = 0;
-         try
-         {
-            value = std::stoi(response);
-         }
-         catch (...)
-         {
-            std::cerr << "Error converting response to int: '" << response << "'\n";
-            value = 0;
-          }
+	//Display what we got (the string)
+        std::cout << "Value read from Arduino: " << value << "\n";
+	return value;
 
  /*       char* buf = (char*)malloc(2);
 
@@ -284,11 +273,11 @@ int SerialComm::getReading()
         int value = buf[0];
 */
 	//display the int we read
-        printf("Value read from Arduino: %d\n",value);
+        //printf("Value read from Arduino: %d\n",value);
 
 //        free(buf);
 
-        return value;
+        //return value;
 
 }
 
