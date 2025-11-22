@@ -148,7 +148,7 @@ bool SerialComm::handshake(std::string portname)
 	{
 		//for each index of the char buffer, read a byte into
 		//that index
-		int n = sp_blocking_read(port, &buffer[pos], 1, 10);
+		int n = sp_blocking_read(port, &buffer[pos], 1, 1000);
 
 		//break if the read ever returns an error
 		if (n <= 0)
@@ -169,20 +169,23 @@ bool SerialComm::handshake(std::string portname)
 	//null-terminate directly after the last read byte
 	buffer[pos] = '\0';
 
+	//trim the buffer input
+	buffer[strcspn(buffer, "\r\n")] = '\0';
+
 	printf("Received line: %s\n", buffer);
 
 	//---------------------------------------------------------------------------------------------------
 	//TRY TO COMPARE THE BUFFER READ WITH EXPECTED "pong\n"
 	//---------------------------------------------------------------------------------------------------
 
-	if (strcmp(receive, buffer) == 0)
+	if (strcmp("pong", buffer) == 0)
 	{
-		printf("Success, expected: %s, received: %s", receive, buffer);
+		printf("Success, expected: \"pong\", received: %s", buffer);
 		this->handshakeresult = true;
 	}
 	else
 	{
-		printf("Error, expected: %s, received: %s", receive, buffer);
+		printf("Error, expected: \"pong\", received: %s", buffer);
 		this->handshakeresult = false;
 	}
 
