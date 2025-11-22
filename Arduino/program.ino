@@ -128,19 +128,9 @@ void processCommand()
     //use short-circuiting AND
     if (sensorname && pin)
     {
-      //check to make sure this sensor name isn't already being used
-      if (sensorMap.find(sensorname) != sensorMap.end())
-      {
-        //if it is, send a message and return without crashing
-        Serial.println("Error: sensor name already exists");
-        return;
-      }
-
-      //otherwise, we can proceed to add the new sensor
-
       //push the sensor name to the vector that keeps track
       //of sensor reading order
-      frameOrder.emplace_back(sensorname);
+      frameOrder.push_back(sensorname);
 
       //add the mapping to the map that associates sensors with
       //pin numbers
@@ -148,7 +138,8 @@ void processCommand()
     }
     else
     {
-      Serial.println("Error: misconfigured command \"add\"");
+      //TODO implement feedback handling later
+      //Serial.println("Error: misconfigured command \"add\"");
       return;
     }
 
@@ -185,7 +176,8 @@ void processCommand()
     }
     else
     {
-      Serial.println("Error: misconfigured command \"remove\"");
+      //TODO implement feedback handling later
+      //Serial.println("Error: misconfigured command \"remove\"");
       return;
     }
   }
@@ -207,12 +199,16 @@ void processCommand()
     }
     else
     {
-      Serial.println("ERROR: misconfigured command \"adjust\"");
+      //TODO implement feedback handling later
+      //Serial.println("ERROR: misconfigured command \"adjust\"");
+      return;
     }
   }
   else
   {
-    Serial.println("ERROR: no such command");
+    //TODO implement feedback handling later
+    //Serial.println("ERROR: no such command");
+    return;
   }
   
 }

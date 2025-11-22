@@ -6,6 +6,8 @@
 
 #include <string>
 #include <vector>
+#include "Sensor.h"
+#include <memory>
 
 //explicitly declaring the library for libserialport:
 #include <libserialport.h>
@@ -15,36 +17,20 @@ enum PORT_STATUS { PORT_OPEN, PORT_CLOSED };
 class SerialComm
 {
 	public:
-		//take no parameters. the first thing we need to do is generate a list of ports for the user:
 		SerialComm();
-
-		//deconstruct the object
 		~SerialComm();
-		//helper function that populates a string vector with the names of all available serial ports
 
 		//keeping it as an atomic  method allows us to re-scan at any time we want.
 		void scanPorts();
 
-		//declaring a getter method that returns the port list as a vector
-		//we set it as a const and simply return a reference to the original.
-		//This ensures data integrity and efficiency (avoids copies)
+		//getter method to return a reference to the vector port_name_list
 		const std::vector<std::string>& getPortNames() const;
-
-		/* Now add a second getter that actually just returns the port_list
-		 * to the caller. We want to pass by const
-		 */
+		
+		//getter method to return the null-terminated array of actual ports
 		struct sp_port ** getPortList() const;
 
-		/* This function opens a specified port for communication using
-		 * serial communication. The parameters are set to a default
-		 * value, and a packet of data is sent to the connected device.
-		 *
-		 * if the device returns the same packet of data, then the
-		 * handshake is a success, as successful communication has
-		 * occurred. Otherwise, the operation was not a success,
-		 * and we will need to re-attempt the handshake somehow.
-		 *
-		 * Further functionalities and customizations TBD*/
+		//this function sends a "ping\n" and returns true if it receieves
+		//"pong\n" in return.
 		bool handshake(std::string portname);
 
 		/* This is a helper function that closes the comm port
@@ -60,11 +46,15 @@ class SerialComm
 		 */
 		int check(enum sp_return result);
 
-		int getReading();
+		void addSensor(const std::string& sensorName, int pin);
+		void removeSensor(const std::string& sensorName);
+		void adjustPollingRate(int rate);
 
-		void writeData(std::string message);
+		void readDataFrame(std::vector<std::unique_ptr<Sensor>>& sensors);
 
 		void flush();
+
+		bool handshakeresult = false;
 
 
 
@@ -95,22 +85,8 @@ class SerialComm
 		 * that port that will always be used, unconditionally.*/
 		struct sp_port *port = nullptr;
 
-		/* Helper function that takes a std::string as an input
-		 * and returns a char* string as output. This is necessary
-		 * because the library call sp_blocking_write() requires
-		 * that the data being written is in the style of a c-string
-		 *
-		 * This function gets the input string passed by reference,
-		 * so that there is no need to allocate new memory. The
-		 * output of the function will be a temporary copy of the
-		 * converted string.
-		 */
-		const char* toCharPtr(const std::string& s);
-
 		/* Adding a variable to keep track of the port status*/
 		PORT_STATUS port_status = PORT_CLOSED;
-
-		bool handshakeresult = false;
 };
 
 #endif

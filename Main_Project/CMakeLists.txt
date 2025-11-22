@@ -21,33 +21,36 @@ include_directories(
 
 # Add the source files
 add_executable(daq_capstone
-    	src/App.cpp
+	src/App.cpp
 	src/sensor/Sensor.cpp
+	src/sensor/SensorManager.cpp
 	src/data/DataTableWindow.cpp
 	src/data/LiveDataWindow.cpp
 	src/data/GraphWindow.cpp
 	src/data/DataSession.cpp
-    	src/ui/MainFrame.cpp
-    	src/ui/ProjectPanel.cpp
+	src/ui/MainFrame.cpp
+	src/ui/ProjectPanel.cpp
 	src/serial/SerialComm.cpp
 	src/ui/HandshakeDialog.cpp
-	src/ui/LEDPanel.cpp
 	src/ui/Sidebar.cpp
 	src/ui/Events.cpp
+	src/ui/SensorConfigDialog.cpp
+	src/ui/AddSensorDialog.cpp
+
 )
 
-# Find and link libserialport
-find_library(SERIALPORT_LIB serialport)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(SERIALPORT REQUIRED libserialport)
 
-if (NOT SERIALPORT_LIB)
-    message(FATAL_ERROR "libserialport not found. Please install it.")
-endif()
+target_include_directories(daq_capstone PRIVATE ${SERIALPORT_INCLUDE_DIRS})
+link_directories(${SERIALPORT_LIBRARY_DIRS})
+add_definitions(${SERIALPORT_CFLAGS_OTHER})
 
-target_link_libraries(daq_capstone PRIVATE ${SERIALPORT_LIB})
+target_link_libraries(daq_capstone PRIVATE ${SERIALPORT_LIBRARIES})
 
 
 # Find wxWidgets
-find_package(wxWidgets REQUIRED COMPONENTS core base aui)
+find_package(wxWidgets REQUIRED COMPONENTS core base aui REQUIRED)
 if(wxWidgets_FOUND)
     include(${wxWidgets_USE_FILE})
 endif()

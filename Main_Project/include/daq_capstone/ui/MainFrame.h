@@ -7,10 +7,11 @@
 #include "HandshakeDialog.h"
 
 /* MainFrame class is the main application window, it contains:
-   A toolbar with features as Start, Stop, COllect, Sensor, Graph, that are disabled unless a project is open + actions as start/
+   A toolbar with features like Start, Stop, Collect, Sensor and Graph, 
+   that are disabled unless a project is open, and where actions like start/
    stop/collect/graph won't run unless a sensor is selected.
-   A sidebar on the left with New Project & Load Project.
-   A project space: wxAUINotebook with ProjectPanel tabs.
+   A sidebar is  on the left with New Project & Load Project.
+   A project space uses wxAUINotebook with ProjectPanel tabs.
 */
 class ProjectPanel;
 class Sidebar;
@@ -43,10 +44,10 @@ class MainFrame : public wxFrame
 		//----------------------------------------------------
 		//	TOOLBAR EVENT HANDLERS
 		//----------------------------------------------------
-		void onStart(wxCommandEvent& evt);
-		void onStop(wxCommandEvent& evt);
-		void onCollect(wxCommandEvent& evt);
-		void onGraph(wxCommandEvent& evt);
+		//void onStart(wxCommandEvent& evt);
+		//void onStop(wxCommandEvent& evt);
+		//void onCollect(wxCommandEvent& evt);
+		//void onGraph(wxCommandEvent& evt);
 		void onSensor(wxCommandEvent& evt);
         
 		//----------------------------------------------------
@@ -62,10 +63,8 @@ class MainFrame : public wxFrame
 		//declare the sidebar
 		Sidebar* sidebar = nullptr;
 
-		//Toolbar pointer (new) = stores a pointer to the toobar so u can access it later 
+		//Toolbar pointer (new) = stores a pointer to the toolbar so u can access it later 
 		wxToolBar* toolbar = nullptr;
 
-		//ProjectCounter for naming new projects automatically
-		int m_project_count = 0;
 
 };
