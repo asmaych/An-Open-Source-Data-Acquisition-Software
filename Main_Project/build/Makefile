@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = "/home/T14s/Desktop/Classes/Capstone stuff/Asma_branch/An-Open-Source-Data-Acquisition-Software/Project_Builds/v_1.0.1"
+CMAKE_SOURCE_DIR = "/home/T14s/Desktop/Classes/Capstone stuff/GitHub/An-Open-Source-Data-Acquisition-Software/Main_Project"
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = "/home/T14s/Desktop/Classes/Capstone stuff/Asma_branch/An-Open-Source-Data-Acquisition-Software/Project_Builds/v_1.0.1/build"
+CMAKE_BINARY_DIR = "/home/T14s/Desktop/Classes/Capstone stuff/GitHub/An-Open-Source-Data-Acquisition-Software/Main_Project/build"
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start "/home/T14s/Desktop/Classes/Capstone stuff/Asma_branch/An-Open-Source-Data-Acquisition-Software/Project_Builds/v_1.0.1/build/CMakeFiles" "/home/T14s/Desktop/Classes/Capstone stuff/Asma_branch/An-Open-Source-Data-Acquisition-Software/Project_Builds/v_1.0.1/build//CMakeFiles/progress.marks"
+	$(CMAKE_COMMAND) -E cmake_progress_start "/home/T14s/Desktop/Classes/Capstone stuff/GitHub/An-Open-Source-Data-Acquisition-Software/Main_Project/build/CMakeFiles" "/home/T14s/Desktop/Classes/Capstone stuff/GitHub/An-Open-Source-Data-Acquisition-Software/Main_Project/build//CMakeFiles/progress.marks"
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start "/home/T14s/Desktop/Classes/Capstone stuff/Asma_branch/An-Open-Source-Data-Acquisition-Software/Project_Builds/v_1.0.1/build/CMakeFiles" 0
+	$(CMAKE_COMMAND) -E cmake_progress_start "/home/T14s/Desktop/Classes/Capstone stuff/GitHub/An-Open-Source-Data-Acquisition-Software/Main_Project/build/CMakeFiles" 0
 .PHONY : all
 
 # The main clean target
@@ -273,6 +273,30 @@ src/sensor/Sensor.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/sensor/Sensor.cpp.s
 .PHONY : src/sensor/Sensor.cpp.s
 
+src/sensor/SensorManager.o: src/sensor/SensorManager.cpp.o
+.PHONY : src/sensor/SensorManager.o
+
+# target to build an object file
+src/sensor/SensorManager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/sensor/SensorManager.cpp.o
+.PHONY : src/sensor/SensorManager.cpp.o
+
+src/sensor/SensorManager.i: src/sensor/SensorManager.cpp.i
+.PHONY : src/sensor/SensorManager.i
+
+# target to preprocess a source file
+src/sensor/SensorManager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/sensor/SensorManager.cpp.i
+.PHONY : src/sensor/SensorManager.cpp.i
+
+src/sensor/SensorManager.s: src/sensor/SensorManager.cpp.s
+.PHONY : src/sensor/SensorManager.s
+
+# target to generate assembly for a file
+src/sensor/SensorManager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/sensor/SensorManager.cpp.s
+.PHONY : src/sensor/SensorManager.cpp.s
+
 src/serial/SerialComm.o: src/serial/SerialComm.cpp.o
 .PHONY : src/serial/SerialComm.o
 
@@ -296,6 +320,30 @@ src/serial/SerialComm.s: src/serial/SerialComm.cpp.s
 src/serial/SerialComm.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/serial/SerialComm.cpp.s
 .PHONY : src/serial/SerialComm.cpp.s
+
+src/ui/AddSensorDialog.o: src/ui/AddSensorDialog.cpp.o
+.PHONY : src/ui/AddSensorDialog.o
+
+# target to build an object file
+src/ui/AddSensorDialog.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/ui/AddSensorDialog.cpp.o
+.PHONY : src/ui/AddSensorDialog.cpp.o
+
+src/ui/AddSensorDialog.i: src/ui/AddSensorDialog.cpp.i
+.PHONY : src/ui/AddSensorDialog.i
+
+# target to preprocess a source file
+src/ui/AddSensorDialog.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/ui/AddSensorDialog.cpp.i
+.PHONY : src/ui/AddSensorDialog.cpp.i
+
+src/ui/AddSensorDialog.s: src/ui/AddSensorDialog.cpp.s
+.PHONY : src/ui/AddSensorDialog.s
+
+# target to generate assembly for a file
+src/ui/AddSensorDialog.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/ui/AddSensorDialog.cpp.s
+.PHONY : src/ui/AddSensorDialog.cpp.s
 
 src/ui/Events.o: src/ui/Events.cpp.o
 .PHONY : src/ui/Events.o
@@ -345,30 +393,6 @@ src/ui/HandshakeDialog.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/ui/HandshakeDialog.cpp.s
 .PHONY : src/ui/HandshakeDialog.cpp.s
 
-src/ui/LEDPanel.o: src/ui/LEDPanel.cpp.o
-.PHONY : src/ui/LEDPanel.o
-
-# target to build an object file
-src/ui/LEDPanel.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/ui/LEDPanel.cpp.o
-.PHONY : src/ui/LEDPanel.cpp.o
-
-src/ui/LEDPanel.i: src/ui/LEDPanel.cpp.i
-.PHONY : src/ui/LEDPanel.i
-
-# target to preprocess a source file
-src/ui/LEDPanel.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/ui/LEDPanel.cpp.i
-.PHONY : src/ui/LEDPanel.cpp.i
-
-src/ui/LEDPanel.s: src/ui/LEDPanel.cpp.s
-.PHONY : src/ui/LEDPanel.s
-
-# target to generate assembly for a file
-src/ui/LEDPanel.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/ui/LEDPanel.cpp.s
-.PHONY : src/ui/LEDPanel.cpp.s
-
 src/ui/MainFrame.o: src/ui/MainFrame.cpp.o
 .PHONY : src/ui/MainFrame.o
 
@@ -416,6 +440,30 @@ src/ui/ProjectPanel.s: src/ui/ProjectPanel.cpp.s
 src/ui/ProjectPanel.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/ui/ProjectPanel.cpp.s
 .PHONY : src/ui/ProjectPanel.cpp.s
+
+src/ui/SensorConfigDialog.o: src/ui/SensorConfigDialog.cpp.o
+.PHONY : src/ui/SensorConfigDialog.o
+
+# target to build an object file
+src/ui/SensorConfigDialog.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/ui/SensorConfigDialog.cpp.o
+.PHONY : src/ui/SensorConfigDialog.cpp.o
+
+src/ui/SensorConfigDialog.i: src/ui/SensorConfigDialog.cpp.i
+.PHONY : src/ui/SensorConfigDialog.i
+
+# target to preprocess a source file
+src/ui/SensorConfigDialog.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/ui/SensorConfigDialog.cpp.i
+.PHONY : src/ui/SensorConfigDialog.cpp.i
+
+src/ui/SensorConfigDialog.s: src/ui/SensorConfigDialog.cpp.s
+.PHONY : src/ui/SensorConfigDialog.s
+
+# target to generate assembly for a file
+src/ui/SensorConfigDialog.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/ui/SensorConfigDialog.cpp.s
+.PHONY : src/ui/SensorConfigDialog.cpp.s
 
 src/ui/Sidebar.o: src/ui/Sidebar.cpp.o
 .PHONY : src/ui/Sidebar.o
@@ -468,24 +516,30 @@ help:
 	@echo "... src/sensor/Sensor.o"
 	@echo "... src/sensor/Sensor.i"
 	@echo "... src/sensor/Sensor.s"
+	@echo "... src/sensor/SensorManager.o"
+	@echo "... src/sensor/SensorManager.i"
+	@echo "... src/sensor/SensorManager.s"
 	@echo "... src/serial/SerialComm.o"
 	@echo "... src/serial/SerialComm.i"
 	@echo "... src/serial/SerialComm.s"
+	@echo "... src/ui/AddSensorDialog.o"
+	@echo "... src/ui/AddSensorDialog.i"
+	@echo "... src/ui/AddSensorDialog.s"
 	@echo "... src/ui/Events.o"
 	@echo "... src/ui/Events.i"
 	@echo "... src/ui/Events.s"
 	@echo "... src/ui/HandshakeDialog.o"
 	@echo "... src/ui/HandshakeDialog.i"
 	@echo "... src/ui/HandshakeDialog.s"
-	@echo "... src/ui/LEDPanel.o"
-	@echo "... src/ui/LEDPanel.i"
-	@echo "... src/ui/LEDPanel.s"
 	@echo "... src/ui/MainFrame.o"
 	@echo "... src/ui/MainFrame.i"
 	@echo "... src/ui/MainFrame.s"
 	@echo "... src/ui/ProjectPanel.o"
 	@echo "... src/ui/ProjectPanel.i"
 	@echo "... src/ui/ProjectPanel.s"
+	@echo "... src/ui/SensorConfigDialog.o"
+	@echo "... src/ui/SensorConfigDialog.i"
+	@echo "... src/ui/SensorConfigDialog.s"
 	@echo "... src/ui/Sidebar.o"
 	@echo "... src/ui/Sidebar.i"
 	@echo "... src/ui/Sidebar.s"

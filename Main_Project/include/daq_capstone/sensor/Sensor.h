@@ -1,43 +1,51 @@
-#ifndef SENSOR_H
-#define SENSOR_H
+#pragma once
+
 #include <string>
 #include <atomic> 
 #include <mutex>
 
-/* #include <atomic>: for thread-safe reading, it ensures that operations on a variable are performed atomically
-   (uninterruptible and safe for multithreaded environments).
-
-   #include <mutex>: provides us with a sychronization primitive that is used to protect the shared data from being accessed 
-   by multiple threads simultaneously.
-*/
+/* #include <atomic>: for thread-safe reading, it ensures that 
+ * operations on a variable are performed atomically 
+ * (uninterruptible and safe for multithreaded environments).
+ *
+ * #include <mutex>: provides us with a sychronization primitive 
+ * that is used to protect the shared data from being accessed 
+ * by multiple threads simultaneously.
+ */
 
 class Sensor 
 {
 
-// Here i am building a simple representation of a sensor with a name and an ID.
-
 public: 
 
-	//Constructor: initializes a sensor with a name and an ID
-	Sensor(const std::string& name, int id);
-
-	//Getters
+	//Constructor: initializes a sensor with a name and a pin number
+	Sensor(const std::string& name, int pin);
+	
+	//---------------------------------------------------------------
+	//GETTERS
+	//---------------------------------------------------------------
+	
 	std::string getName() const;
-	int getID() const;
+	int getPin() const;
 	 
-	/* a getter to  get the current reading (thread-safe meaning it can be called from multiple threads (a sequence of instructions
-	   that can run concurrently within a program)  at the same time without causing errors, crashes, or incorrect results.
-	*/
+	/* a getter to  get the current reading (thread-safe meaning 
+	 * it can be called from multiple threads (a sequence of 
+	 * instructions that can run concurrently within a program)  
+	 * at the same time without causing errors, crashes, or incorrect 
+	 * results.
+	 */
 	int getReading() const;
 	
+	//---------------------------------------------------------------
+	//SETTERS
+	//---------------------------------------------------------------
+
 	// a setter for current reading (again thread-safe)
 	void setReading(int value);
 
 private:
 	
-	std::string name;
-	int id;
-	std::atomic<int> reading; //thread=safe current reading
+	std::string m_name;
+	int m_pin;
+	std::atomic<int> m_reading; //thread-safe reading value
 };
-
-#endif

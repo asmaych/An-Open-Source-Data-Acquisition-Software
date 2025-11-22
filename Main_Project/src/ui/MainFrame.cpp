@@ -4,6 +4,7 @@
 #include <wx/artprov.h> //this one provides default system icons for toolbar items
 #include "Sidebar.h"
 #include "Events.h"
+#include <wx/textdlg.h>
 
 
 //Constructor for MainFrame - sets up the application shell
@@ -30,22 +31,38 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title, w
 	toolbar = CreateToolBar(wxTB_HORIZONTAL | wxNO_BORDER | wxTB_FLAT | wxTB_TEXT);
 
 	/* Now i will add a start, stop, sensor.. buttons with a default system icon
-	   Addtool (any ID, text shown under the icon, default "new file" icon, tooltip when hovered (when u put the mouse over 
-	   the icon u should see create new project);
+	   Addtool (any ID, text shown under the icon, default "new file" icon, tooltip 
+	   when hovered (when u put the mouse over the icon u should see create new project);
 	*/
 
-	toolbar -> AddTool(ID_Start, "Start", wxArtProvider::GetBitmap(wxART_EXECUTABLE_FILE, wxART_TOOLBAR), "Start experiment");
+	toolbar -> AddTool(ID_Start,
+		  	"Start",
+		       	wxArtProvider::GetBitmap(wxART_EXECUTABLE_FILE, wxART_TOOLBAR),
+		       	"Start experiment");
 
-	toolbar -> AddTool(ID_Stop, "Stop", wxArtProvider::GetBitmap(wxART_CROSS_MARK, wxART_TOOLBAR), "Stop experiment");
+	toolbar -> AddTool(ID_Stop,
+		       	"Stop",
+		       	wxArtProvider::GetBitmap(wxART_CROSS_MARK, wxART_TOOLBAR),
+		       	"Stop experiment");
 
-	toolbar -> AddTool(ID_Collect, "Collect", wxArtProvider::GetBitmap(wxART_REPORT_VIEW, wxART_TOOLBAR), "Collect data");
+	toolbar -> AddTool(ID_Collect,
+		       	"Collect",
+		       	wxArtProvider::GetBitmap(wxART_REPORT_VIEW, wxART_TOOLBAR),
+		       	"Collect data");
 
-	toolbar -> AddTool(ID_Graph, "Graph", wxArtProvider::GetBitmap(wxART_NEW_DIR, wxART_TOOLBAR), "Graph collected data");
+	toolbar -> AddTool(ID_Graph,
+		       	"Graph",
+		       	wxArtProvider::GetBitmap(wxART_NEW_DIR, wxART_TOOLBAR),
+		       	"Graph collected data");
 	
-	toolbar -> AddTool(ID_Sensor, "Sensor", wxArtProvider::GetBitmap(wxART_TIP, wxART_TOOLBAR), "Manage sensors");
+	toolbar -> AddTool(ID_Sensor,
+		       	"Sensors",
+		       	wxArtProvider::GetBitmap(wxART_TIP, wxART_TOOLBAR),
+		       	"Manage sensors");
 
 	//Finalize and display our toolbar YAAAYYYY!!!!
-	// Realize() a method that takes no parameters and should be called in each time something is modififed in the toolbar
+	//Realize() a method that takes no parameters and should be called in 
+	//each time something is modififed in the toolbar
 	toolbar->Realize();
 
 
@@ -90,10 +107,10 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title, w
         //       BINDING EVENTS
         //--------------------------------------------------------------
         
-	Bind(wxEVT_TOOL, &MainFrame::onStart, this, ID_Start);
-	Bind(wxEVT_TOOL, &MainFrame::onStop, this, ID_Stop);
-        Bind(wxEVT_TOOL, &MainFrame::onCollect, this, ID_Collect);
-	Bind(wxEVT_TOOL, &MainFrame::onGraph, this, ID_Graph);
+	//Bind(wxEVT_TOOL, &MainFrame::onStart, this, ID_Start);
+	//Bind(wxEVT_TOOL, &MainFrame::onStop, this, ID_Stop);
+        //Bind(wxEVT_TOOL, &MainFrame::onCollect, this, ID_Collect);
+	//Bind(wxEVT_TOOL, &MainFrame::onGraph, this, ID_Graph);
         Bind(wxEVT_TOOL, &MainFrame::onSensor, this, ID_Sensor);
 
 
@@ -108,7 +125,10 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title, w
 // Returns a pointer to the currently selected ProjectPanel - nullptr if none
 ProjectPanel* MainFrame::getCurrentProjectPanel()
 {
-	int selected = m_notebook -> GetSelection(); //returns the index oof the currently selected tab/page/project
+	//returns the index of the currently selected project tab 
+	int selected = m_notebook -> GetSelection();
+
+	//immediately return null pointer if there is no selection open
 	if (selected == wxNOT_FOUND)
 		return nullptr;
 
@@ -131,7 +151,17 @@ void MainFrame::onNewProject(wxCommandEvent& evt)
 
 
 	//give a name for the new project:
-	wxString projectName = wxString::Format("Project %d", ++m_project_count);
+	wxString projectName = wxGetTextFromUser(
+			"Enter a name for the new project:",
+			"New Project",
+			"",
+			this);
+
+	//do not create a project if the user enters an empty string
+	if (projectName.IsEmpty())
+	{
+		return;
+	}
 
 	//create a new ProjectPanel and add it to the notebook
 	ProjectPanel* panel = new ProjectPanel(m_notebook, projectName);
@@ -144,10 +174,14 @@ void MainFrame::onNewProject(wxCommandEvent& evt)
 
 void MainFrame::onOpenProject(wxCommandEvent& evt)
 {
+	//TODO implement this with sqlite
+
         //Display an informative message to users in status bar
         wxLogStatus("TODO - Opening an existing project...");
 }
 
+//TODO IMPLEMENT THESE LATER
+/*
 void MainFrame::onStart(wxCommandEvent& evt)
 {
 	ProjectPanel* project = getCurrentProjectPanel();
@@ -180,6 +214,7 @@ void MainFrame::onCollect(wxCommandEvent& evt)
         project -> collectSelectedSensor();
 }
 
+
 void MainFrame::onGraph(wxCommandEvent& evt)
 {
         ProjectPanel* project = getCurrentProjectPanel();
@@ -189,6 +224,7 @@ void MainFrame::onGraph(wxCommandEvent& evt)
         }
         project -> graphSelectedSensor();
 }
+*/
 
 void MainFrame::onSensor(wxCommandEvent& evt)
 {
@@ -197,7 +233,7 @@ void MainFrame::onSensor(wxCommandEvent& evt)
                 wxMessageBox("Please open or load a project first!", "Warning", wxICON_WARNING);
                 return;
         }
-        project -> openSensorPanel();
+        project ->onSensors();
 }
 
 

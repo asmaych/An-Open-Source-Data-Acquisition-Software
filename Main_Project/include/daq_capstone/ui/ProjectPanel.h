@@ -13,6 +13,8 @@
 #include "data/DataTableWindow.h"
 #include "data/GraphWindow.h"
 #include "HandshakeDialog.h"
+#include "SensorManager.h"
+#include "SensorConfigDialog.h"
 
 
 /* ProjectPanel class represents one project tab, it contains:
@@ -33,42 +35,38 @@ class ProjectPanel : public wxPanel
 		ProjectPanel(wxWindow* parent, const wxString& title);
 		~ProjectPanel();
 
-		// Toolbar actions
-		void startSelectedSensor();
-		void stopSelectedSensor();
-		void collectSelectedSensor();
-		void graphSelectedSensor();
 		void openConnectDialog();
 		// A simple sensor Manager
-		void openSensorPanel();
+		void openSensorConfig();
+
+		//helper function to open sensorconfigdialog
+		void onSensors();
 		
 
 		
 	private:
+		//-------------------------------------------------------------------------------------------
 		//class attributes
-		wxButton* m_connect_button = nullptr; //button to open handshake dialog
-		wxListCtrl* m_sensorList = nullptr;
-		std::unique_ptr<SerialComm> m_serial; //serialComm instance
-		std::vector<std::unique_ptr<DataSession>> m_sessions; //DataSession per sensor
-                std::vector<std::unique_ptr<Sensor>> sensors; //Sensor objects
-		std::vector<std::unique_ptr<LiveDataWindow>> m_liveWindows; //Map sensor index -> LiveDataWindow
-		
-		//THreading for background
-		std::thread ioThread;
-		std::atomic<bool> running{false};
-		bool handshakeComplete = false;
-		std::mutex serialMutex;		
+		//-------------------------------------------------------------------------------------------
+		wxButton* m_connect_button = nullptr; 		//Button to open handshake dialog
+		std::unique_ptr<SerialComm> m_serial; 		//SerialComm instance
+		std::unique_ptr<SensorManager> m_sensorManager;	//sensorManager object
+		std::vector<std::unique_ptr<Sensor>> m_sensors;	//vector to store Sensor objects		
+		std::thread ioThread;				//A background thread for polling sensors
+		std::atomic<bool> running{false};		//this ensures thread-safety of ioThread
+		bool handshakeComplete = false;			//helper bool for handshake
+		std::mutex serialMutex;				//ensures thread-safety of SerialComm object	
 
-		//Add/Remove sensor
-		void onAddSensor(wxCommandEvent& evt);
-		void onRemoveSensor(wxCommandEvent& evt);
-                void onSerialUpdate(wxThreadEvent& evt);
-                void onHandshakeSuccess(wxThreadEvent& evt); 
+		//-------------------------------------------------------------------------------------------
+		//Event handlers
+		//-------------------------------------------------------------------------------------------
+                void onHandshakeSuccess(wxThreadEvent& evt); 	//handles successful handshake
 
+		//-------------------------------------------------------------------------------------------
 		//helper functions
-		int getSelectedSensorIndex() const;
-		void startBackgroundPolling();
-		void stopBackgroundPolling();
+		//-------------------------------------------------------------------------------------------
+		void startBackgroundPolling();			//opens a background thread to poll sensors
+		void stopBackgroundPolling();			//closes the background thread
 		
 };
 
