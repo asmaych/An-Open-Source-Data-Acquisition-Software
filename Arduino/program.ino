@@ -81,7 +81,7 @@ void processCommand()
   char input[INPUT_SIZE+1];
 
   //read contents into input buffer.
-  byte size = Serial.readBytesUntil("\n", input, INPUT_SIZE);
+  byte size = Serial.readBytesUntil('\n', input, INPUT_SIZE);
 
   //null-terminate the buffer that we wrote the command to:
   input[size] = 0;
@@ -165,7 +165,7 @@ void processCommand()
       for (size_t i = 0; i < frameOrder.size(); i++)
       {
         //if the two strings are equal
-        if (strcmp(frameOrder[i],sensorname) == 0)
+        if (frameOrder[i].equals(sensorname))
         {
           //we erase the entry from the vector at index i
           frameOrder.erase(frameOrder.begin() + i);
