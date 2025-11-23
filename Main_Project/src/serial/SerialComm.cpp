@@ -166,8 +166,8 @@ bool SerialComm::handshake(std::string portname)
 		pos++;
 	}
 
-	//null-terminate directly after the last read byte
-	buffer[pos] = '\0';
+	//null-terminate directly after first carriage return or newline
+	buffer[strcspn(buffer, "\r\n")]='\0';
 
 	//trim the buffer input
 	buffer[strcspn(buffer, "\r\n")] = '\0';

@@ -135,6 +135,9 @@ void processCommand()
       //add the mapping to the map that associates sensors with
       //pin numbers
       sensorMap[sensorname] = atoi(pin);
+
+      //set the pinmode as an input
+      pinMode(atoi(pin), INPUT);
     }
     else
     {
