@@ -254,4 +254,3 @@ void loop()
     lastSampleTime = timeNow;
   }
 }
->>>>>>> Joachim

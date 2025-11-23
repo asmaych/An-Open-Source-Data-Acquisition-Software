@@ -95,9 +95,6 @@ bool SerialComm::handshake(std::string portname)
 	//calculate its size to avoid redundant calls later
 	int size = strlen(send);
 
-	//set the response we expect to see
-	const char* receive = "pong\n";
-
 	//declare a var to store the result of read operations
 	int result;
 
@@ -126,7 +123,7 @@ bool SerialComm::handshake(std::string portname)
 	//quick check to ensure all data was sent:
 	if (result == strlen(send))
 	{
-		printf("Sent %d bytes successfully", size);
+		printf("Sent %d bytes successfully\n", size);
 	}
 	else
 	{
@@ -166,8 +163,8 @@ bool SerialComm::handshake(std::string portname)
 		pos++;
 	}
 
-	//null-terminate directly after first carriage return or newline
-	buffer[strcspn(buffer, "\r\n")]='\0';
+	//null-terminate at last position
+	buffer[pos] = '\0';
 
 	//trim the buffer input
 	buffer[strcspn(buffer, "\r\n")] = '\0';
@@ -304,7 +301,7 @@ void SerialComm::readDataFrame(std::vector<std::unique_ptr<Sensor>>& sensors)
 	while (pos <= sizeof(buffer)-1)
 	{
 		//read a byte into each index of the buffer
-		int n = sp_blocking_read(port, &buffer[pos], 1, 10);
+		int n = sp_blocking_read(port, &buffer[pos], 1, 100);
 
 		//break if the read ever returns an error
 		if (n <= 0)

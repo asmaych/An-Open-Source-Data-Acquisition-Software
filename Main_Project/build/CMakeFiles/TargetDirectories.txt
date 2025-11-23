@@ -1,3 +1,3 @@
-/home/T14s/Desktop/Classes/Capstone stuff/Asma_branch/An-Open-Source-Data-Acquisition-Software/Main_Project/build/CMakeFiles/daq_capstone.dir
-/home/T14s/Desktop/Classes/Capstone stuff/Asma_branch/An-Open-Source-Data-Acquisition-Software/Main_Project/build/CMakeFiles/edit_cache.dir
-/home/T14s/Desktop/Classes/Capstone stuff/Asma_branch/An-Open-Source-Data-Acquisition-Software/Main_Project/build/CMakeFiles/rebuild_cache.dir
+/home/T14s/Desktop/Classes/Capstone stuff/GitHub/An-Open-Source-Data-Acquisition-Software/Main_Project/build/CMakeFiles/daq_capstone.dir
+/home/T14s/Desktop/Classes/Capstone stuff/GitHub/An-Open-Source-Data-Acquisition-Software/Main_Project/build/CMakeFiles/edit_cache.dir
+/home/T14s/Desktop/Classes/Capstone stuff/GitHub/An-Open-Source-Data-Acquisition-Software/Main_Project/build/CMakeFiles/rebuild_cache.dir
