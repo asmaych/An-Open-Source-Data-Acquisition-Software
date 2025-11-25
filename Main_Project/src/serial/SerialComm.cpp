@@ -323,6 +323,15 @@ void SerialComm::readDataFrame(std::vector<std::unique_ptr<Sensor>>& sensors)
 	//null-terminate the buffer
 	buffer[pos] = '\0';
 
+	//strip the carriage return and newline from arduino output
+	buffer[strcspn(buffer, "\r\n")] = '\0';
+
+	//print the values if there are any
+	if (buffer[0] != '\0')
+	{
+		std::cout << buffer << "\n";
+	}
+
 
 	//---------------------------------------------------------------------------------------------------
 	//NOW THAT WE HAVE THE DATAFRAME, WE PARSE IT AND UPDATE SENSOR VALUES

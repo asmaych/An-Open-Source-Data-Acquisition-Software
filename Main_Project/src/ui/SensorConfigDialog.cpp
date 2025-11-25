@@ -101,6 +101,13 @@ void SensorConfigDialog::onAddSensorPressed(wxCommandEvent& evt)
 		return;
 	}
 
+	//next check to see if we are at the limit for sensors allowed
+	if (m_list->GetItemCount() == 10)
+	{
+		wxMessageBox("You are already at the maximum number of sensors");
+		return;
+	}
+
 
 	//simply launch the AddSensorDialog and pass along the
 	//SensorManager pointer to the new dialog
