@@ -55,11 +55,16 @@ ProjectPanel::ProjectPanel(wxWindow* parent, const wxString& title)
 
 ProjectPanel::~ProjectPanel()
 {
-	/* This destructor is explicitly implemented so that the threads 
-	 * created during runtime get shut down when the ProjectFrame
-	 * lifetime ends
+	/* \brief 	This destructor is explicitly implemented so that:
+	 * 		
+	 * 		- threads created during runtime get shut down
+	 *
+	 * 		- m_serial SerialComm object can reset the connected
+	 * 		microcontroller configuration so it can be used again
+	 * 		without problems.
 	 */
 	stopBackgroundPolling();
+	m_serial->reset();
 }
 
 //open Handshake dialog

@@ -8,6 +8,7 @@
 #include <vector>
 #include "Sensor.h"
 #include <memory>
+#include <set>
 
 //explicitly declaring the library for libserialport:
 #include <libserialport.h>
@@ -49,6 +50,7 @@ class SerialComm
 		void addSensor(const std::string& sensorName, int pin);
 		void removeSensor(const std::string& sensorName);
 		void adjustPollingRate(int rate);
+		void reset();
 
 		void readDataFrame(std::vector<std::unique_ptr<Sensor>>& sensors);
 
@@ -87,6 +89,12 @@ class SerialComm
 
 		/* Adding a variable to keep track of the port status*/
 		PORT_STATUS port_status = PORT_CLOSED;
+
+		//tracker for the port used by this instance
+		std::string m_portName;
+
+		//static vector of portnames to avoid conflicts with ports
+		static std::set<std::string> g_open_ports;
 };
 
 #endif

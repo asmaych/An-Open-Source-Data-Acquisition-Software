@@ -10,6 +10,10 @@
 #include <thread>
 #include "Sensor.h"
 #include <memory>
+#include <set>
+
+//initialize the global set of port names
+std::set<std::string> SerialComm::g_open_ports;
 
 SerialComm::SerialComm()
 {
@@ -82,6 +86,15 @@ bool SerialComm::handshake(std::string portname)
 	 * 		the function will return false.
 	 */
 
+	//---------------------------------------------------------------------------------------------------
+	//MAKE SURE THE PORT IS NOT IN USE BY ANY OTHER SERIALCOMM OBJECT
+	//---------------------------------------------------------------------------------------------------
+	if (g_open_ports.count(portname))
+	{
+		throw std::runtime_error("Port already in use by another project!");
+	}
+	//otherwise, proceed with handshake
+
 	//capture the incoming name as a c style string
 	//This is necessary because libserialport requires
 	//the use of char* instead of std::string
@@ -110,8 +123,17 @@ bool SerialComm::handshake(std::string portname)
 	//if there are no problems and we get to this point, set the port flag to OPEN
 	port_status = PORT_OPEN;
 
+	//add the port name to the global list so no other instances try to use it
+	g_open_ports.insert(portname);
+	m_portName = portname;
+
 	//load the default configuration into the port
 	check(sp_set_config(port, default_config));
+
+	//---------------------------------------------------------------------------------------------------
+	//CLEAR ANYTHING THAT MIGHT BE IN THE INCOMING BUFFER
+	//---------------------------------------------------------------------------------------------------
+	sp_flush(port, static_cast<sp_buffer>(SP_BUF_INPUT));
 
 	//---------------------------------------------------------------------------------------------------
 	//TRY TO SEND THE "ping\n" PACKET
@@ -208,7 +230,7 @@ void SerialComm::adjustPollingRate(int rate)
 	//first, check to make sure the port is open
 	if(port_status == PORT_CLOSED)
 	{
-		throw std::runtime_error("Error: Attempt to send command over closed port");
+		return;
 	}
 
 	//generate the command to send
@@ -229,7 +251,7 @@ void SerialComm::removeSensor(const std::string& sensorName)
 	//first check to make sure the port is open
 	if (port_status == PORT_CLOSED)
 	{
-		throw std::runtime_error("Error: Attempt to send command over closed port");
+		return;		
 	}
 
 	//generate the command to send
@@ -250,7 +272,7 @@ void SerialComm::addSensor(const std::string& sensorName, int pin)
 	//first make sure the port is open
 	if (port_status == PORT_CLOSED)
 	{
-		throw std::runtime_error("Error: Attempt to send command over closed port");
+		return;
 	}
 
 	//generate the command to send
@@ -280,7 +302,7 @@ void SerialComm::readDataFrame(std::vector<std::unique_ptr<Sensor>>& sensors)
 	//quick check to make sure the port is opened for communication
         if (port_status == PORT_CLOSED)
         {
-                throw std::runtime_error("Error: Attempt to poll data from closed port");
+                return;
         }
 
 	//---------------------------------------------------------------------------------------------------
@@ -378,18 +400,51 @@ void SerialComm::readDataFrame(std::vector<std::unique_ptr<Sensor>>& sensors)
 
 }
 
+void SerialComm::reset()
+{
+	/* \brief 	This function takes no parameters, and simply sends a single
+	 * 		command to the microntroller. This command causes a complete
+	 * 		reset of the microcontroller device.
+	 *
+	 * 		This is only intended to be run when the ProjectPanel is done
+	 * 		interacting with the physical hardware - for instance, when it
+	 * 		is close - and we want reset the initial state of the device so
+	 * 		that other projects can use it.
+	 */
+
+	std::cout << "oh boyyy we are resettingg the arduinooo\n";
+	//first make sure the port is open
+	if (port_status == PORT_CLOSED)
+	{
+		//throw std::runtime_error("Error: Attempt to send command over closed port");
+		return;
+	}
+
+	//generate the command to send
+	std::string reset_command = "reset\n";
+
+	//send the command
+	(void) check(sp_blocking_write(port,reset_command.c_str(), reset_command.size(), 1000));
+
+}
+
 void SerialComm::cleanPort()
 {
                 sp_flush(port, static_cast<sp_buffer>(SP_BUF_INPUT | SP_BUF_OUTPUT));
                 check(sp_close(port));
-                port_status = PORT_CLOSED;
                 sp_free_port(port);
+
+		//remove the name from the global list
+		g_open_ports.erase(m_portName);
+
+		port = nullptr;
+		port_status = PORT_CLOSED;
+		m_portName.clear();
 }
 
 /* Helper function for error handling. */
 int SerialComm::check(enum sp_return result)
 {
-        /* For this example we'll just exit on any error by calling abort(). */
         std::string error_message = sp_last_error_message();
         switch (result) {
         case SP_ERR_ARG:

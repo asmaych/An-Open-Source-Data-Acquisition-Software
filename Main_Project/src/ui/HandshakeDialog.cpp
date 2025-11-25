@@ -112,6 +112,7 @@ void HandshakeDialog::onPortChosen(wxCommandEvent& event)
 	catch(const std::exception& e)
 	{
 		wxLogError("Error: %s", e.what());
+		std::cout << "we caught an error!\n";
 	}
 	catch(...)
 	{
@@ -120,6 +121,6 @@ void HandshakeDialog::onPortChosen(wxCommandEvent& event)
 	}
 	else
 	{
-		wxLogStatus("Handshake already successful!");
+		wxLogError("Handshake already successful!");
 	}
 }

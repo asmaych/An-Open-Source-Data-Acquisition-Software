@@ -54,7 +54,16 @@ void AddSensorDialog::onAddPressed(wxCommandEvent& evt)
 	//get the name from the box and convert to std::string
 	std::string name = name_field->GetValue().ToStdString();
 
-	//get and validate the integer pin from pin_field
+	//verify that the name is within the character size limit
+	if (name.length() > 20)
+	{
+		wxMessageBox("Name must be 20 characters or less!",
+				"Name too long",
+				wxICON_ERROR | wxOK);
+		return;
+	}
+
+	//get the pin and make sure it is in the accepted range
 	long pinValue = 0;
 	if (!pin_field->GetValue().ToLong(&pinValue) || pinValue < 1 || pinValue > 20)
 	{
@@ -64,21 +73,38 @@ void AddSensorDialog::onAddPressed(wxCommandEvent& evt)
 		return;
 	}
 
+	//validate both parameters with the sensorManager, 
+	//sending an appropriate error message if either is already in use:
+	if (m_sensorManager->nameExists(name))
+	{
+		wxMessageBox("This name is already in use for another sensor",
+				"Invalid name",
+				wxICON_ERROR | wxOK);
+		return;
+	}
+	else if (m_sensorManager->pinExists(pinValue))
+	{
+		wxMessageBox("This pin is already being used for another sensor",
+				"Invalid pin",
+				wxICON_ERROR | wxOK);
+		return;
+	}
+
 	//now instantiate the temp sensor
 	std::unique_ptr<Sensor> sensor = std::make_unique<Sensor>(name, static_cast<int>(pinValue));
 
-	//now validate
+	//one last layer of checking
 	if (m_sensorManager->addSensor(std::move(sensor)))
 	{
 		std::cout << "we exit the dialog\n";
 		//exit the dialog
 		EndModal(wxID_OK);
 	}
-	else
+	//otherwise, something has gone wrong, and we don't know what
+	else 
 	{
-		//otherwise, prompt the user to enter unique values
-		wxMessageBox("Either name or pin specified is already in use, please choose another",
-				"Invalid Sensor Configuration",
+		wxMessageBox("Something has gone wrong, and this sensor cannot be added",
+				"Unknown error",
 				wxICON_ERROR | wxOK);
 		return;
 	}

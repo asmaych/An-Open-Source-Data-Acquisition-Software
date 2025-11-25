@@ -110,6 +110,13 @@ void processCommand()
     Serial.println("pong");
   }
   //---------------
+  //CASE: "reset"
+  //---------------
+  else if (strcmp(command, "reset") == 0)
+  {
+    esp_restart();
+  }
+  //---------------
   //CASE: "add"
   //---------------
   else if (strcmp(command, "add") == 0)
