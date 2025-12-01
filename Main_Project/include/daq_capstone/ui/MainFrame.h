@@ -21,11 +21,13 @@ class MainFrame : public wxFrame
 	public:
 		
 		enum ToolbarIDs {
-			ID_Start = wxID_HIGHEST + 1,
-			ID_Stop,
-			ID_Sensor,
+			ID_StartToggle = wxID_HIGHEST + 1,
+			ID_Reset,
+			ID_Collect,
+			ID_Collect_Current,
 			ID_Graph,
-			ID_Collect
+			ID_Sensor,
+			ID_Export
 		};
 		MainFrame(const wxString& title);
 		//----------------------------------------------------
@@ -34,6 +36,8 @@ class MainFrame : public wxFrame
                 void onNewProject(wxCommandEvent& evt);
                 void onOpenProject(wxCommandEvent& evt);
 
+		void setStartToggleToStart();
+		void setStartToggleToStop();
 
 	private:
 		//----------------------------------------------------
@@ -44,12 +48,13 @@ class MainFrame : public wxFrame
 		//----------------------------------------------------
 		//	TOOLBAR EVENT HANDLERS
 		//----------------------------------------------------
-		//void onStart(wxCommandEvent& evt);
-		//void onStop(wxCommandEvent& evt);
-		//void onCollect(wxCommandEvent& evt);
-		//void onGraph(wxCommandEvent& evt);
+		void onStartToggle(wxCommandEvent& evt);
+		void onReset(wxCommandEvent& evt);
+		void onCollect(wxCommandEvent& evt);
+		void onCollectCurrent(wxCommandEvent& evt);
+		void onGraph(wxCommandEvent& evt);
 		void onSensor(wxCommandEvent& evt);
-        
+		void onExport(wxCommandEvent& evt); 
 		//----------------------------------------------------
 		//	CLASS ATTRIBUTES
 		//----------------------------------------------------

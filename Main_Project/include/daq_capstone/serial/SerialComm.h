@@ -49,8 +49,10 @@ class SerialComm
 		void addSensor(const std::string& sensorName, int pin);
 		void removeSensor(const std::string& sensorName);
 		void adjustPollingRate(int rate);
+		bool writeString(const std::string& str);
 
-		void readDataFrame(std::vector<std::unique_ptr<Sensor>>& sensors);
+		void readDataFrame(std::vector<std::unique_ptr<Sensor>>& sensors, 
+                                   std::string* rawFrame = nullptr);
 
 		void flush();
 

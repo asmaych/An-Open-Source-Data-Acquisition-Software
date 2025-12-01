@@ -43,9 +43,14 @@ public:
 	// a setter for current reading (again thread-safe)
 	void setReading(int value);
 
+	void setSelected(bool sel) { m_selected = sel; }
+        bool isSelected() const { return m_selected; }
+
+
 private:
 	
 	std::string m_name;
 	int m_pin;
 	std::atomic<int> m_reading; //thread-safe reading value
+	bool m_selected = true;
 };

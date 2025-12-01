@@ -51,6 +51,11 @@ SensorConfigDialog::SensorConfigDialog(wxWindow* parent,
 	//add the button to the buttonsizer:
 	buttonSizer->Add(remove_sensor, 0, wxALL | wxALL, 10);
 
+	//create a button for selecting the sensors that will be used in a  project x
+	//wxButton* addToProject = new wxButton(this, wxID_ANY, "Add Selected to Project");
+	//add the button to the buttonsizer:
+	//buttonSizer -> Add(addToProject, 0, wxALL, 10);
+
 	//add the button grouping to the mainsizer
 	mainSizer->Add(buttonSizer, 0, wxALIGN_LEFT);
 
@@ -76,8 +81,8 @@ SensorConfigDialog::SensorConfigDialog(wxWindow* parent,
 	
 	add_sensor->Bind(wxEVT_BUTTON, &SensorConfigDialog::onAddSensorPressed, this);
 	remove_sensor->Bind(wxEVT_BUTTON, &SensorConfigDialog::onRemoveSensorPressed, this);
-	
-
+	//addToProject -> Bind(wxEVT_BUTTON, &SensorConfigDialog::onAddToProject, this);
+	m_list -> Bind(wxEVT_LEFT_DCLICK, &SensorConfigDialog::onRowDblClick, this);
 	//now populate the list using helper function
 	populateTable();
 }
@@ -95,7 +100,7 @@ void SensorConfigDialog::onAddSensorPressed(wxCommandEvent& evt)
 	 */
 
 	//add a check to see if we have connected with a device yet
-	if (m_serialComm->handshakeresult == false)
+	if (!m_serialComm->handshakeresult)
 	{
 		wxMessageBox("Please connect with a microcontroller first!");
 		return;
@@ -164,6 +169,91 @@ void SensorConfigDialog::onRemoveSensorPressed(wxCommandEvent& evt)
 	//finally, repopulate the table after removing the sensor
 	populateTable();
 }
+
+
+void SensorConfigDialog::onRowDblClick(wxMouseEvent& evt)
+{
+    //get the index of the first selected item in the wxListCtrl
+    //passing -1 means start searching from the beginning
+    long row = m_list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+
+    //if no row is selected, exit the function early
+    if (row == -1) 
+		return;
+
+    //ensure the selected row index is within the valid range of sensors
+    if (row < 0 || row >= static_cast<long>(m_sensors.size()))
+        return;
+
+    //get a pointer to the Sensor object corresponding to the selected row
+    const Sensor* s = m_sensors[row].get();
+
+    //create a new Sensor object by copying the name and pin (for now) from the selected one
+    auto newSensor = std::make_unique<Sensor>(s->getName(), s->getPin());
+
+    //add the newly created Sensor to the project using the SensorManager
+    m_sensorManager->addSensor(std::move(newSensor));
+
+    //let the user know
+    wxMessageBox("Sensor added to project.");
+
+    //allow the event to continue propagating to other handlers (if any)
+    evt.Skip();
+}
+
+
+/*void SensorConfigDialog::onRowDblClick(wxMouseEvent& evt)
+{
+	//check if the event contains a valid list index, if not, ignore the event
+	//if(!evt.GetIndex().IsOk())
+	//	return;
+
+	//retrieve the row index the user double-clicked
+    	int row = evt.GetIndex();
+
+	//ensure the row index is within bounds of the sensor list
+    	if (row < 0 || row >= static_cast<int>(m_sensors.size())) 
+		return;
+
+	//get a pointer to the selected sensor object from the list
+    	const Sensor* s = m_sensors[row].get();
+
+    	//Create a new Sensor object by copying the name and pin (for now) from the selected one
+    	auto newSensor = std::make_unique<Sensor>(s->getName(), s->getPin());
+
+	//add the newly created sensor to the project via the sensorManager
+    	m_sensorManager->addSensor(std::move(newSensor));
+
+	//notify the user that the sensor was successfully added
+    	wxMessageBox("Sensor added to project.");
+}
+*/
+
+/*
+void SensorConfigDialog::onAddToProject(wxCommandEvent& evt)
+{
+	long item = -1;
+
+   	//Loop through all selected items
+    	while (true)
+    	{
+        	item = m_list->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+        	if (item == -1) 
+			break;
+
+        	wxString name = m_list->GetItemText(item);
+        	const Sensor* s = m_sensors[item].get();
+
+        	// Add to project if not already present
+        	if (!m_sensorManager->exists(name.ToStdString()))
+        	{
+            		m_sensorManager->addSensor(std::make_unique<Sensor>(*s));
+        	}
+    	}
+
+    	wxMessageBox("Selected sensors added to project.");
+}
+*/
 
 void SensorConfigDialog::populateTable()
 {

@@ -5,6 +5,7 @@
 #include "Sensor.h"
 #include "SerialComm.h"
 #include <memory>
+#include <functional>
 
 class SensorManager
 {
@@ -25,6 +26,10 @@ class SensorManager
 		//checker function to make sure we don't have two sensors using
 		//the same arduino pin number
 		bool pinExists(int pin) const;
+		
+		//helper to get all selected sensors
+		std::vector<Sensor*> getSelectedSensors() const;
+		void setOnChangeCallback(std::function<void()> cb);
 
 	private:
 		//-------------------------------------------------------------------------------------------
@@ -37,4 +42,6 @@ class SensorManager
 
 		//raw pointer to the SerialComm object owned by Project
 		SerialComm* m_serialComm;
+
+		std::function<void()> m_onChange;
 };

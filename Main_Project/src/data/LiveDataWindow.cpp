@@ -11,10 +11,30 @@ LiveDataWindow::LiveDataWindow(wxWindow* parent, DataSession* session)
 	m_display = new wxTextCtrl(this, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY);
 }
 
+//display a raw string (comma-seperated sensor readings)
+void LiveDataWindow::appendBuffer(const std::string& buffer)
+{
+	if(m_display){
+		m_display -> AppendText(buffer + "\n");
+	}
+}
+
 //Add a value to display and save it in session for later collecting/graphing
 void LiveDataWindow::addValue(double value)
 {
-	m_session -> addValue(value);
+	if(m_session){
+		m_session -> addValue(value);
+	}
+	
 	//display value in GUI
-	m_display -> AppendText(wxString::Format("%.2f\n", value));
+	if (m_display) {
+		m_display -> AppendText(wxString::Format("%.2f\n", value));
+	}
+}
+
+void LiveDataWindow::clearDisplay()
+{
+	if(m_display){
+		m_display -> Clear();
+	}
 }

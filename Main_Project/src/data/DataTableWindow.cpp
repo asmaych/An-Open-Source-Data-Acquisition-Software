@@ -1,34 +1,120 @@
 #include "data/DataTableWindow.h"
 
 //constructor to set up the window and grid
-DataTableWindow::DataTableWindow(wxWindow* parent, DataSession* session)
-	: wxFrame(parent, wxID_ANY, "Collected Data", wxDefaultPosition, wxSize(500,400)), m_session(session)
+DataTableWindow::DataTableWindow(wxWindow* parent, const std::vector<std::shared_ptr<DataSession>>& sessions)
+	: wxFrame(parent, wxID_ANY, "Collected Data", wxDefaultPosition, wxSize(600,400)),
+          m_sessions(sessions)
 {
+	
 	//create a wxGrid for table display
 	m_grid = new wxGrid(this, wxID_ANY);
-	m_grid -> CreateGrid(0,1); //0 rows and 1 column initially
-	m_grid -> SetColLabelValue(0, "Values"); //set header name
-	
-	populateGrid(); //fill table with current session values
+	m_grid -> CreateGrid(0, sessions.size()); //O row and size column initially
+
+	//set column headers to the sensor names
+	for(size_t i = 0; i < sessions.size(); ++i){
+		m_grid -> SetColLabelValue(i, sessions[i] -> getSensorName());
+	}
+
+	//disable editing of cells by the user (read-only)
+	m_grid -> EnableEditing(false);
+
+	//automatically size columns to fit the contents
+	m_grid -> AutoSizeColumns();
 }
 
-//PopulateGrid() will fill the grid with the collected data from session
-void DataTableWindow::populateGrid()
+
+//set which Datasessions (sensors) should be displayed in the grid
+void DataTableWindow::setSelectedSessions(const std::vector<std::shared_ptr<DataSession>>& sessions)
 {
-	const std::vector<double>& values = m_session -> getValues();
-	m_grid -> ClearGrid(); //Clear any existing values from the grid(remove old data)
-	
-	//Ensure the grid has enough rows to display all values.
-	//If the current number of rows is less than the number of data points, we append more
-	if (m_grid -> GetNumberRows() < (int)values.size()){
-		m_grid -> AppendRows(values.size() - m_grid -> GetNumberRows());
+	m_sessions = sessions;
+
+	//update the number of columns to match the number of selected sensors
+	int colCount = static_cast<int>(sessions.size());
+
+	//clear all existing cell values
+	m_grid -> ClearGrid();
+
+	//adjust columns: append if we have fewer columns than needed
+	if(m_grid -> GetNumberCols() < colCount){
+		m_grid -> AppendCols(colCount - m_grid -> GetNumberCols());
 	}
-	
-	//loop through values and fill cells
-	for (size_t i = 0; i < values.size(); ++i) //size_t is a safe type for indexing vectors (always non)negative
-	{
-		//we convert the double to a string with 2 decimal places and we set the value of the grid at row i, column 0
-		// i am not updating column cause for now i am keeping it simple one column one set of values
-		m_grid -> SetCellValue(i, 0, wxString::Format("%.2f", values[i]));
+
+	//delete extra columns if we have more than needed
+	else if(m_grid -> GetNumberCols() > colCount){
+		m_grid -> DeleteCols(colCount, m_grid -> GetNumberCols() - colCount);
 	}
+
+	//update column headers to match the new sensor selection
+	for(size_t i = 0; i < m_sessions.size(); ++i){
+		m_grid -> SetColLabelValue(i, m_sessions[i] -> getSensorName());
+	}
+
+	//force the grid to redraw itself
+	m_grid -> ForceRefresh();
 }
+
+
+//update the grid with the latest sensor data
+void DataTableWindow::updateTable()
+{
+
+	//if no sessions are selected, do nothing
+	if(m_sessions.empty())
+		return;
+
+	//determine the max number of rows required to fit all sensor data
+	size_t maxRows = 0;
+
+	for(auto& session : m_sessions){
+		maxRows = std::max(maxRows, session -> getValues().size());
+	}
+
+	int currentRows = m_grid -> GetNumberRows();
+
+	//add more rows if needed
+	if(currentRows < static_cast<int>(maxRows)){
+		m_grid -> AppendRows(static_cast<int>(maxRows) - currentRows);
+	}
+
+	//fill out the grid with sensor data
+	for(size_t col = 0; col < m_sessions.size(); ++col){
+
+		//get sensor readings
+		auto values = m_sessions[col] -> getValues();
+
+		for(size_t row = 0; row < values.size(); ++row){
+
+			//set cell value with 2 decimal places
+			m_grid -> SetCellValue(static_cast<int>(row), static_cast<int>(col), wxString::Format("%.2f", values[row]));
+		}
+	}
+
+	//resize columns to fit new content
+	m_grid -> AutoSizeColumns();
+
+	//refresh the grid to ensure all updates are shown
+	m_grid -> ForceRefresh();
+}
+
+void DataTableWindow::appendRow(const std::vector<double>& rowValues)
+{
+	/*if(rowValues.empty())
+		return;
+	int colCount = m_grid -> GetNumberCols();
+
+	//safety check to ignore extra values and fill out missing with 0
+	std::vector<double> fixed = rowValues;
+	fixed.resize(colCount, 0.0);
+*/
+	int newRow = m_grid->GetNumberRows();
+    	m_grid->AppendRows(1);
+
+    	for(size_t col = 0; col < rowValues.size(); ++col)
+    	{
+        	m_grid->SetCellValue(newRow, col, wxString::Format("%.2f", rowValues[col]));
+    	}
+
+    	m_grid->AutoSizeColumns();
+    	m_grid->ForceRefresh();
+}
+

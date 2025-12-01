@@ -1,23 +1,30 @@
 #pragma once
 #include <wx/wx.h>
 #include <wx/grid.h> // Grid widget used for displaying and editing tabular data
-#include "DataSession.h"
+#include <memory>
+#include "data/DataSession.h"
 
-/* DataTableWindow is a class that displays the collected data in a table
+/* DataTableWindow is a single table window that displays collected sensor values in a table
    After an experiment, we can show all values collected for a sensor in a structured table (wxGrid) where each value appears
    in a seperate row
+   It supports dynamic update (append/remove columns as needed)
 */
 
 class DataTableWindow : public wxFrame
 {
 	public:
-		//constructor with parent window (MainFrame) and a pointer to Datasession to display collected data
-		DataTableWindow(wxWindow* parent, DataSession* session);
+		DataTableWindow(wxWindow* parent, const std::vector<std::shared_ptr<DataSession>>& sessions);
 
+		//update table with latest values
+		void updateTable();
+
+		//set which sensors to display (dynamic)
+		void setSelectedSessions(const std::vector<std::shared_ptr<DataSession>>& sessions);
+
+		//append a single value to a specific column
+		void appendRow(const std::vector<double>& rowValues);
 	private:
-		DataSession* m_session; //the collected data that we will display
+		std::vector<std::shared_ptr<DataSession>> m_sessions; //sessions currently displayed
 		wxGrid* m_grid; //Grid widget to display the table
 
-		//helper function to populate the grid from the session (fill each row and column with the values from session)
-		void populateGrid();
 };

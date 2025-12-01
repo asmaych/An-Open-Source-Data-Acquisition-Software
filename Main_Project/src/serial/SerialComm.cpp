@@ -261,7 +261,7 @@ void SerialComm::addSensor(const std::string& sensorName, int pin)
 
 }
 
-void SerialComm::readDataFrame(std::vector<std::unique_ptr<Sensor>>& sensors)
+void SerialComm::readDataFrame(std::vector<std::unique_ptr<Sensor>>& sensors, std::string* rawFrame)
 {
 	/* \brief 	This function takes a reference to the vector of sensors
 	 * 		owned by Project, reads a data-frame from the connected 
@@ -323,6 +323,12 @@ void SerialComm::readDataFrame(std::vector<std::unique_ptr<Sensor>>& sensors)
 	//null-terminate the buffer
 	buffer[pos] = '\0';
 
+	//HEREEEEE
+	std::cout << buffer << "\n" << std::endl;
+
+	//return raw frame exactly as printed
+	if (rawFrame)
+		*rawFrame = buffer;
 
 	//---------------------------------------------------------------------------------------------------
 	//NOW THAT WE HAVE THE DATAFRAME, WE PARSE IT AND UPDATE SENSOR VALUES
@@ -360,6 +366,8 @@ void SerialComm::readDataFrame(std::vector<std::unique_ptr<Sensor>>& sensors)
 		}
 	}
 
+	
+
 	//since there is no comma after the last reading, the above code will not
 	//capture it, so we need to manually handle it at the end
 	if (index < sensors.size() && *start != '\0')
@@ -376,6 +384,15 @@ void SerialComm::cleanPort()
                 port_status = PORT_CLOSED;
                 sp_free_port(port);
 }
+
+bool SerialComm::writeString(const std::string& str)
+{
+    if (!port) return false;       // port is your opened serial port
+    std::string s = str + "\n";    // append newline if your ESP32 expects it
+    int written = sp_blocking_write(port, s.c_str(), s.size(), 1000);
+    return written == (int)s.size();
+}
+
 
 /* Helper function for error handling. */
 int SerialComm::check(enum sp_return result)

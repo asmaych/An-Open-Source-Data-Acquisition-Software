@@ -35,20 +35,25 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title, w
 	   when hovered (when u put the mouse over the icon u should see create new project);
 	*/
 
-	toolbar -> AddTool(ID_Start,
+	toolbar -> AddTool(ID_StartToggle,
 		  	"Start",
 		       	wxArtProvider::GetBitmap(wxART_EXECUTABLE_FILE, wxART_TOOLBAR),
-		       	"Start experiment");
+		       	"Start/Stop experiment");
 
-	toolbar -> AddTool(ID_Stop,
-		       	"Stop",
-		       	wxArtProvider::GetBitmap(wxART_CROSS_MARK, wxART_TOOLBAR),
-		       	"Stop experiment");
+	toolbar -> AddTool(ID_Reset,
+		       	"Reset",
+		       	wxArtProvider::GetBitmap(wxART_DELETE, wxART_TOOLBAR),
+		       	"Reset sessions");
 
 	toolbar -> AddTool(ID_Collect,
 		       	"Collect",
 		       	wxArtProvider::GetBitmap(wxART_REPORT_VIEW, wxART_TOOLBAR),
 		       	"Collect data");
+
+	toolbar -> AddTool(ID_Collect_Current,
+                        "CollectNow",
+                        wxArtProvider::GetBitmap(wxART_NEW, wxART_TOOLBAR),
+                        "Collect last values");
 
 	toolbar -> AddTool(ID_Graph,
 		       	"Graph",
@@ -59,6 +64,12 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title, w
 		       	"Sensors",
 		       	wxArtProvider::GetBitmap(wxART_TIP, wxART_TOOLBAR),
 		       	"Manage sensors");
+
+	toolbar -> AddTool(ID_Export,
+                        "Export",
+                        wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR),
+                        "Export sessions");
+
 
 	//Finalize and display our toolbar YAAAYYYY!!!!
 	//Realize() a method that takes no parameters and should be called in 
@@ -107,11 +118,13 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title, w
         //       BINDING EVENTS
         //--------------------------------------------------------------
         
-	//Bind(wxEVT_TOOL, &MainFrame::onStart, this, ID_Start);
-	//Bind(wxEVT_TOOL, &MainFrame::onStop, this, ID_Stop);
-        //Bind(wxEVT_TOOL, &MainFrame::onCollect, this, ID_Collect);
-	//Bind(wxEVT_TOOL, &MainFrame::onGraph, this, ID_Graph);
-        Bind(wxEVT_TOOL, &MainFrame::onSensor, this, ID_Sensor);
+	Bind(wxEVT_TOOL, &MainFrame::onStartToggle, this, ID_StartToggle);
+	Bind(wxEVT_TOOL, &MainFrame::onReset, this, ID_Reset);
+        Bind(wxEVT_TOOL, &MainFrame::onCollect, this, ID_Collect);
+	Bind(wxEVT_TOOL, &MainFrame::onCollectCurrent, this, ID_Collect_Current);
+        Bind(wxEVT_TOOL, &MainFrame::onGraph, this, ID_Graph);
+	Bind(wxEVT_TOOL, &MainFrame::onSensor, this, ID_Sensor);
+        Bind(wxEVT_TOOL, &MainFrame::onExport, this, ID_Export);
 
 
 	//Bind custom project events
@@ -165,6 +178,9 @@ void MainFrame::onNewProject(wxCommandEvent& evt)
 
 	//create a new ProjectPanel and add it to the notebook
 	ProjectPanel* panel = new ProjectPanel(m_notebook, projectName);
+
+	panel -> setMainFrame(this);
+
         m_notebook->AddPage(panel, projectName, true);
 
 	//Disply an info message to users in the status bar
@@ -180,51 +196,54 @@ void MainFrame::onOpenProject(wxCommandEvent& evt)
         wxLogStatus("TODO - Opening an existing project...");
 }
 
-//TODO IMPLEMENT THESE LATER
-/*
-void MainFrame::onStart(wxCommandEvent& evt)
+void MainFrame::onStartToggle(wxCommandEvent&)
 {
-	ProjectPanel* project = getCurrentProjectPanel();
-	if(!project){
-		wxMessageBox("Please open or load a project first!", "Warning", wxICON_WARNING);
-		return;
-	}
-	project -> startSelectedSensor();
+    ProjectPanel* p = getCurrentProjectPanel();
+    if (!p) { wxMessageBox("Please open or load a project first!", "Warning"); return; }
+    p->toggleStartStop(); // implemented in ProjectPanel
 }
 
-
-void MainFrame::onStop(wxCommandEvent& evt)
+void MainFrame::onReset(wxCommandEvent&)
 {
-        ProjectPanel* project = getCurrentProjectPanel();
-        if(!project){
-                wxMessageBox("Please open or load a project first!", "Warning", wxICON_WARNING);
-                return;
-        }
-        project -> stopSelectedSensor();
+    ProjectPanel* p = getCurrentProjectPanel();
+    if (!p) { wxMessageBox("Please open or load a project first!", "Warning"); return; }
+    p->resetSessionData();
 }
 
-
-void MainFrame::onCollect(wxCommandEvent& evt)
+void MainFrame::onCollect(wxCommandEvent&)
 {
-        ProjectPanel* project = getCurrentProjectPanel();
-        if(!project){
-                wxMessageBox("Please open or load a project first!", "Warning", wxICON_WARNING);
-                return;
-        }
-        project -> collectSelectedSensor();
+    ProjectPanel* p = getCurrentProjectPanel();
+    if (!p) { wxMessageBox("Please open or load a project first!", "Warning"); return; }
+    p->collectContinuous();
 }
 
-
-void MainFrame::onGraph(wxCommandEvent& evt)
+void MainFrame::onCollectCurrent(wxCommandEvent&)
 {
-        ProjectPanel* project = getCurrentProjectPanel();
-        if(!project){
-                wxMessageBox("Please open or load a project first!", "Warning", wxICON_WARNING);
-                return;
-        }
-        project -> graphSelectedSensor();
+    ProjectPanel* p = getCurrentProjectPanel();
+    if (!p) { wxMessageBox("Please open or load a project first!", "Warning"); return; }
+    p->collectCurrentValues();
+}
+
+void MainFrame::onGraph(wxCommandEvent&)
+{
+    ProjectPanel* p = getCurrentProjectPanel();
+    if (!p) { wxMessageBox("Please open or load a project first!", "Warning"); return; }
+    p->graphSelectedSensor();
+}
+
+/*void MainFrame::onSensor(wxCommandEvent&)
+{
+    ProjectPanel* p = getCurrentProjectPanel();
+    if (!p) { wxMessageBox("Please open or load a project first!", "Warning"); return; }
+    p->openSensorPanel();
 }
 */
+void MainFrame::onExport(wxCommandEvent&)
+{
+    ProjectPanel* p = getCurrentProjectPanel();
+    if (!p) { wxMessageBox("Please open or load a project first!", "Warning"); return; }
+    p->exportSessions();
+}
 
 void MainFrame::onSensor(wxCommandEvent& evt)
 {
@@ -236,7 +255,40 @@ void MainFrame::onSensor(wxCommandEvent& evt)
         project ->onSensors();
 }
 
+void MainFrame::setStartToggleToStop()
+{
+	if(!toolbar){
+		return;
+	}
 
+	//find the position of the tool before deleting it
+	int position = toolbar -> GetToolPos(ID_StartToggle);
+
+	//remove old tool
+	toolbar -> DeleteTool(ID_StartToggle);
+
+	//insert the new tool at the same index
+	toolbar -> InsertTool(position, ID_StartToggle, "Stop", wxArtProvider::GetBitmap(wxART_STOP, wxART_TOOLBAR), 
+                              wxNullBitmap, wxITEM_NORMAL, "Stop experiment", "");
+
+	toolbar -> Realize();
+}
+
+void MainFrame::setStartToggleToStart()
+{
+	if(!toolbar){
+		return;
+	}
+
+	int position = toolbar -> GetToolPos(ID_StartToggle);
+
+	toolbar -> DeleteTool(ID_StartToggle);
+
+	toolbar -> InsertTool(position, ID_StartToggle,  "Start", wxArtProvider::GetBitmap(wxART_EXECUTABLE_FILE, wxART_TOOLBAR), 
+                              wxNullBitmap, wxITEM_NORMAL, "Start experiment", "");
+
+	toolbar -> Realize();
+}
 
 
 

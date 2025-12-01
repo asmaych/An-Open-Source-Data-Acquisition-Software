@@ -19,6 +19,11 @@ SensorManager::SensorManager(std::vector<std::unique_ptr<Sensor>>& sensors, Seri
 	 */
 }
 
+void SensorManager::setOnChangeCallback(std::function<void()> cb) {
+    m_onChange = std::move(cb);
+}
+
+
 bool SensorManager::addSensor(std::unique_ptr<Sensor> s)
 {
 	/* \brief 	This function takes a reference to a Sensor object 
@@ -46,7 +51,8 @@ bool SensorManager::addSensor(std::unique_ptr<Sensor> s)
 	//otherwise, we add the Sensor to the vector:
 	m_sensors.push_back(std::move(s));
 	std::cout << "successfully put the new sensor in the vector!\n";
-
+	
+	if(m_onChange) m_onChange();
 	//and terminate the function with true
 	return true;
 }
@@ -80,6 +86,9 @@ bool SensorManager::removeSensor(const std::string& sensorName)
 	//the registry in the microcontroller, and return true
 	m_sensors.erase(it, m_sensors.end());
 	m_serialComm->removeSensor(sensorName);
+	
+	if(m_onChange) m_onChange();
+
 	return true;
 }
 
@@ -107,4 +116,14 @@ bool SensorManager::pinExists(int pin) const
 			m_sensors.begin(),
 			m_sensors.end(),
 			[&](const std::unique_ptr<Sensor>& s){return s->getPin() == pin; });
+}
+
+std::vector<Sensor*> SensorManager::getSelectedSensors() const {
+	std::vector<Sensor*> selected;
+	for (auto& s : m_sensors) {
+		if (s->isSelected()) {
+			 selected.push_back(s.get());
+        	}
+    	}
+    	return selected;
 }

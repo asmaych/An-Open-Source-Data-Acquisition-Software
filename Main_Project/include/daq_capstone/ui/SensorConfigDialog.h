@@ -60,6 +60,8 @@ class SensorConfigDialog : public wxDialog
 		//this is used to remove the selected sensor when a user clicks the remove_sensor button
 		void onRemoveSensorPressed(wxCommandEvent& evt);
 
+		//this is used to add the selected sensor to the project when a user clicks addToProject button
+		//void onAddToProject(wxCommandEvent& evt);
 
-
+		void onRowDblClick(wxMouseEvent& evt);
 };

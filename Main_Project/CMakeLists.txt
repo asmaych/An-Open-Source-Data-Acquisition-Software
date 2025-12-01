@@ -28,6 +28,9 @@ add_executable(daq_capstone
 	src/data/LiveDataWindow.cpp
 	src/data/GraphWindow.cpp
 	src/data/DataSession.cpp
+	src/controllers/SessionController.cpp
+        src/controllers/DataCollector.cpp
+        src/controllers/ExportManager.cpp
 	src/ui/MainFrame.cpp
 	src/ui/ProjectPanel.cpp
 	src/serial/SerialComm.cpp
@@ -36,6 +39,7 @@ add_executable(daq_capstone
 	src/ui/Events.cpp
 	src/ui/SensorConfigDialog.cpp
 	src/ui/AddSensorDialog.cpp
+	src/ui/SensorSelectionDialog.cpp
 
 )
 
