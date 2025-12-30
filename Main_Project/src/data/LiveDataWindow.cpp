@@ -72,6 +72,17 @@ void LiveDataWindow::onFlush(wxTimerEvent&)
 	m_display -> Thaw();
 }
 
+std::vector<double> LiveDataWindow::getBufferedValues() const
+{
+	return m_buffer; //a copy of the buffered values
+}
+
+//clear the buffer after values have been collected
+void LiveDataWindow::clearBuffer()
+{
+	m_buffer.clear();
+}
+
 //clear
 void LiveDataWindow::clearDisplay()
 {

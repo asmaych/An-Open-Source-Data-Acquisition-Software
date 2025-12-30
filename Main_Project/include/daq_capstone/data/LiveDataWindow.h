@@ -23,6 +23,12 @@ class LiveDataWindow : public wxFrame
 		//Called by ProjectPanel when new values arrive
 		void addValue(double value);
 
+		//return a copy of all buffered values
+		std::vector <double> getBufferedValues() const;
+
+		//clears the buffer
+		void clearBuffer();
+
 		// clears the display (used when user presses reset)
 		void clearDisplay();
 

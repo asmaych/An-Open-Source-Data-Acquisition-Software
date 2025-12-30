@@ -238,8 +238,8 @@ void ProjectPanel::ensureSessionForSensor(size_t index)
 
 void ProjectPanel::collectContinuous()
 {
-/*	//if no sensors selected yet or table not created
-	if(m_selectedContinuousIndexes.empty() || !m_continuousTableWindow)
+	//if no sensors selected yet or table not created
+	if(m_selectedContinuousIndexes.empty())
 	{
 		//check if there are any sensors in the project
 		if(m_sensors.empty()){
@@ -249,8 +249,8 @@ void ProjectPanel::collectContinuous()
 
 		//prepare a list of sensor names for the selection dialog
 		std::vector<std::string> names;
-		for(auto& s : m_sensors){
-			names.push_back(s -> getName());
+		for(auto& sensor : m_sensors){
+			names.push_back(sensor -> getName());
 		}
 
 		//create and show the sensor selection dialog
@@ -269,146 +269,69 @@ void ProjectPanel::collectContinuous()
 			wxMessageBox("No sensors selected");
 			return;
 		}
+	}
 
-		//prepare Datasessions for the table
-		std::vector<std::shared_ptr<DataSession>> selectedSessions;
-		selectedSessions.reserve(m_selectedContinuousIndexes.size());
-
-		for(int index : m_selectedContinuousIndexes) {
-			ensureSessionForSensor(index);
-
-			selectedSessions.push_back(std::shared_ptr<DataSession>(m_sessions[index].get(), [](DataSession*){}));
-		}
-
-		//create/refresh table window with timestamp column + sensors
-		if(!m_continuousTableWindow){
-			m_continuousTableWindow = new DataTableWindow(this, selectedSessions);
-			m_continuousTableWindow -> Show();
-		} else {
-			m_continuousTableWindow -> setSelectedSessions(selectedSessions);
-		}
-
-		//ensure lastCollectedIndex exits for each selected sensor
-		for(int index : m_selectedContinuousIndexes){
-			if(index >= static_cast<int>(m_lastCollectedIndex.size())){
-				//extend to match
-				while(m_lastCollectedIndex.size() <= static_cast<size_t>(index))
-					m_lastCollectedIndex.push_back(0);
-			}
-		}
-	}*/
-
-	/* now append rows from the sessions since lastCollectedIndex
-	we will also merge timestamps across sensors into row by timestamps by following the logic that for each sensor, append its
-	new row ndependently, but to keep DataTable model smple, i will append rows using the largest number of new samples and 
-	fill missing cells with blanks.
-	*/
-
-	size_t numSelected = m_selectedContinuousIndexes.size();
-	if(numSelected == 0){
+	if(!m_liveWindow){
+		wxMessageBox("Live window not running. Start polling first.");
 		return;
 	}
 
-	//build per column vectors of new values and timestamps
-	std::vector<std::vector<std::pair<uint64_t, double>>> newData (numSelected);
+	//read all buffered values from live window
+	std::vector<double> bufferedValues = m_liveWindow -> getBufferedValues();
 
-	for(size_t c = 0; c <numSelected; ++c){
-		int sensorIndex = m_selectedContinuousIndexes[c];
-		auto vals = m_sessions[sensorIndex] -> getValues();
-		auto times = m_sessions[sensorIndex] -> getTimestamps();
-
-		size_t lastIndex = (sensorIndex < static_cast<int>(m_lastCollectedIndex.size())) ? 
-                                     m_lastCollectedIndex [sensorIndex] : 0;
-
-		//collect new data form lastIndex to the end (the moment collect was pressed again or stop)
-		for(size_t i = lastIndex; i <vals.size(); ++i){
-			uint64_t ts = (i < times.size()) ? times[i] : 0;
-			newData[c].push_back ({ts, vals[i]});
-		}
-	}
-
-	//determine max num of new rows across selected sensors
-	size_t maxNewRows = 0;
-	for(auto &col : newData) maxNewRows = std::max(maxNewRows, col.size());
-	if(maxNewRows == 0){
-		wxLogStatus("No new values to collect");
+	//if no new values were received/read
+	if(bufferedValues.empty()){
+		wxLogStatus("No new data to collect");
 		return;
 	}
 
-	//append the maxNewROws to the dataTableWIndow, for each row & for each column, newData[row][column] if present, otherwise blank
-	for(size_t r = 0; r < maxNewRows; ++r){
-		//create new row first column timestamps
-		uint64_t rowTs = 0;
-		for(size_t c = 0; c < numSelected; ++c){
-			if(r < newData[c].size() && newData[c][r].first != 0){
-				if(rowTs == 0 || newData[c][r].first < rowTs){
-					rowTs = newData[c][r].first;
-				}
-			}
+	//create rows per frame where each row corresponds to one frame of readings from all selected sensors
+	size_t sensorCount = m_selectedContinuousIndexes.size();
+	std::vector<std::vector<double>> rows;
+
+	for(size_t i = 0; i < bufferedValues.size(); i += sensorCount){
+		std::vector<double> row;
+
+		for(size_t j = 0; j < sensorCount && (i + j) < bufferedValues.size(); ++j){
+			int sensorIndex = m_selectedContinuousIndexes[j];
+
+			//add the sensor value to the current row
+			row.push_back(bufferedValues[i + j]);
+
+			//ensure a session exists for this sensor
+			ensureSessionForSensor(sensorIndex);
+
+			//add the value to the correspondng session for data storage
+			m_sessions[sensorIndex] -> addValue(bufferedValues[i + j]);
 		}
-
-		//build display row: timstamps strng + each sensor value or empty
-		std::vector<double> rowValues;
-		rowValues.reserve(numSelected + 1);
-
-		//we will pass timestamp(seconds) as the first value encoded to dataTableWindow via a different API
-		double tsDouble = (rowTs == 0) ? 0.0 : static_cast<double> (rowTs) /1000.0;
-
-		std::vector<double> displayRow;
-		displayRow.push_back(tsDouble);
-
-		for(size_t c = 0; c < numSelected; ++c){
-			if(r < newData[c].size()){
-				displayRow.push_back(newData[c][r].second);
-			} else{
-				displayRow.push_back(std::numeric_limits<double>::quiet_NaN());
-			}
-		}
-
-		//now we append
-		m_continuousTableWindow -> appendRow(displayRow);
+	//store completed frame now
+	rows.push_back(row);
 	}
 
-	//update lastCollectedNdex for each selected sensor
-	for(size_t c = 0; c < numSelected; ++c){
-		int sensorIndex = m_selectedContinuousIndexes[c];
-		size_t old = (sensorIndex < static_cast<int>(m_lastCollectedIndex.size())) ? m_lastCollectedIndex[sensorIndex] : 0;
-		m_lastCollectedIndex[sensorIndex] = old + newData[c].size();
-	}
-
-	wxLogStatus("Collected continuous data into table");
-	
-/*	//initialize last collected row index for each selected sensor
-		m_lastContinuousRow.clear();
-		m_lastContinuousRow.resize(m_selectedContinuousIndexes.size(), 0);
-	}
-
-	//prepare dataSessions (shared pointers) for the selected sensors
+	//prepare dataSessions for the table window
 	std::vector<std::shared_ptr<DataSession>> selectedSessions;
-	selectedSessions.reserve(m_selectedContinuousIndexes.size());
-
 	for(int index : m_selectedContinuousIndexes){
-		//ensure a datasession exists
-		ensureSessionForSensor(index);
-		//collect the session
+		//create shared_ptr wrapper without deleting original datasession
 		selectedSessions.push_back(std::shared_ptr<DataSession>(m_sessions[index].get(), [](DataSession*){}));
 	}
 
-	//create DataTableWIndow if not already created
+	//show or update the continuous data table
 	if(!m_continuousTableWindow){
-		m_continuousTableWindow = new DataTableWindow(this, selectedSessions); //create window
-		m_continuousTableWindow -> Show(); //show to user
-	}/* else {
-		//if window exists, update displayed sessions
-		m_continuousTableWindow -> setSelectedSessions(selectedSessions);
-	}*/ //Aquiii 
-
-	//append only new values since last collect
-	size_t numRowsToAdd = 0;
-	for(size_t col = 0; col < m_selectedContinuousIndexes.size(); ++col){
-		int sensorIndex = m_selectedContinuousIndexes[col];
-		auto values = m_sessions[sensorIndex] -> getValues();
+		//if the table doesn't exist yet, create it & display it
+		m_continuousTableWindow = new DataTableWindow(this, selectedSessions);
+		m_continuousTableWindow -> Show();
 	}
+
+	//append collected rows to the table
+	for(auto& row: rows){
+		m_continuousTableWindow -> appendRow(row);
+	}
+
+	//clear the buffer in the live window so that next collection only grabs new data
+	m_liveWindow -> clearBuffer();
+
+	//log status for the user
+	wxLogStatus("Collected continuous data into sessions.");
 }
 
 
