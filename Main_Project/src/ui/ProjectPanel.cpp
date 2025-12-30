@@ -39,6 +39,7 @@ ProjectPanel::ProjectPanel(wxWindow* parent, const wxString& title)
 	//Note that the sensorManager is given the address of the class
 	//member m_sensors vector in order to modify it
 	m_sensorManager = std::make_unique<SensorManager>(m_sensors, m_serial.get());
+
 	//set a callback so ui updates automatically when sensors change
 	m_sensorManager -> setOnChangeCallback([this](){
 		refreshSensorList();
@@ -51,6 +52,7 @@ ProjectPanel::ProjectPanel(wxWindow* parent, const wxString& title)
 	//Bind events
 	Bind(wxEVT_SERIAL_UPDATE, &ProjectPanel::onSerialUpdate, this);
 	Bind(wxEVT_HANDSHAKE, &ProjectPanel::onHandshakeSuccess, this);
+	//Bind(wxEVT_OPEN_SENSOR_GRAPH, &ProjectPanel::onGraph, this);
 }
 
 
@@ -187,16 +189,15 @@ void ProjectPanel::startPollingIfNeeded()
 	if(isRunning)
 		return;
 
+	//populate activeSensors with the current sensor pointers
+	m_activeSensors.clear();
+	for(auto& sensor: m_sensors) {
+		m_activeSensors.push_back(sensor.get());
+	}
+
 	//create LiveDataWindow if it doesn't exist
 	if(!m_liveWindow){
-	
-		//show all selected sensors
-		std::vector<DataSession*> sessions;
-		for(auto& s : m_sessions){
-			sessions.push_back(s.get());
-		}
-	
-		m_liveWindow = std::make_unique<LiveDataWindow>(this, sessions.empty() ? nullptr : sessions[0]);
+		m_liveWindow = std::make_unique<LiveDataWindow>(this, m_activeSensors);
 		m_liveWindow -> Show();
 	}
 
@@ -237,7 +238,7 @@ void ProjectPanel::ensureSessionForSensor(size_t index)
 
 void ProjectPanel::collectContinuous()
 {
-	//if no sensors selected yet or table not created
+/*	//if no sensors selected yet or table not created
 	if(m_selectedContinuousIndexes.empty() || !m_continuousTableWindow)
 	{
 		//check if there are any sensors in the project
@@ -269,7 +270,115 @@ void ProjectPanel::collectContinuous()
 			return;
 		}
 
-		//initialize last collected row index for each selected sensor
+		//prepare Datasessions for the table
+		std::vector<std::shared_ptr<DataSession>> selectedSessions;
+		selectedSessions.reserve(m_selectedContinuousIndexes.size());
+
+		for(int index : m_selectedContinuousIndexes) {
+			ensureSessionForSensor(index);
+
+			selectedSessions.push_back(std::shared_ptr<DataSession>(m_sessions[index].get(), [](DataSession*){}));
+		}
+
+		//create/refresh table window with timestamp column + sensors
+		if(!m_continuousTableWindow){
+			m_continuousTableWindow = new DataTableWindow(this, selectedSessions);
+			m_continuousTableWindow -> Show();
+		} else {
+			m_continuousTableWindow -> setSelectedSessions(selectedSessions);
+		}
+
+		//ensure lastCollectedIndex exits for each selected sensor
+		for(int index : m_selectedContinuousIndexes){
+			if(index >= static_cast<int>(m_lastCollectedIndex.size())){
+				//extend to match
+				while(m_lastCollectedIndex.size() <= static_cast<size_t>(index))
+					m_lastCollectedIndex.push_back(0);
+			}
+		}
+	}*/
+
+	/* now append rows from the sessions since lastCollectedIndex
+	we will also merge timestamps across sensors into row by timestamps by following the logic that for each sensor, append its
+	new row ndependently, but to keep DataTable model smple, i will append rows using the largest number of new samples and 
+	fill missing cells with blanks.
+	*/
+
+	size_t numSelected = m_selectedContinuousIndexes.size();
+	if(numSelected == 0){
+		return;
+	}
+
+	//build per column vectors of new values and timestamps
+	std::vector<std::vector<std::pair<uint64_t, double>>> newData (numSelected);
+
+	for(size_t c = 0; c <numSelected; ++c){
+		int sensorIndex = m_selectedContinuousIndexes[c];
+		auto vals = m_sessions[sensorIndex] -> getValues();
+		auto times = m_sessions[sensorIndex] -> getTimestamps();
+
+		size_t lastIndex = (sensorIndex < static_cast<int>(m_lastCollectedIndex.size())) ? 
+                                     m_lastCollectedIndex [sensorIndex] : 0;
+
+		//collect new data form lastIndex to the end (the moment collect was pressed again or stop)
+		for(size_t i = lastIndex; i <vals.size(); ++i){
+			uint64_t ts = (i < times.size()) ? times[i] : 0;
+			newData[c].push_back ({ts, vals[i]});
+		}
+	}
+
+	//determine max num of new rows across selected sensors
+	size_t maxNewRows = 0;
+	for(auto &col : newData) maxNewRows = std::max(maxNewRows, col.size());
+	if(maxNewRows == 0){
+		wxLogStatus("No new values to collect");
+		return;
+	}
+
+	//append the maxNewROws to the dataTableWIndow, for each row & for each column, newData[row][column] if present, otherwise blank
+	for(size_t r = 0; r < maxNewRows; ++r){
+		//create new row first column timestamps
+		uint64_t rowTs = 0;
+		for(size_t c = 0; c < numSelected; ++c){
+			if(r < newData[c].size() && newData[c][r].first != 0){
+				if(rowTs == 0 || newData[c][r].first < rowTs){
+					rowTs = newData[c][r].first;
+				}
+			}
+		}
+
+		//build display row: timstamps strng + each sensor value or empty
+		std::vector<double> rowValues;
+		rowValues.reserve(numSelected + 1);
+
+		//we will pass timestamp(seconds) as the first value encoded to dataTableWindow via a different API
+		double tsDouble = (rowTs == 0) ? 0.0 : static_cast<double> (rowTs) /1000.0;
+
+		std::vector<double> displayRow;
+		displayRow.push_back(tsDouble);
+
+		for(size_t c = 0; c < numSelected; ++c){
+			if(r < newData[c].size()){
+				displayRow.push_back(newData[c][r].second);
+			} else{
+				displayRow.push_back(std::numeric_limits<double>::quiet_NaN());
+			}
+		}
+
+		//now we append
+		m_continuousTableWindow -> appendRow(displayRow);
+	}
+
+	//update lastCollectedNdex for each selected sensor
+	for(size_t c = 0; c < numSelected; ++c){
+		int sensorIndex = m_selectedContinuousIndexes[c];
+		size_t old = (sensorIndex < static_cast<int>(m_lastCollectedIndex.size())) ? m_lastCollectedIndex[sensorIndex] : 0;
+		m_lastCollectedIndex[sensorIndex] = old + newData[c].size();
+	}
+
+	wxLogStatus("Collected continuous data into table");
+	
+/*	//initialize last collected row index for each selected sensor
 		m_lastContinuousRow.clear();
 		m_lastContinuousRow.resize(m_selectedContinuousIndexes.size(), 0);
 	}
@@ -292,7 +401,7 @@ void ProjectPanel::collectContinuous()
 	}/* else {
 		//if window exists, update displayed sessions
 		m_continuousTableWindow -> setSelectedSessions(selectedSessions);
-	}*/
+	}*/ //Aquiii 
 
 	//append only new values since last collect
 	size_t numRowsToAdd = 0;
@@ -305,29 +414,26 @@ void ProjectPanel::collectContinuous()
 
 void ProjectPanel::onSerialUpdate(wxThreadEvent& evt)
 {
-    auto readings = evt.GetPayload<std::vector<int>>();
+	auto readings = evt.GetPayload<std::vector<int>>();
 
-    for(size_t i=0; i<readings.size() && i<m_sessions.size(); ++i){
-        int value = readings[i];
+    	for(size_t i=0; i<readings.size() && i<m_sessions.size(); ++i){
+		ensureSessionForSensor(i);
+		
+		double value = static_cast <double>(readings[i]);
 
-        // update live window for first sensor (or all)
-        if(m_liveWindow && i==0)
-            m_liveWindow->addValue((double)value);
+		//store once in dataSession
+		m_sessions[i] -> addValue(value);
 
-        // update sessions for continuous collection
-        m_sessions[i]->addValue(value);
-
-        // update last reading column in UI
-        long selected = m_sensorList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-        if(selected == (long)i)
-            m_sensorList->SetItem(selected, 1, wxString::Format("%d", value));
-    }
+		//show only first sensor live (simple & safe)
+		if (m_liveWindow && i == 0)
+			m_liveWindow -> addValue(value); 
+	}
 }
 
 
 void ProjectPanel::collectCurrentValues()
 {
-	//check if there are sensors and a collector available
+	//check if no table created
 	if(m_selectedCurrentIndexes.empty() || !m_tableWindow){
 		
 		if(m_sensors.empty()){
@@ -335,6 +441,7 @@ void ProjectPanel::collectCurrentValues()
 			return;
 		}
 
+		//let the user pick sensors to collect
 		std::vector<std::string> names;
 		for(auto& s : m_sensors){
 			names.push_back( s -> getName());
@@ -390,21 +497,27 @@ void ProjectPanel::collectCurrentValues()
 }
 
 
-void ProjectPanel::graphSelectedSensor()
+void ProjectPanel::graphSelectedSensor(wxCommandEvent& evt)
 {
-	int index = getSelectedSensorIndex();
+	int sensorIndex = evt.GetInt();
 
-	if(index < 0){
+	if(sensorIndex < 0 || sensorIndex >= (int)m_sensors.size()){
 		wxMessageBox("Select a sensor first.");
 		return;
 	}
 
-	ensureSessionForSensor(index);
+	auto values = m_sessions[sensorIndex] -> getValues();
+	auto timestamps = m_sessions[sensorIndex] -> getTimestamps();
 
-	GraphWindow* graph = new GraphWindow(this, m_sessions[index].get());
+	if(values.empty()){
+		wxMessageBox("No data collected for this sensor yet.", "Info");
+		return;
+	}
+
+	GraphWindow* graph = new GraphWindow(this, timestamps, values, m_sensors[sensorIndex] -> getName());
 	graph -> Show();
 
-	m_graphWindows.push_back(graph);
+	//m_graphWindows.push_back(graph);
 }
 
 
@@ -473,6 +586,13 @@ void ProjectPanel::openSensorPanel()
 
 void ProjectPanel::onNewDataFrame(const std::string& frame)
 {
+	//update liveDataWindow with latest readings
 	if(m_liveWindow)
-		m_liveWindow -> appendBuffer(frame);
+	{
+		for(Sensor* sensor : m_activeSensors)
+		{
+			//push each sensor's current reading into liveDataWindow
+			m_liveWindow -> addValue(sensor -> getReading());
+		}
+	}
 }

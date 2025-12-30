@@ -35,7 +35,7 @@ std::vector<int> SensorSelectionDialog::getSelectedIndexes() const
 {
 	std::vector<int> selected; //vector to store selected indexes
 
-	//for safety we check if the checklist box exists
+	//first  we check if the checklist box exists
 	if(!m_checkList){
 		return selected;
 	}

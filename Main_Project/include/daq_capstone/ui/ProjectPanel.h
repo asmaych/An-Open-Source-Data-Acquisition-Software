@@ -6,6 +6,7 @@
 #include <vector>
 #include <thread>
 #include <atomic>
+#include <chrono>
 #include"controllers/SessionController.h"
 #include "controllers/DataCollector.h"
 #include "controllers/ExportManager.h"
@@ -43,13 +44,15 @@ class ProjectPanel : public wxPanel
 		void resetSessionData(); //reset live window and session data
 		void collectContinuous(); //collects continuously selected sensors (append)
 		void collectCurrentValues(); //collects last value from all selected sensors
-		void graphSelectedSensor(); //open graph window for selected sensor
+		void graphSelectedSensor(wxCommandEvent& evt); //open graph window for selected sensor
 		void openSensorPanel(); //open sensorConfig dialog
 		void exportSessions(); //export collected session(s)
 		void onSensors(); //open sensor selection/management dialog
 		void onNewDataFrame(const std::string& frame);
 
 		void setMainFrame(MainFrame* frame) {m_mainFrame = frame;}
+
+		std::vector<std::unique_ptr<Sensor>> m_sensors; 
 
 	private:
 
@@ -67,10 +70,10 @@ class ProjectPanel : public wxPanel
 		std::unique_ptr<DataCollector> m_collector;
 		std::shared_ptr<SessionController> m_controller;
 		std::unique_ptr<SensorManager> m_sensorManager; //sensorManager object
-                std::vector<std::unique_ptr<Sensor>> m_sensors; //all added Sensor objects  
+//                std::vector<std::unique_ptr<Sensor>> m_sensors; //all added Sensor objects  
 		std::vector<Sensor*> m_activeSensors; //sensors selected for reading
 		std::vector<int> m_selectedSensorIndexes; //stores user-selected sensor indexes for collection
-		std::vector<size_t> m_lastContinuousRow;
+		std::vector<size_t> m_lastCollectedIndex;
 		std::vector<int> m_selectedContinuousIndexes; 
 		std::vector<int> m_selectedCurrentIndexes;
 

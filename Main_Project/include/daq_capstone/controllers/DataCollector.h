@@ -27,7 +27,7 @@ class DataCollector
 					     const std::vector<size_t>& indices,
 					     const std::vector<int>& lastValues);
 
-		// a helper to collect last values for ALL sensors (indices = 0..n-1)
+		//A helper to collect last values for ALL sensors (indices = 0..n-1)
     		void collectLastValueAll(std::vector<std::unique_ptr<DataSession>>& sessions,
                                          const std::vector<int>& latestValues);
 

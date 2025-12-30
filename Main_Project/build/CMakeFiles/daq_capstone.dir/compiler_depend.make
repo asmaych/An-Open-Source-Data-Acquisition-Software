@@ -49,6 +49,7 @@ CMakeFiles/daq_capstone.dir/src/App.cpp.o: /home/asmaych/An-Open-Source-Data-Acq
   /usr/include/c++/14/bits/char_traits.h \
   /usr/include/c++/14/bits/charconv.h \
   /usr/include/c++/14/bits/chrono.h \
+  /usr/include/c++/14/bits/chrono_io.h \
   /usr/include/c++/14/bits/codecvt.h \
   /usr/include/c++/14/bits/concept_check.h \
   /usr/include/c++/14/bits/cpp_type_traits.h \
@@ -71,8 +72,11 @@ CMakeFiles/daq_capstone.dir/src/App.cpp.o: /home/asmaych/An-Open-Source-Data-Acq
   /usr/include/c++/14/bits/iterator_concepts.h \
   /usr/include/c++/14/bits/locale_classes.h \
   /usr/include/c++/14/bits/locale_classes.tcc \
+  /usr/include/c++/14/bits/locale_conv.h \
   /usr/include/c++/14/bits/locale_facets.h \
   /usr/include/c++/14/bits/locale_facets.tcc \
+  /usr/include/c++/14/bits/locale_facets_nonio.h \
+  /usr/include/c++/14/bits/locale_facets_nonio.tcc \
   /usr/include/c++/14/bits/localefwd.h \
   /usr/include/c++/14/bits/max_size_type.h \
   /usr/include/c++/14/bits/memory_resource.h \
@@ -87,6 +91,7 @@ CMakeFiles/daq_capstone.dir/src/App.cpp.o: /home/asmaych/An-Open-Source-Data-Acq
   /usr/include/c++/14/bits/postypes.h \
   /usr/include/c++/14/bits/predefined_ops.h \
   /usr/include/c++/14/bits/ptr_traits.h \
+  /usr/include/c++/14/bits/quoted_string.h \
   /usr/include/c++/14/bits/range_access.h \
   /usr/include/c++/14/bits/ranges_algo.h \
   /usr/include/c++/14/bits/ranges_algobase.h \
@@ -101,6 +106,7 @@ CMakeFiles/daq_capstone.dir/src/App.cpp.o: /home/asmaych/An-Open-Source-Data-Acq
   /usr/include/c++/14/bits/shared_ptr_atomic.h \
   /usr/include/c++/14/bits/shared_ptr_base.h \
   /usr/include/c++/14/bits/specfun.h \
+  /usr/include/c++/14/bits/sstream.tcc \
   /usr/include/c++/14/bits/std_abs.h \
   /usr/include/c++/14/bits/std_function.h \
   /usr/include/c++/14/bits/std_mutex.h \
@@ -126,6 +132,8 @@ CMakeFiles/daq_capstone.dir/src/App.cpp.o: /home/asmaych/An-Open-Source-Data-Acq
   /usr/include/c++/14/bits/string_view.tcc \
   /usr/include/c++/14/bits/stringfwd.h \
   /usr/include/c++/14/bits/this_thread_sleep.h \
+  /usr/include/c++/14/bits/unicode-data.h \
+  /usr/include/c++/14/bits/unicode.h \
   /usr/include/c++/14/bits/uniform_int_dist.h \
   /usr/include/c++/14/bits/unique_lock.h \
   /usr/include/c++/14/bits/unique_ptr.h \
@@ -137,6 +145,8 @@ CMakeFiles/daq_capstone.dir/src/App.cpp.o: /home/asmaych/An-Open-Source-Data-Acq
   /usr/include/c++/14/bits/version.h \
   /usr/include/c++/14/cctype \
   /usr/include/c++/14/cerrno \
+  /usr/include/c++/14/charconv \
+  /usr/include/c++/14/chrono \
   /usr/include/c++/14/climits \
   /usr/include/c++/14/clocale \
   /usr/include/c++/14/cmath \
@@ -159,20 +169,24 @@ CMakeFiles/daq_capstone.dir/src/App.cpp.o: /home/asmaych/An-Open-Source-Data-Acq
   /usr/include/c++/14/ext/numeric_traits.h \
   /usr/include/c++/14/ext/string_conversions.h \
   /usr/include/c++/14/ext/type_traits.h \
+  /usr/include/c++/14/format \
   /usr/include/c++/14/fstream \
   /usr/include/c++/14/functional \
   /usr/include/c++/14/initializer_list \
+  /usr/include/c++/14/iomanip \
   /usr/include/c++/14/ios \
   /usr/include/c++/14/iosfwd \
   /usr/include/c++/14/iostream \
   /usr/include/c++/14/istream \
   /usr/include/c++/14/iterator \
   /usr/include/c++/14/limits \
+  /usr/include/c++/14/locale \
   /usr/include/c++/14/math.h \
   /usr/include/c++/14/memory \
   /usr/include/c++/14/mutex \
   /usr/include/c++/14/new \
   /usr/include/c++/14/numbers \
+  /usr/include/c++/14/optional \
   /usr/include/c++/14/ostream \
   /usr/include/c++/14/pstl/execution_defs.h \
   /usr/include/c++/14/pstl/glue_algorithm_defs.h \
@@ -180,6 +194,8 @@ CMakeFiles/daq_capstone.dir/src/App.cpp.o: /home/asmaych/An-Open-Source-Data-Acq
   /usr/include/c++/14/pstl/pstl_config.h \
   /usr/include/c++/14/ratio \
   /usr/include/c++/14/semaphore \
+  /usr/include/c++/14/span \
+  /usr/include/c++/14/sstream \
   /usr/include/c++/14/stdexcept \
   /usr/include/c++/14/stdlib.h \
   /usr/include/c++/14/stop_token \
@@ -205,6 +221,7 @@ CMakeFiles/daq_capstone.dir/src/App.cpp.o: /home/asmaych/An-Open-Source-Data-Acq
   /usr/include/c++/14/typeinfo \
   /usr/include/c++/14/unordered_map \
   /usr/include/c++/14/utility \
+  /usr/include/c++/14/variant \
   /usr/include/c++/14/vector \
   /usr/include/ctype.h \
   /usr/include/dirent.h \
@@ -213,6 +230,7 @@ CMakeFiles/daq_capstone.dir/src/App.cpp.o: /home/asmaych/An-Open-Source-Data-Acq
   /usr/include/fcntl.h \
   /usr/include/features-time64.h \
   /usr/include/features.h \
+  /usr/include/libintl.h \
   /usr/include/libserialport.h \
   /usr/include/limits.h \
   /usr/include/linux/close_range.h \
@@ -327,6 +345,7 @@ CMakeFiles/daq_capstone.dir/src/App.cpp.o: /home/asmaych/An-Open-Source-Data-Acq
   /usr/include/wx-3.2/wx/generic/statusbr.h \
   /usr/include/wx-3.2/wx/generic/textdlgg.h \
   /usr/include/wx-3.2/wx/geometry.h \
+  /usr/include/wx-3.2/wx/graphics.h \
   /usr/include/wx-3.2/wx/grid.h \
   /usr/include/wx-3.2/wx/gtk/accel.h \
   /usr/include/wx-3.2/wx/gtk/anybutton.h \
@@ -619,7 +638,9 @@ CMakeFiles/daq_capstone.dir/src/App.cpp.o: /home/asmaych/An-Open-Source-Data-Acq
   /usr/include/x86_64-linux-gnu/c++/14/bits/error_constants.h \
   /usr/include/x86_64-linux-gnu/c++/14/bits/gthr-default.h \
   /usr/include/x86_64-linux-gnu/c++/14/bits/gthr.h \
+  /usr/include/x86_64-linux-gnu/c++/14/bits/messages_members.h \
   /usr/include/x86_64-linux-gnu/c++/14/bits/os_defines.h \
+  /usr/include/x86_64-linux-gnu/c++/14/bits/time_members.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs.h \
   /usr/include/x86_64-linux-gnu/sys/cdefs.h \
@@ -655,6 +676,7 @@ CMakeFiles/daq_capstone.dir/src/controllers/DataCollector.cpp.o: /home/asmaych/A
   /usr/include/asm-generic/posix_types.h \
   /usr/include/asm-generic/types.h \
   /usr/include/c++/14/algorithm \
+  /usr/include/c++/14/array \
   /usr/include/c++/14/backward/auto_ptr.h \
   /usr/include/c++/14/backward/binders.h \
   /usr/include/c++/14/bit \
@@ -673,11 +695,13 @@ CMakeFiles/daq_capstone.dir/src/controllers/DataCollector.cpp.o: /home/asmaych/A
   /usr/include/c++/14/bits/char_traits.h \
   /usr/include/c++/14/bits/charconv.h \
   /usr/include/c++/14/bits/chrono.h \
+  /usr/include/c++/14/bits/chrono_io.h \
   /usr/include/c++/14/bits/codecvt.h \
   /usr/include/c++/14/bits/concept_check.h \
   /usr/include/c++/14/bits/cpp_type_traits.h \
   /usr/include/c++/14/bits/cxxabi_forced.h \
   /usr/include/c++/14/bits/cxxabi_init_exception.h \
+  /usr/include/c++/14/bits/enable_special_members.h \
   /usr/include/c++/14/bits/exception.h \
   /usr/include/c++/14/bits/exception_defines.h \
   /usr/include/c++/14/bits/exception_ptr.h \
@@ -691,8 +715,11 @@ CMakeFiles/daq_capstone.dir/src/controllers/DataCollector.cpp.o: /home/asmaych/A
   /usr/include/c++/14/bits/iterator_concepts.h \
   /usr/include/c++/14/bits/locale_classes.h \
   /usr/include/c++/14/bits/locale_classes.tcc \
+  /usr/include/c++/14/bits/locale_conv.h \
   /usr/include/c++/14/bits/locale_facets.h \
   /usr/include/c++/14/bits/locale_facets.tcc \
+  /usr/include/c++/14/bits/locale_facets_nonio.h \
+  /usr/include/c++/14/bits/locale_facets_nonio.tcc \
   /usr/include/c++/14/bits/localefwd.h \
   /usr/include/c++/14/bits/max_size_type.h \
   /usr/include/c++/14/bits/memory_resource.h \
@@ -706,6 +733,7 @@ CMakeFiles/daq_capstone.dir/src/controllers/DataCollector.cpp.o: /home/asmaych/A
   /usr/include/c++/14/bits/postypes.h \
   /usr/include/c++/14/bits/predefined_ops.h \
   /usr/include/c++/14/bits/ptr_traits.h \
+  /usr/include/c++/14/bits/quoted_string.h \
   /usr/include/c++/14/bits/range_access.h \
   /usr/include/c++/14/bits/ranges_algo.h \
   /usr/include/c++/14/bits/ranges_algobase.h \
@@ -718,6 +746,7 @@ CMakeFiles/daq_capstone.dir/src/controllers/DataCollector.cpp.o: /home/asmaych/A
   /usr/include/c++/14/bits/shared_ptr.h \
   /usr/include/c++/14/bits/shared_ptr_atomic.h \
   /usr/include/c++/14/bits/shared_ptr_base.h \
+  /usr/include/c++/14/bits/sstream.tcc \
   /usr/include/c++/14/bits/std_abs.h \
   /usr/include/c++/14/bits/std_mutex.h \
   /usr/include/c++/14/bits/stl_algo.h \
@@ -738,6 +767,8 @@ CMakeFiles/daq_capstone.dir/src/controllers/DataCollector.cpp.o: /home/asmaych/A
   /usr/include/c++/14/bits/streambuf_iterator.h \
   /usr/include/c++/14/bits/string_view.tcc \
   /usr/include/c++/14/bits/stringfwd.h \
+  /usr/include/c++/14/bits/unicode-data.h \
+  /usr/include/c++/14/bits/unicode.h \
   /usr/include/c++/14/bits/uniform_int_dist.h \
   /usr/include/c++/14/bits/unique_lock.h \
   /usr/include/c++/14/bits/unique_ptr.h \
@@ -748,6 +779,8 @@ CMakeFiles/daq_capstone.dir/src/controllers/DataCollector.cpp.o: /home/asmaych/A
   /usr/include/c++/14/bits/version.h \
   /usr/include/c++/14/cctype \
   /usr/include/c++/14/cerrno \
+  /usr/include/c++/14/charconv \
+  /usr/include/c++/14/chrono \
   /usr/include/c++/14/climits \
   /usr/include/c++/14/clocale \
   /usr/include/c++/14/compare \
@@ -769,22 +802,28 @@ CMakeFiles/daq_capstone.dir/src/controllers/DataCollector.cpp.o: /home/asmaych/A
   /usr/include/c++/14/ext/numeric_traits.h \
   /usr/include/c++/14/ext/string_conversions.h \
   /usr/include/c++/14/ext/type_traits.h \
+  /usr/include/c++/14/format \
   /usr/include/c++/14/fstream \
   /usr/include/c++/14/initializer_list \
+  /usr/include/c++/14/iomanip \
   /usr/include/c++/14/ios \
   /usr/include/c++/14/iosfwd \
   /usr/include/c++/14/istream \
   /usr/include/c++/14/limits \
+  /usr/include/c++/14/locale \
   /usr/include/c++/14/memory \
   /usr/include/c++/14/mutex \
   /usr/include/c++/14/new \
   /usr/include/c++/14/numbers \
+  /usr/include/c++/14/optional \
   /usr/include/c++/14/ostream \
   /usr/include/c++/14/pstl/execution_defs.h \
   /usr/include/c++/14/pstl/glue_algorithm_defs.h \
   /usr/include/c++/14/pstl/glue_memory_defs.h \
   /usr/include/c++/14/pstl/pstl_config.h \
   /usr/include/c++/14/ratio \
+  /usr/include/c++/14/span \
+  /usr/include/c++/14/sstream \
   /usr/include/c++/14/stdexcept \
   /usr/include/c++/14/streambuf \
   /usr/include/c++/14/string \
@@ -793,12 +832,14 @@ CMakeFiles/daq_capstone.dir/src/controllers/DataCollector.cpp.o: /home/asmaych/A
   /usr/include/c++/14/tuple \
   /usr/include/c++/14/type_traits \
   /usr/include/c++/14/typeinfo \
+  /usr/include/c++/14/variant \
   /usr/include/c++/14/vector \
   /usr/include/ctype.h \
   /usr/include/endian.h \
   /usr/include/errno.h \
   /usr/include/features-time64.h \
   /usr/include/features.h \
+  /usr/include/libintl.h \
   /usr/include/limits.h \
   /usr/include/linux/close_range.h \
   /usr/include/linux/errno.h \
@@ -904,7 +945,9 @@ CMakeFiles/daq_capstone.dir/src/controllers/DataCollector.cpp.o: /home/asmaych/A
   /usr/include/x86_64-linux-gnu/c++/14/bits/error_constants.h \
   /usr/include/x86_64-linux-gnu/c++/14/bits/gthr-default.h \
   /usr/include/x86_64-linux-gnu/c++/14/bits/gthr.h \
+  /usr/include/x86_64-linux-gnu/c++/14/bits/messages_members.h \
   /usr/include/x86_64-linux-gnu/c++/14/bits/os_defines.h \
+  /usr/include/x86_64-linux-gnu/c++/14/bits/time_members.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs.h \
   /usr/include/x86_64-linux-gnu/sys/cdefs.h \
@@ -935,9 +978,11 @@ CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.o: /home/asmaych/A
   /usr/include/asm-generic/int-ll64.h \
   /usr/include/asm-generic/posix_types.h \
   /usr/include/asm-generic/types.h \
+  /usr/include/c++/14/array \
   /usr/include/c++/14/backward/auto_ptr.h \
   /usr/include/c++/14/backward/binders.h \
   /usr/include/c++/14/bit \
+  /usr/include/c++/14/bits/algorithmfwd.h \
   /usr/include/c++/14/bits/align.h \
   /usr/include/c++/14/bits/alloc_traits.h \
   /usr/include/c++/14/bits/allocated_ptr.h \
@@ -952,11 +997,13 @@ CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.o: /home/asmaych/A
   /usr/include/c++/14/bits/char_traits.h \
   /usr/include/c++/14/bits/charconv.h \
   /usr/include/c++/14/bits/chrono.h \
+  /usr/include/c++/14/bits/chrono_io.h \
   /usr/include/c++/14/bits/codecvt.h \
   /usr/include/c++/14/bits/concept_check.h \
   /usr/include/c++/14/bits/cpp_type_traits.h \
   /usr/include/c++/14/bits/cxxabi_forced.h \
   /usr/include/c++/14/bits/cxxabi_init_exception.h \
+  /usr/include/c++/14/bits/enable_special_members.h \
   /usr/include/c++/14/bits/exception.h \
   /usr/include/c++/14/bits/exception_defines.h \
   /usr/include/c++/14/bits/exception_ptr.h \
@@ -970,8 +1017,11 @@ CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.o: /home/asmaych/A
   /usr/include/c++/14/bits/iterator_concepts.h \
   /usr/include/c++/14/bits/locale_classes.h \
   /usr/include/c++/14/bits/locale_classes.tcc \
+  /usr/include/c++/14/bits/locale_conv.h \
   /usr/include/c++/14/bits/locale_facets.h \
   /usr/include/c++/14/bits/locale_facets.tcc \
+  /usr/include/c++/14/bits/locale_facets_nonio.h \
+  /usr/include/c++/14/bits/locale_facets_nonio.tcc \
   /usr/include/c++/14/bits/localefwd.h \
   /usr/include/c++/14/bits/max_size_type.h \
   /usr/include/c++/14/bits/memory_resource.h \
@@ -985,6 +1035,7 @@ CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.o: /home/asmaych/A
   /usr/include/c++/14/bits/postypes.h \
   /usr/include/c++/14/bits/predefined_ops.h \
   /usr/include/c++/14/bits/ptr_traits.h \
+  /usr/include/c++/14/bits/quoted_string.h \
   /usr/include/c++/14/bits/range_access.h \
   /usr/include/c++/14/bits/ranges_algobase.h \
   /usr/include/c++/14/bits/ranges_base.h \
@@ -996,12 +1047,15 @@ CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.o: /home/asmaych/A
   /usr/include/c++/14/bits/shared_ptr.h \
   /usr/include/c++/14/bits/shared_ptr_atomic.h \
   /usr/include/c++/14/bits/shared_ptr_base.h \
+  /usr/include/c++/14/bits/sstream.tcc \
   /usr/include/c++/14/bits/std_abs.h \
   /usr/include/c++/14/bits/std_mutex.h \
+  /usr/include/c++/14/bits/stl_algo.h \
   /usr/include/c++/14/bits/stl_algobase.h \
   /usr/include/c++/14/bits/stl_bvector.h \
   /usr/include/c++/14/bits/stl_construct.h \
   /usr/include/c++/14/bits/stl_function.h \
+  /usr/include/c++/14/bits/stl_heap.h \
   /usr/include/c++/14/bits/stl_iterator.h \
   /usr/include/c++/14/bits/stl_iterator_base_funcs.h \
   /usr/include/c++/14/bits/stl_iterator_base_types.h \
@@ -1014,6 +1068,9 @@ CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.o: /home/asmaych/A
   /usr/include/c++/14/bits/streambuf_iterator.h \
   /usr/include/c++/14/bits/string_view.tcc \
   /usr/include/c++/14/bits/stringfwd.h \
+  /usr/include/c++/14/bits/unicode-data.h \
+  /usr/include/c++/14/bits/unicode.h \
+  /usr/include/c++/14/bits/uniform_int_dist.h \
   /usr/include/c++/14/bits/unique_lock.h \
   /usr/include/c++/14/bits/unique_ptr.h \
   /usr/include/c++/14/bits/uses_allocator.h \
@@ -1023,6 +1080,8 @@ CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.o: /home/asmaych/A
   /usr/include/c++/14/bits/version.h \
   /usr/include/c++/14/cctype \
   /usr/include/c++/14/cerrno \
+  /usr/include/c++/14/charconv \
+  /usr/include/c++/14/chrono \
   /usr/include/c++/14/climits \
   /usr/include/c++/14/clocale \
   /usr/include/c++/14/compare \
@@ -1044,21 +1103,27 @@ CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.o: /home/asmaych/A
   /usr/include/c++/14/ext/numeric_traits.h \
   /usr/include/c++/14/ext/string_conversions.h \
   /usr/include/c++/14/ext/type_traits.h \
+  /usr/include/c++/14/format \
   /usr/include/c++/14/fstream \
   /usr/include/c++/14/initializer_list \
+  /usr/include/c++/14/iomanip \
   /usr/include/c++/14/ios \
   /usr/include/c++/14/iosfwd \
   /usr/include/c++/14/istream \
   /usr/include/c++/14/limits \
+  /usr/include/c++/14/locale \
   /usr/include/c++/14/memory \
   /usr/include/c++/14/mutex \
   /usr/include/c++/14/new \
   /usr/include/c++/14/numbers \
+  /usr/include/c++/14/optional \
   /usr/include/c++/14/ostream \
   /usr/include/c++/14/pstl/execution_defs.h \
   /usr/include/c++/14/pstl/glue_memory_defs.h \
   /usr/include/c++/14/pstl/pstl_config.h \
   /usr/include/c++/14/ratio \
+  /usr/include/c++/14/span \
+  /usr/include/c++/14/sstream \
   /usr/include/c++/14/stdexcept \
   /usr/include/c++/14/streambuf \
   /usr/include/c++/14/string \
@@ -1067,12 +1132,14 @@ CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.o: /home/asmaych/A
   /usr/include/c++/14/tuple \
   /usr/include/c++/14/type_traits \
   /usr/include/c++/14/typeinfo \
+  /usr/include/c++/14/variant \
   /usr/include/c++/14/vector \
   /usr/include/ctype.h \
   /usr/include/endian.h \
   /usr/include/errno.h \
   /usr/include/features-time64.h \
   /usr/include/features.h \
+  /usr/include/libintl.h \
   /usr/include/limits.h \
   /usr/include/linux/close_range.h \
   /usr/include/linux/errno.h \
@@ -1178,7 +1245,9 @@ CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.o: /home/asmaych/A
   /usr/include/x86_64-linux-gnu/c++/14/bits/error_constants.h \
   /usr/include/x86_64-linux-gnu/c++/14/bits/gthr-default.h \
   /usr/include/x86_64-linux-gnu/c++/14/bits/gthr.h \
+  /usr/include/x86_64-linux-gnu/c++/14/bits/messages_members.h \
   /usr/include/x86_64-linux-gnu/c++/14/bits/os_defines.h \
+  /usr/include/x86_64-linux-gnu/c++/14/bits/time_members.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs.h \
   /usr/include/x86_64-linux-gnu/sys/cdefs.h \
@@ -1246,6 +1315,7 @@ CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o: /home/asmay
   /usr/include/c++/14/bits/char_traits.h \
   /usr/include/c++/14/bits/charconv.h \
   /usr/include/c++/14/bits/chrono.h \
+  /usr/include/c++/14/bits/chrono_io.h \
   /usr/include/c++/14/bits/codecvt.h \
   /usr/include/c++/14/bits/concept_check.h \
   /usr/include/c++/14/bits/cpp_type_traits.h \
@@ -1268,8 +1338,11 @@ CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o: /home/asmay
   /usr/include/c++/14/bits/iterator_concepts.h \
   /usr/include/c++/14/bits/locale_classes.h \
   /usr/include/c++/14/bits/locale_classes.tcc \
+  /usr/include/c++/14/bits/locale_conv.h \
   /usr/include/c++/14/bits/locale_facets.h \
   /usr/include/c++/14/bits/locale_facets.tcc \
+  /usr/include/c++/14/bits/locale_facets_nonio.h \
+  /usr/include/c++/14/bits/locale_facets_nonio.tcc \
   /usr/include/c++/14/bits/localefwd.h \
   /usr/include/c++/14/bits/max_size_type.h \
   /usr/include/c++/14/bits/memory_resource.h \
@@ -1284,6 +1357,7 @@ CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o: /home/asmay
   /usr/include/c++/14/bits/postypes.h \
   /usr/include/c++/14/bits/predefined_ops.h \
   /usr/include/c++/14/bits/ptr_traits.h \
+  /usr/include/c++/14/bits/quoted_string.h \
   /usr/include/c++/14/bits/range_access.h \
   /usr/include/c++/14/bits/ranges_algo.h \
   /usr/include/c++/14/bits/ranges_algobase.h \
@@ -1298,6 +1372,7 @@ CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o: /home/asmay
   /usr/include/c++/14/bits/shared_ptr_atomic.h \
   /usr/include/c++/14/bits/shared_ptr_base.h \
   /usr/include/c++/14/bits/specfun.h \
+  /usr/include/c++/14/bits/sstream.tcc \
   /usr/include/c++/14/bits/std_abs.h \
   /usr/include/c++/14/bits/std_function.h \
   /usr/include/c++/14/bits/std_mutex.h \
@@ -1323,6 +1398,8 @@ CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o: /home/asmay
   /usr/include/c++/14/bits/string_view.tcc \
   /usr/include/c++/14/bits/stringfwd.h \
   /usr/include/c++/14/bits/this_thread_sleep.h \
+  /usr/include/c++/14/bits/unicode-data.h \
+  /usr/include/c++/14/bits/unicode.h \
   /usr/include/c++/14/bits/uniform_int_dist.h \
   /usr/include/c++/14/bits/unique_lock.h \
   /usr/include/c++/14/bits/unique_ptr.h \
@@ -1334,6 +1411,8 @@ CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o: /home/asmay
   /usr/include/c++/14/bits/version.h \
   /usr/include/c++/14/cctype \
   /usr/include/c++/14/cerrno \
+  /usr/include/c++/14/charconv \
+  /usr/include/c++/14/chrono \
   /usr/include/c++/14/climits \
   /usr/include/c++/14/clocale \
   /usr/include/c++/14/cmath \
@@ -1356,20 +1435,24 @@ CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o: /home/asmay
   /usr/include/c++/14/ext/numeric_traits.h \
   /usr/include/c++/14/ext/string_conversions.h \
   /usr/include/c++/14/ext/type_traits.h \
+  /usr/include/c++/14/format \
   /usr/include/c++/14/fstream \
   /usr/include/c++/14/functional \
   /usr/include/c++/14/initializer_list \
+  /usr/include/c++/14/iomanip \
   /usr/include/c++/14/ios \
   /usr/include/c++/14/iosfwd \
   /usr/include/c++/14/iostream \
   /usr/include/c++/14/istream \
   /usr/include/c++/14/iterator \
   /usr/include/c++/14/limits \
+  /usr/include/c++/14/locale \
   /usr/include/c++/14/math.h \
   /usr/include/c++/14/memory \
   /usr/include/c++/14/mutex \
   /usr/include/c++/14/new \
   /usr/include/c++/14/numbers \
+  /usr/include/c++/14/optional \
   /usr/include/c++/14/ostream \
   /usr/include/c++/14/pstl/execution_defs.h \
   /usr/include/c++/14/pstl/glue_algorithm_defs.h \
@@ -1377,6 +1460,8 @@ CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o: /home/asmay
   /usr/include/c++/14/pstl/pstl_config.h \
   /usr/include/c++/14/ratio \
   /usr/include/c++/14/semaphore \
+  /usr/include/c++/14/span \
+  /usr/include/c++/14/sstream \
   /usr/include/c++/14/stdexcept \
   /usr/include/c++/14/stdlib.h \
   /usr/include/c++/14/stop_token \
@@ -1402,6 +1487,7 @@ CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o: /home/asmay
   /usr/include/c++/14/typeinfo \
   /usr/include/c++/14/unordered_map \
   /usr/include/c++/14/utility \
+  /usr/include/c++/14/variant \
   /usr/include/c++/14/vector \
   /usr/include/ctype.h \
   /usr/include/dirent.h \
@@ -1410,6 +1496,7 @@ CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o: /home/asmay
   /usr/include/fcntl.h \
   /usr/include/features-time64.h \
   /usr/include/features.h \
+  /usr/include/libintl.h \
   /usr/include/libserialport.h \
   /usr/include/limits.h \
   /usr/include/linux/close_range.h \
@@ -1524,6 +1611,7 @@ CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o: /home/asmay
   /usr/include/wx-3.2/wx/generic/statusbr.h \
   /usr/include/wx-3.2/wx/generic/textdlgg.h \
   /usr/include/wx-3.2/wx/geometry.h \
+  /usr/include/wx-3.2/wx/graphics.h \
   /usr/include/wx-3.2/wx/grid.h \
   /usr/include/wx-3.2/wx/gtk/accel.h \
   /usr/include/wx-3.2/wx/gtk/anybutton.h \
@@ -1816,7 +1904,9 @@ CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o: /home/asmay
   /usr/include/x86_64-linux-gnu/c++/14/bits/error_constants.h \
   /usr/include/x86_64-linux-gnu/c++/14/bits/gthr-default.h \
   /usr/include/x86_64-linux-gnu/c++/14/bits/gthr.h \
+  /usr/include/x86_64-linux-gnu/c++/14/bits/messages_members.h \
   /usr/include/x86_64-linux-gnu/c++/14/bits/os_defines.h \
+  /usr/include/x86_64-linux-gnu/c++/14/bits/time_members.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs.h \
   /usr/include/x86_64-linux-gnu/sys/cdefs.h \
@@ -1850,9 +1940,13 @@ CMakeFiles/daq_capstone.dir/src/data/DataSession.cpp.o: /home/asmaych/An-Open-So
   /usr/include/asm-generic/int-ll64.h \
   /usr/include/asm-generic/posix_types.h \
   /usr/include/asm-generic/types.h \
+  /usr/include/c++/14/array \
   /usr/include/c++/14/backward/binders.h \
   /usr/include/c++/14/bit \
+  /usr/include/c++/14/bits/algorithmfwd.h \
+  /usr/include/c++/14/bits/align.h \
   /usr/include/c++/14/bits/alloc_traits.h \
+  /usr/include/c++/14/bits/allocated_ptr.h \
   /usr/include/c++/14/bits/allocator.h \
   /usr/include/c++/14/bits/basic_ios.h \
   /usr/include/c++/14/bits/basic_ios.tcc \
@@ -1861,11 +1955,13 @@ CMakeFiles/daq_capstone.dir/src/data/DataSession.cpp.o: /home/asmaych/An-Open-So
   /usr/include/c++/14/bits/char_traits.h \
   /usr/include/c++/14/bits/charconv.h \
   /usr/include/c++/14/bits/chrono.h \
+  /usr/include/c++/14/bits/chrono_io.h \
   /usr/include/c++/14/bits/codecvt.h \
   /usr/include/c++/14/bits/concept_check.h \
   /usr/include/c++/14/bits/cpp_type_traits.h \
   /usr/include/c++/14/bits/cxxabi_forced.h \
   /usr/include/c++/14/bits/cxxabi_init_exception.h \
+  /usr/include/c++/14/bits/enable_special_members.h \
   /usr/include/c++/14/bits/exception.h \
   /usr/include/c++/14/bits/exception_defines.h \
   /usr/include/c++/14/bits/exception_ptr.h \
@@ -1879,8 +1975,11 @@ CMakeFiles/daq_capstone.dir/src/data/DataSession.cpp.o: /home/asmaych/An-Open-So
   /usr/include/c++/14/bits/iterator_concepts.h \
   /usr/include/c++/14/bits/locale_classes.h \
   /usr/include/c++/14/bits/locale_classes.tcc \
+  /usr/include/c++/14/bits/locale_conv.h \
   /usr/include/c++/14/bits/locale_facets.h \
   /usr/include/c++/14/bits/locale_facets.tcc \
+  /usr/include/c++/14/bits/locale_facets_nonio.h \
+  /usr/include/c++/14/bits/locale_facets_nonio.tcc \
   /usr/include/c++/14/bits/localefwd.h \
   /usr/include/c++/14/bits/max_size_type.h \
   /usr/include/c++/14/bits/memory_resource.h \
@@ -1894,29 +1993,41 @@ CMakeFiles/daq_capstone.dir/src/data/DataSession.cpp.o: /home/asmaych/An-Open-So
   /usr/include/c++/14/bits/postypes.h \
   /usr/include/c++/14/bits/predefined_ops.h \
   /usr/include/c++/14/bits/ptr_traits.h \
+  /usr/include/c++/14/bits/quoted_string.h \
   /usr/include/c++/14/bits/range_access.h \
+  /usr/include/c++/14/bits/ranges_algobase.h \
   /usr/include/c++/14/bits/ranges_base.h \
   /usr/include/c++/14/bits/ranges_cmp.h \
   /usr/include/c++/14/bits/ranges_util.h \
   /usr/include/c++/14/bits/refwrap.h \
   /usr/include/c++/14/bits/requires_hosted.h \
+  /usr/include/c++/14/bits/shared_ptr.h \
+  /usr/include/c++/14/bits/shared_ptr_base.h \
+  /usr/include/c++/14/bits/sstream.tcc \
   /usr/include/c++/14/bits/std_abs.h \
   /usr/include/c++/14/bits/std_mutex.h \
+  /usr/include/c++/14/bits/stl_algo.h \
   /usr/include/c++/14/bits/stl_algobase.h \
   /usr/include/c++/14/bits/stl_bvector.h \
   /usr/include/c++/14/bits/stl_construct.h \
   /usr/include/c++/14/bits/stl_function.h \
+  /usr/include/c++/14/bits/stl_heap.h \
   /usr/include/c++/14/bits/stl_iterator.h \
   /usr/include/c++/14/bits/stl_iterator_base_funcs.h \
   /usr/include/c++/14/bits/stl_iterator_base_types.h \
   /usr/include/c++/14/bits/stl_pair.h \
+  /usr/include/c++/14/bits/stl_tempbuf.h \
   /usr/include/c++/14/bits/stl_uninitialized.h \
   /usr/include/c++/14/bits/stl_vector.h \
   /usr/include/c++/14/bits/streambuf.tcc \
   /usr/include/c++/14/bits/streambuf_iterator.h \
   /usr/include/c++/14/bits/string_view.tcc \
   /usr/include/c++/14/bits/stringfwd.h \
+  /usr/include/c++/14/bits/unicode-data.h \
+  /usr/include/c++/14/bits/unicode.h \
+  /usr/include/c++/14/bits/uniform_int_dist.h \
   /usr/include/c++/14/bits/unique_lock.h \
+  /usr/include/c++/14/bits/unique_ptr.h \
   /usr/include/c++/14/bits/uses_allocator.h \
   /usr/include/c++/14/bits/uses_allocator_args.h \
   /usr/include/c++/14/bits/utility.h \
@@ -1924,6 +2035,8 @@ CMakeFiles/daq_capstone.dir/src/data/DataSession.cpp.o: /home/asmaych/An-Open-So
   /usr/include/c++/14/bits/version.h \
   /usr/include/c++/14/cctype \
   /usr/include/c++/14/cerrno \
+  /usr/include/c++/14/charconv \
+  /usr/include/c++/14/chrono \
   /usr/include/c++/14/clocale \
   /usr/include/c++/14/compare \
   /usr/include/c++/14/concepts \
@@ -1937,23 +2050,31 @@ CMakeFiles/daq_capstone.dir/src/data/DataSession.cpp.o: /home/asmaych/An-Open-So
   /usr/include/c++/14/debug/assertions.h \
   /usr/include/c++/14/debug/debug.h \
   /usr/include/c++/14/exception \
+  /usr/include/c++/14/ext/aligned_buffer.h \
   /usr/include/c++/14/ext/alloc_traits.h \
   /usr/include/c++/14/ext/atomicity.h \
+  /usr/include/c++/14/ext/concurrence.h \
   /usr/include/c++/14/ext/numeric_traits.h \
   /usr/include/c++/14/ext/string_conversions.h \
   /usr/include/c++/14/ext/type_traits.h \
+  /usr/include/c++/14/format \
   /usr/include/c++/14/fstream \
   /usr/include/c++/14/initializer_list \
+  /usr/include/c++/14/iomanip \
   /usr/include/c++/14/ios \
   /usr/include/c++/14/iosfwd \
   /usr/include/c++/14/istream \
   /usr/include/c++/14/limits \
+  /usr/include/c++/14/locale \
   /usr/include/c++/14/mutex \
   /usr/include/c++/14/new \
   /usr/include/c++/14/numbers \
+  /usr/include/c++/14/optional \
   /usr/include/c++/14/ostream \
   /usr/include/c++/14/pstl/pstl_config.h \
   /usr/include/c++/14/ratio \
+  /usr/include/c++/14/span \
+  /usr/include/c++/14/sstream \
   /usr/include/c++/14/stdexcept \
   /usr/include/c++/14/streambuf \
   /usr/include/c++/14/string \
@@ -1962,12 +2083,14 @@ CMakeFiles/daq_capstone.dir/src/data/DataSession.cpp.o: /home/asmaych/An-Open-So
   /usr/include/c++/14/tuple \
   /usr/include/c++/14/type_traits \
   /usr/include/c++/14/typeinfo \
+  /usr/include/c++/14/variant \
   /usr/include/c++/14/vector \
   /usr/include/ctype.h \
   /usr/include/endian.h \
   /usr/include/errno.h \
   /usr/include/features-time64.h \
   /usr/include/features.h \
+  /usr/include/libintl.h \
   /usr/include/linux/errno.h \
   /usr/include/linux/posix_types.h \
   /usr/include/linux/sched/types.h \
@@ -2056,7 +2179,9 @@ CMakeFiles/daq_capstone.dir/src/data/DataSession.cpp.o: /home/asmaych/An-Open-So
   /usr/include/x86_64-linux-gnu/c++/14/bits/error_constants.h \
   /usr/include/x86_64-linux-gnu/c++/14/bits/gthr-default.h \
   /usr/include/x86_64-linux-gnu/c++/14/bits/gthr.h \
+  /usr/include/x86_64-linux-gnu/c++/14/bits/messages_members.h \
   /usr/include/x86_64-linux-gnu/c++/14/bits/os_defines.h \
+  /usr/include/x86_64-linux-gnu/c++/14/bits/time_members.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs.h \
   /usr/include/x86_64-linux-gnu/sys/cdefs.h \
@@ -2103,6 +2228,7 @@ CMakeFiles/daq_capstone.dir/src/data/DataTableWindow.cpp.o: /home/asmaych/An-Ope
   /usr/include/c++/14/bits/char_traits.h \
   /usr/include/c++/14/bits/charconv.h \
   /usr/include/c++/14/bits/chrono.h \
+  /usr/include/c++/14/bits/chrono_io.h \
   /usr/include/c++/14/bits/codecvt.h \
   /usr/include/c++/14/bits/concept_check.h \
   /usr/include/c++/14/bits/cpp_type_traits.h \
@@ -2125,8 +2251,11 @@ CMakeFiles/daq_capstone.dir/src/data/DataTableWindow.cpp.o: /home/asmaych/An-Ope
   /usr/include/c++/14/bits/iterator_concepts.h \
   /usr/include/c++/14/bits/locale_classes.h \
   /usr/include/c++/14/bits/locale_classes.tcc \
+  /usr/include/c++/14/bits/locale_conv.h \
   /usr/include/c++/14/bits/locale_facets.h \
   /usr/include/c++/14/bits/locale_facets.tcc \
+  /usr/include/c++/14/bits/locale_facets_nonio.h \
+  /usr/include/c++/14/bits/locale_facets_nonio.tcc \
   /usr/include/c++/14/bits/localefwd.h \
   /usr/include/c++/14/bits/max_size_type.h \
   /usr/include/c++/14/bits/memory_resource.h \
@@ -2141,6 +2270,7 @@ CMakeFiles/daq_capstone.dir/src/data/DataTableWindow.cpp.o: /home/asmaych/An-Ope
   /usr/include/c++/14/bits/postypes.h \
   /usr/include/c++/14/bits/predefined_ops.h \
   /usr/include/c++/14/bits/ptr_traits.h \
+  /usr/include/c++/14/bits/quoted_string.h \
   /usr/include/c++/14/bits/range_access.h \
   /usr/include/c++/14/bits/ranges_algo.h \
   /usr/include/c++/14/bits/ranges_algobase.h \
@@ -2154,6 +2284,7 @@ CMakeFiles/daq_capstone.dir/src/data/DataTableWindow.cpp.o: /home/asmaych/An-Ope
   /usr/include/c++/14/bits/shared_ptr_atomic.h \
   /usr/include/c++/14/bits/shared_ptr_base.h \
   /usr/include/c++/14/bits/specfun.h \
+  /usr/include/c++/14/bits/sstream.tcc \
   /usr/include/c++/14/bits/std_abs.h \
   /usr/include/c++/14/bits/std_function.h \
   /usr/include/c++/14/bits/std_mutex.h \
@@ -2177,6 +2308,8 @@ CMakeFiles/daq_capstone.dir/src/data/DataTableWindow.cpp.o: /home/asmaych/An-Ope
   /usr/include/c++/14/bits/streambuf_iterator.h \
   /usr/include/c++/14/bits/string_view.tcc \
   /usr/include/c++/14/bits/stringfwd.h \
+  /usr/include/c++/14/bits/unicode-data.h \
+  /usr/include/c++/14/bits/unicode.h \
   /usr/include/c++/14/bits/uniform_int_dist.h \
   /usr/include/c++/14/bits/unique_lock.h \
   /usr/include/c++/14/bits/unique_ptr.h \
@@ -2188,6 +2321,8 @@ CMakeFiles/daq_capstone.dir/src/data/DataTableWindow.cpp.o: /home/asmaych/An-Ope
   /usr/include/c++/14/bits/version.h \
   /usr/include/c++/14/cctype \
   /usr/include/c++/14/cerrno \
+  /usr/include/c++/14/charconv \
+  /usr/include/c++/14/chrono \
   /usr/include/c++/14/climits \
   /usr/include/c++/14/clocale \
   /usr/include/c++/14/cmath \
@@ -2210,26 +2345,32 @@ CMakeFiles/daq_capstone.dir/src/data/DataTableWindow.cpp.o: /home/asmaych/An-Ope
   /usr/include/c++/14/ext/numeric_traits.h \
   /usr/include/c++/14/ext/string_conversions.h \
   /usr/include/c++/14/ext/type_traits.h \
+  /usr/include/c++/14/format \
   /usr/include/c++/14/fstream \
   /usr/include/c++/14/functional \
   /usr/include/c++/14/initializer_list \
+  /usr/include/c++/14/iomanip \
   /usr/include/c++/14/ios \
   /usr/include/c++/14/iosfwd \
   /usr/include/c++/14/iostream \
   /usr/include/c++/14/istream \
   /usr/include/c++/14/iterator \
   /usr/include/c++/14/limits \
+  /usr/include/c++/14/locale \
   /usr/include/c++/14/math.h \
   /usr/include/c++/14/memory \
   /usr/include/c++/14/mutex \
   /usr/include/c++/14/new \
   /usr/include/c++/14/numbers \
+  /usr/include/c++/14/optional \
   /usr/include/c++/14/ostream \
   /usr/include/c++/14/pstl/execution_defs.h \
   /usr/include/c++/14/pstl/glue_algorithm_defs.h \
   /usr/include/c++/14/pstl/glue_memory_defs.h \
   /usr/include/c++/14/pstl/pstl_config.h \
   /usr/include/c++/14/ratio \
+  /usr/include/c++/14/span \
+  /usr/include/c++/14/sstream \
   /usr/include/c++/14/stdexcept \
   /usr/include/c++/14/stdlib.h \
   /usr/include/c++/14/streambuf \
@@ -2253,6 +2394,7 @@ CMakeFiles/daq_capstone.dir/src/data/DataTableWindow.cpp.o: /home/asmaych/An-Ope
   /usr/include/c++/14/typeinfo \
   /usr/include/c++/14/unordered_map \
   /usr/include/c++/14/utility \
+  /usr/include/c++/14/variant \
   /usr/include/c++/14/vector \
   /usr/include/ctype.h \
   /usr/include/dirent.h \
@@ -2261,6 +2403,7 @@ CMakeFiles/daq_capstone.dir/src/data/DataTableWindow.cpp.o: /home/asmaych/An-Ope
   /usr/include/fcntl.h \
   /usr/include/features-time64.h \
   /usr/include/features.h \
+  /usr/include/libintl.h \
   /usr/include/limits.h \
   /usr/include/linux/close_range.h \
   /usr/include/linux/errno.h \
@@ -2643,7 +2786,9 @@ CMakeFiles/daq_capstone.dir/src/data/DataTableWindow.cpp.o: /home/asmaych/An-Ope
   /usr/include/x86_64-linux-gnu/c++/14/bits/error_constants.h \
   /usr/include/x86_64-linux-gnu/c++/14/bits/gthr-default.h \
   /usr/include/x86_64-linux-gnu/c++/14/bits/gthr.h \
+  /usr/include/x86_64-linux-gnu/c++/14/bits/messages_members.h \
   /usr/include/x86_64-linux-gnu/c++/14/bits/os_defines.h \
+  /usr/include/x86_64-linux-gnu/c++/14/bits/time_members.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs.h \
   /usr/include/x86_64-linux-gnu/sys/cdefs.h \
@@ -2683,7 +2828,9 @@ CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o: /home/asmaych/An-Open-So
   /usr/include/c++/14/backward/binders.h \
   /usr/include/c++/14/bit \
   /usr/include/c++/14/bits/algorithmfwd.h \
+  /usr/include/c++/14/bits/align.h \
   /usr/include/c++/14/bits/alloc_traits.h \
+  /usr/include/c++/14/bits/allocated_ptr.h \
   /usr/include/c++/14/bits/allocator.h \
   /usr/include/c++/14/bits/basic_ios.h \
   /usr/include/c++/14/bits/basic_ios.tcc \
@@ -2692,6 +2839,7 @@ CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o: /home/asmaych/An-Open-So
   /usr/include/c++/14/bits/char_traits.h \
   /usr/include/c++/14/bits/charconv.h \
   /usr/include/c++/14/bits/chrono.h \
+  /usr/include/c++/14/bits/chrono_io.h \
   /usr/include/c++/14/bits/codecvt.h \
   /usr/include/c++/14/bits/concept_check.h \
   /usr/include/c++/14/bits/cpp_type_traits.h \
@@ -2714,8 +2862,11 @@ CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o: /home/asmaych/An-Open-So
   /usr/include/c++/14/bits/iterator_concepts.h \
   /usr/include/c++/14/bits/locale_classes.h \
   /usr/include/c++/14/bits/locale_classes.tcc \
+  /usr/include/c++/14/bits/locale_conv.h \
   /usr/include/c++/14/bits/locale_facets.h \
   /usr/include/c++/14/bits/locale_facets.tcc \
+  /usr/include/c++/14/bits/locale_facets_nonio.h \
+  /usr/include/c++/14/bits/locale_facets_nonio.tcc \
   /usr/include/c++/14/bits/localefwd.h \
   /usr/include/c++/14/bits/max_size_type.h \
   /usr/include/c++/14/bits/memory_resource.h \
@@ -2730,6 +2881,7 @@ CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o: /home/asmaych/An-Open-So
   /usr/include/c++/14/bits/postypes.h \
   /usr/include/c++/14/bits/predefined_ops.h \
   /usr/include/c++/14/bits/ptr_traits.h \
+  /usr/include/c++/14/bits/quoted_string.h \
   /usr/include/c++/14/bits/range_access.h \
   /usr/include/c++/14/bits/ranges_algo.h \
   /usr/include/c++/14/bits/ranges_algobase.h \
@@ -2738,7 +2890,10 @@ CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o: /home/asmaych/An-Open-So
   /usr/include/c++/14/bits/ranges_util.h \
   /usr/include/c++/14/bits/refwrap.h \
   /usr/include/c++/14/bits/requires_hosted.h \
+  /usr/include/c++/14/bits/shared_ptr.h \
+  /usr/include/c++/14/bits/shared_ptr_base.h \
   /usr/include/c++/14/bits/specfun.h \
+  /usr/include/c++/14/bits/sstream.tcc \
   /usr/include/c++/14/bits/std_abs.h \
   /usr/include/c++/14/bits/std_function.h \
   /usr/include/c++/14/bits/std_mutex.h \
@@ -2761,8 +2916,11 @@ CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o: /home/asmaych/An-Open-So
   /usr/include/c++/14/bits/streambuf_iterator.h \
   /usr/include/c++/14/bits/string_view.tcc \
   /usr/include/c++/14/bits/stringfwd.h \
+  /usr/include/c++/14/bits/unicode-data.h \
+  /usr/include/c++/14/bits/unicode.h \
   /usr/include/c++/14/bits/uniform_int_dist.h \
   /usr/include/c++/14/bits/unique_lock.h \
+  /usr/include/c++/14/bits/unique_ptr.h \
   /usr/include/c++/14/bits/unordered_map.h \
   /usr/include/c++/14/bits/uses_allocator.h \
   /usr/include/c++/14/bits/uses_allocator_args.h \
@@ -2771,6 +2929,8 @@ CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o: /home/asmaych/An-Open-So
   /usr/include/c++/14/bits/version.h \
   /usr/include/c++/14/cctype \
   /usr/include/c++/14/cerrno \
+  /usr/include/c++/14/charconv \
+  /usr/include/c++/14/chrono \
   /usr/include/c++/14/clocale \
   /usr/include/c++/14/cmath \
   /usr/include/c++/14/compare \
@@ -2788,27 +2948,34 @@ CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o: /home/asmaych/An-Open-So
   /usr/include/c++/14/ext/aligned_buffer.h \
   /usr/include/c++/14/ext/alloc_traits.h \
   /usr/include/c++/14/ext/atomicity.h \
+  /usr/include/c++/14/ext/concurrence.h \
   /usr/include/c++/14/ext/numeric_traits.h \
   /usr/include/c++/14/ext/string_conversions.h \
   /usr/include/c++/14/ext/type_traits.h \
+  /usr/include/c++/14/format \
   /usr/include/c++/14/fstream \
   /usr/include/c++/14/functional \
   /usr/include/c++/14/initializer_list \
+  /usr/include/c++/14/iomanip \
   /usr/include/c++/14/ios \
   /usr/include/c++/14/iosfwd \
   /usr/include/c++/14/iostream \
   /usr/include/c++/14/istream \
   /usr/include/c++/14/iterator \
   /usr/include/c++/14/limits \
+  /usr/include/c++/14/locale \
   /usr/include/c++/14/math.h \
   /usr/include/c++/14/mutex \
   /usr/include/c++/14/new \
   /usr/include/c++/14/numbers \
+  /usr/include/c++/14/optional \
   /usr/include/c++/14/ostream \
   /usr/include/c++/14/pstl/execution_defs.h \
   /usr/include/c++/14/pstl/glue_algorithm_defs.h \
   /usr/include/c++/14/pstl/pstl_config.h \
   /usr/include/c++/14/ratio \
+  /usr/include/c++/14/span \
+  /usr/include/c++/14/sstream \
   /usr/include/c++/14/stdexcept \
   /usr/include/c++/14/stdlib.h \
   /usr/include/c++/14/streambuf \
@@ -2832,6 +2999,7 @@ CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o: /home/asmaych/An-Open-So
   /usr/include/c++/14/typeinfo \
   /usr/include/c++/14/unordered_map \
   /usr/include/c++/14/utility \
+  /usr/include/c++/14/variant \
   /usr/include/c++/14/vector \
   /usr/include/ctype.h \
   /usr/include/dirent.h \
@@ -2840,6 +3008,7 @@ CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o: /home/asmaych/An-Open-So
   /usr/include/fcntl.h \
   /usr/include/features-time64.h \
   /usr/include/features.h \
+  /usr/include/libintl.h \
   /usr/include/limits.h \
   /usr/include/linux/close_range.h \
   /usr/include/linux/errno.h \
@@ -2937,6 +3106,7 @@ CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o: /home/asmaych/An-Open-So
   /usr/include/wx-3.2/wx/generic/statusbr.h \
   /usr/include/wx-3.2/wx/generic/textdlgg.h \
   /usr/include/wx-3.2/wx/geometry.h \
+  /usr/include/wx-3.2/wx/graphics.h \
   /usr/include/wx-3.2/wx/gtk/accel.h \
   /usr/include/wx-3.2/wx/gtk/anybutton.h \
   /usr/include/wx-3.2/wx/gtk/app.h \
@@ -3216,7 +3386,9 @@ CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o: /home/asmaych/An-Open-So
   /usr/include/x86_64-linux-gnu/c++/14/bits/error_constants.h \
   /usr/include/x86_64-linux-gnu/c++/14/bits/gthr-default.h \
   /usr/include/x86_64-linux-gnu/c++/14/bits/gthr.h \
+  /usr/include/x86_64-linux-gnu/c++/14/bits/messages_members.h \
   /usr/include/x86_64-linux-gnu/c++/14/bits/os_defines.h \
+  /usr/include/x86_64-linux-gnu/c++/14/bits/time_members.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs.h \
   /usr/include/x86_64-linux-gnu/sys/cdefs.h \
@@ -3240,6 +3412,8 @@ CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o: /home/asmaych/An-Open-So
 CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/data/LiveDataWindow.cpp \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/DataSession.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/LiveDataWindow.h \
+  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/sensor/Sensor.h \
+  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/Events.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/bitsperlong.h \
   /usr/include/asm-generic/errno-base.h \
@@ -3250,11 +3424,17 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: /home/asmaych/An-Open
   /usr/include/assert.h \
   /usr/include/c++/14/algorithm \
   /usr/include/c++/14/array \
+  /usr/include/c++/14/atomic \
   /usr/include/c++/14/backward/binders.h \
   /usr/include/c++/14/bit \
   /usr/include/c++/14/bits/algorithmfwd.h \
+  /usr/include/c++/14/bits/align.h \
   /usr/include/c++/14/bits/alloc_traits.h \
+  /usr/include/c++/14/bits/allocated_ptr.h \
   /usr/include/c++/14/bits/allocator.h \
+  /usr/include/c++/14/bits/atomic_base.h \
+  /usr/include/c++/14/bits/atomic_lockfree_defines.h \
+  /usr/include/c++/14/bits/atomic_wait.h \
   /usr/include/c++/14/bits/basic_ios.h \
   /usr/include/c++/14/bits/basic_ios.tcc \
   /usr/include/c++/14/bits/basic_string.h \
@@ -3262,6 +3442,7 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: /home/asmaych/An-Open
   /usr/include/c++/14/bits/char_traits.h \
   /usr/include/c++/14/bits/charconv.h \
   /usr/include/c++/14/bits/chrono.h \
+  /usr/include/c++/14/bits/chrono_io.h \
   /usr/include/c++/14/bits/codecvt.h \
   /usr/include/c++/14/bits/concept_check.h \
   /usr/include/c++/14/bits/cpp_type_traits.h \
@@ -3284,8 +3465,11 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: /home/asmaych/An-Open
   /usr/include/c++/14/bits/iterator_concepts.h \
   /usr/include/c++/14/bits/locale_classes.h \
   /usr/include/c++/14/bits/locale_classes.tcc \
+  /usr/include/c++/14/bits/locale_conv.h \
   /usr/include/c++/14/bits/locale_facets.h \
   /usr/include/c++/14/bits/locale_facets.tcc \
+  /usr/include/c++/14/bits/locale_facets_nonio.h \
+  /usr/include/c++/14/bits/locale_facets_nonio.tcc \
   /usr/include/c++/14/bits/localefwd.h \
   /usr/include/c++/14/bits/max_size_type.h \
   /usr/include/c++/14/bits/memory_resource.h \
@@ -3300,6 +3484,7 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: /home/asmaych/An-Open
   /usr/include/c++/14/bits/postypes.h \
   /usr/include/c++/14/bits/predefined_ops.h \
   /usr/include/c++/14/bits/ptr_traits.h \
+  /usr/include/c++/14/bits/quoted_string.h \
   /usr/include/c++/14/bits/range_access.h \
   /usr/include/c++/14/bits/ranges_algo.h \
   /usr/include/c++/14/bits/ranges_algobase.h \
@@ -3308,7 +3493,10 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: /home/asmaych/An-Open
   /usr/include/c++/14/bits/ranges_util.h \
   /usr/include/c++/14/bits/refwrap.h \
   /usr/include/c++/14/bits/requires_hosted.h \
+  /usr/include/c++/14/bits/shared_ptr.h \
+  /usr/include/c++/14/bits/shared_ptr_base.h \
   /usr/include/c++/14/bits/specfun.h \
+  /usr/include/c++/14/bits/sstream.tcc \
   /usr/include/c++/14/bits/std_abs.h \
   /usr/include/c++/14/bits/std_function.h \
   /usr/include/c++/14/bits/std_mutex.h \
@@ -3331,8 +3519,11 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: /home/asmaych/An-Open
   /usr/include/c++/14/bits/streambuf_iterator.h \
   /usr/include/c++/14/bits/string_view.tcc \
   /usr/include/c++/14/bits/stringfwd.h \
+  /usr/include/c++/14/bits/unicode-data.h \
+  /usr/include/c++/14/bits/unicode.h \
   /usr/include/c++/14/bits/uniform_int_dist.h \
   /usr/include/c++/14/bits/unique_lock.h \
+  /usr/include/c++/14/bits/unique_ptr.h \
   /usr/include/c++/14/bits/unordered_map.h \
   /usr/include/c++/14/bits/uses_allocator.h \
   /usr/include/c++/14/bits/uses_allocator_args.h \
@@ -3341,6 +3532,9 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: /home/asmaych/An-Open
   /usr/include/c++/14/bits/version.h \
   /usr/include/c++/14/cctype \
   /usr/include/c++/14/cerrno \
+  /usr/include/c++/14/charconv \
+  /usr/include/c++/14/chrono \
+  /usr/include/c++/14/climits \
   /usr/include/c++/14/clocale \
   /usr/include/c++/14/cmath \
   /usr/include/c++/14/compare \
@@ -3358,27 +3552,34 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: /home/asmaych/An-Open
   /usr/include/c++/14/ext/aligned_buffer.h \
   /usr/include/c++/14/ext/alloc_traits.h \
   /usr/include/c++/14/ext/atomicity.h \
+  /usr/include/c++/14/ext/concurrence.h \
   /usr/include/c++/14/ext/numeric_traits.h \
   /usr/include/c++/14/ext/string_conversions.h \
   /usr/include/c++/14/ext/type_traits.h \
+  /usr/include/c++/14/format \
   /usr/include/c++/14/fstream \
   /usr/include/c++/14/functional \
   /usr/include/c++/14/initializer_list \
+  /usr/include/c++/14/iomanip \
   /usr/include/c++/14/ios \
   /usr/include/c++/14/iosfwd \
   /usr/include/c++/14/iostream \
   /usr/include/c++/14/istream \
   /usr/include/c++/14/iterator \
   /usr/include/c++/14/limits \
+  /usr/include/c++/14/locale \
   /usr/include/c++/14/math.h \
   /usr/include/c++/14/mutex \
   /usr/include/c++/14/new \
   /usr/include/c++/14/numbers \
+  /usr/include/c++/14/optional \
   /usr/include/c++/14/ostream \
   /usr/include/c++/14/pstl/execution_defs.h \
   /usr/include/c++/14/pstl/glue_algorithm_defs.h \
   /usr/include/c++/14/pstl/pstl_config.h \
   /usr/include/c++/14/ratio \
+  /usr/include/c++/14/span \
+  /usr/include/c++/14/sstream \
   /usr/include/c++/14/stdexcept \
   /usr/include/c++/14/stdlib.h \
   /usr/include/c++/14/streambuf \
@@ -3402,6 +3603,7 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: /home/asmaych/An-Open
   /usr/include/c++/14/typeinfo \
   /usr/include/c++/14/unordered_map \
   /usr/include/c++/14/utility \
+  /usr/include/c++/14/variant \
   /usr/include/c++/14/vector \
   /usr/include/ctype.h \
   /usr/include/dirent.h \
@@ -3410,6 +3612,7 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: /home/asmaych/An-Open
   /usr/include/fcntl.h \
   /usr/include/features-time64.h \
   /usr/include/features.h \
+  /usr/include/libintl.h \
   /usr/include/limits.h \
   /usr/include/linux/close_range.h \
   /usr/include/linux/errno.h \
@@ -3431,6 +3634,7 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: /home/asmaych/An-Open
   /usr/include/stdlib.h \
   /usr/include/string.h \
   /usr/include/strings.h \
+  /usr/include/syscall.h \
   /usr/include/time.h \
   /usr/include/unistd.h \
   /usr/include/wchar.h \
@@ -3724,6 +3928,7 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: /home/asmaych/An-Open
   /usr/include/x86_64-linux-gnu/bits/struct_mutex.h \
   /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h \
   /usr/include/x86_64-linux-gnu/bits/struct_stat.h \
+  /usr/include/x86_64-linux-gnu/bits/syscall.h \
   /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h \
   /usr/include/x86_64-linux-gnu/bits/time.h \
   /usr/include/x86_64-linux-gnu/bits/time64.h \
@@ -3786,13 +3991,16 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: /home/asmaych/An-Open
   /usr/include/x86_64-linux-gnu/c++/14/bits/error_constants.h \
   /usr/include/x86_64-linux-gnu/c++/14/bits/gthr-default.h \
   /usr/include/x86_64-linux-gnu/c++/14/bits/gthr.h \
+  /usr/include/x86_64-linux-gnu/c++/14/bits/messages_members.h \
   /usr/include/x86_64-linux-gnu/c++/14/bits/os_defines.h \
+  /usr/include/x86_64-linux-gnu/c++/14/bits/time_members.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs.h \
   /usr/include/x86_64-linux-gnu/sys/cdefs.h \
   /usr/include/x86_64-linux-gnu/sys/select.h \
   /usr/include/x86_64-linux-gnu/sys/single_threaded.h \
   /usr/include/x86_64-linux-gnu/sys/stat.h \
+  /usr/include/x86_64-linux-gnu/sys/syscall.h \
   /usr/include/x86_64-linux-gnu/sys/types.h \
   /usr/include/x86_64-linux-gnu/sys/ucontext.h \
   /usr/lib/gcc/x86_64-linux-gnu/14/include/limits.h \
@@ -3805,6 +4013,8 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: /home/asmaych/An-Open
   /usr/lib/linux/uapi/x86/asm/posix_types.h \
   /usr/lib/linux/uapi/x86/asm/posix_types_64.h \
   /usr/lib/linux/uapi/x86/asm/types.h \
+  /usr/lib/linux/uapi/x86/asm/unistd.h \
+  /usr/lib/linux/uapi/x86/asm/unistd_64.h \
   /usr/lib/x86_64-linux-gnu/wx/include/gtk3-unicode-3.2/wx/setup.h
 
 CMakeFiles/daq_capstone.dir/src/sensor/Sensor.cpp.o: /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/sensor/Sensor.cpp \
@@ -6393,6 +6603,7 @@ CMakeFiles/daq_capstone.dir/src/ui/MainFrame.cpp.o: /home/asmaych/An-Open-Source
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/MainFrame.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/ProjectPanel.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/SensorConfigDialog.h \
+  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/SensorSelectionDialog.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/Sidebar.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/bitsperlong.h \
@@ -6424,6 +6635,7 @@ CMakeFiles/daq_capstone.dir/src/ui/MainFrame.cpp.o: /home/asmaych/An-Open-Source
   /usr/include/c++/14/bits/char_traits.h \
   /usr/include/c++/14/bits/charconv.h \
   /usr/include/c++/14/bits/chrono.h \
+  /usr/include/c++/14/bits/chrono_io.h \
   /usr/include/c++/14/bits/codecvt.h \
   /usr/include/c++/14/bits/concept_check.h \
   /usr/include/c++/14/bits/cpp_type_traits.h \
@@ -6446,8 +6658,11 @@ CMakeFiles/daq_capstone.dir/src/ui/MainFrame.cpp.o: /home/asmaych/An-Open-Source
   /usr/include/c++/14/bits/iterator_concepts.h \
   /usr/include/c++/14/bits/locale_classes.h \
   /usr/include/c++/14/bits/locale_classes.tcc \
+  /usr/include/c++/14/bits/locale_conv.h \
   /usr/include/c++/14/bits/locale_facets.h \
   /usr/include/c++/14/bits/locale_facets.tcc \
+  /usr/include/c++/14/bits/locale_facets_nonio.h \
+  /usr/include/c++/14/bits/locale_facets_nonio.tcc \
   /usr/include/c++/14/bits/localefwd.h \
   /usr/include/c++/14/bits/max_size_type.h \
   /usr/include/c++/14/bits/memory_resource.h \
@@ -6462,6 +6677,7 @@ CMakeFiles/daq_capstone.dir/src/ui/MainFrame.cpp.o: /home/asmaych/An-Open-Source
   /usr/include/c++/14/bits/postypes.h \
   /usr/include/c++/14/bits/predefined_ops.h \
   /usr/include/c++/14/bits/ptr_traits.h \
+  /usr/include/c++/14/bits/quoted_string.h \
   /usr/include/c++/14/bits/range_access.h \
   /usr/include/c++/14/bits/ranges_algo.h \
   /usr/include/c++/14/bits/ranges_algobase.h \
@@ -6476,6 +6692,7 @@ CMakeFiles/daq_capstone.dir/src/ui/MainFrame.cpp.o: /home/asmaych/An-Open-Source
   /usr/include/c++/14/bits/shared_ptr_atomic.h \
   /usr/include/c++/14/bits/shared_ptr_base.h \
   /usr/include/c++/14/bits/specfun.h \
+  /usr/include/c++/14/bits/sstream.tcc \
   /usr/include/c++/14/bits/std_abs.h \
   /usr/include/c++/14/bits/std_function.h \
   /usr/include/c++/14/bits/std_mutex.h \
@@ -6501,6 +6718,8 @@ CMakeFiles/daq_capstone.dir/src/ui/MainFrame.cpp.o: /home/asmaych/An-Open-Source
   /usr/include/c++/14/bits/string_view.tcc \
   /usr/include/c++/14/bits/stringfwd.h \
   /usr/include/c++/14/bits/this_thread_sleep.h \
+  /usr/include/c++/14/bits/unicode-data.h \
+  /usr/include/c++/14/bits/unicode.h \
   /usr/include/c++/14/bits/uniform_int_dist.h \
   /usr/include/c++/14/bits/unique_lock.h \
   /usr/include/c++/14/bits/unique_ptr.h \
@@ -6512,6 +6731,8 @@ CMakeFiles/daq_capstone.dir/src/ui/MainFrame.cpp.o: /home/asmaych/An-Open-Source
   /usr/include/c++/14/bits/version.h \
   /usr/include/c++/14/cctype \
   /usr/include/c++/14/cerrno \
+  /usr/include/c++/14/charconv \
+  /usr/include/c++/14/chrono \
   /usr/include/c++/14/climits \
   /usr/include/c++/14/clocale \
   /usr/include/c++/14/cmath \
@@ -6534,20 +6755,24 @@ CMakeFiles/daq_capstone.dir/src/ui/MainFrame.cpp.o: /home/asmaych/An-Open-Source
   /usr/include/c++/14/ext/numeric_traits.h \
   /usr/include/c++/14/ext/string_conversions.h \
   /usr/include/c++/14/ext/type_traits.h \
+  /usr/include/c++/14/format \
   /usr/include/c++/14/fstream \
   /usr/include/c++/14/functional \
   /usr/include/c++/14/initializer_list \
+  /usr/include/c++/14/iomanip \
   /usr/include/c++/14/ios \
   /usr/include/c++/14/iosfwd \
   /usr/include/c++/14/iostream \
   /usr/include/c++/14/istream \
   /usr/include/c++/14/iterator \
   /usr/include/c++/14/limits \
+  /usr/include/c++/14/locale \
   /usr/include/c++/14/math.h \
   /usr/include/c++/14/memory \
   /usr/include/c++/14/mutex \
   /usr/include/c++/14/new \
   /usr/include/c++/14/numbers \
+  /usr/include/c++/14/optional \
   /usr/include/c++/14/ostream \
   /usr/include/c++/14/pstl/execution_defs.h \
   /usr/include/c++/14/pstl/glue_algorithm_defs.h \
@@ -6555,6 +6780,8 @@ CMakeFiles/daq_capstone.dir/src/ui/MainFrame.cpp.o: /home/asmaych/An-Open-Source
   /usr/include/c++/14/pstl/pstl_config.h \
   /usr/include/c++/14/ratio \
   /usr/include/c++/14/semaphore \
+  /usr/include/c++/14/span \
+  /usr/include/c++/14/sstream \
   /usr/include/c++/14/stdexcept \
   /usr/include/c++/14/stdlib.h \
   /usr/include/c++/14/stop_token \
@@ -6580,6 +6807,7 @@ CMakeFiles/daq_capstone.dir/src/ui/MainFrame.cpp.o: /home/asmaych/An-Open-Source
   /usr/include/c++/14/typeinfo \
   /usr/include/c++/14/unordered_map \
   /usr/include/c++/14/utility \
+  /usr/include/c++/14/variant \
   /usr/include/c++/14/vector \
   /usr/include/ctype.h \
   /usr/include/dirent.h \
@@ -6588,6 +6816,7 @@ CMakeFiles/daq_capstone.dir/src/ui/MainFrame.cpp.o: /home/asmaych/An-Open-Source
   /usr/include/fcntl.h \
   /usr/include/features-time64.h \
   /usr/include/features.h \
+  /usr/include/libintl.h \
   /usr/include/libserialport.h \
   /usr/include/limits.h \
   /usr/include/linux/close_range.h \
@@ -6703,6 +6932,7 @@ CMakeFiles/daq_capstone.dir/src/ui/MainFrame.cpp.o: /home/asmaych/An-Open-Source
   /usr/include/wx-3.2/wx/generic/statusbr.h \
   /usr/include/wx-3.2/wx/generic/textdlgg.h \
   /usr/include/wx-3.2/wx/geometry.h \
+  /usr/include/wx-3.2/wx/graphics.h \
   /usr/include/wx-3.2/wx/grid.h \
   /usr/include/wx-3.2/wx/gtk/accel.h \
   /usr/include/wx-3.2/wx/gtk/anybutton.h \
@@ -6995,7 +7225,9 @@ CMakeFiles/daq_capstone.dir/src/ui/MainFrame.cpp.o: /home/asmaych/An-Open-Source
   /usr/include/x86_64-linux-gnu/c++/14/bits/error_constants.h \
   /usr/include/x86_64-linux-gnu/c++/14/bits/gthr-default.h \
   /usr/include/x86_64-linux-gnu/c++/14/bits/gthr.h \
+  /usr/include/x86_64-linux-gnu/c++/14/bits/messages_members.h \
   /usr/include/x86_64-linux-gnu/c++/14/bits/os_defines.h \
+  /usr/include/x86_64-linux-gnu/c++/14/bits/time_members.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs.h \
   /usr/include/x86_64-linux-gnu/sys/cdefs.h \
@@ -7364,6 +7596,7 @@ CMakeFiles/daq_capstone.dir/src/ui/ProjectPanel.cpp.o: /home/asmaych/An-Open-Sou
   /usr/include/wx-3.2/wx/generic/statusbr.h \
   /usr/include/wx-3.2/wx/generic/textdlgg.h \
   /usr/include/wx-3.2/wx/geometry.h \
+  /usr/include/wx-3.2/wx/graphics.h \
   /usr/include/wx-3.2/wx/grid.h \
   /usr/include/wx-3.2/wx/gtk/accel.h \
   /usr/include/wx-3.2/wx/gtk/anybutton.h \
@@ -8881,6 +9114,7 @@ CMakeFiles/daq_capstone.dir/src/ui/Sidebar.cpp.o: /home/asmaych/An-Open-Source-D
   /usr/include/c++/14/bits/char_traits.h \
   /usr/include/c++/14/bits/charconv.h \
   /usr/include/c++/14/bits/chrono.h \
+  /usr/include/c++/14/bits/chrono_io.h \
   /usr/include/c++/14/bits/codecvt.h \
   /usr/include/c++/14/bits/concept_check.h \
   /usr/include/c++/14/bits/cpp_type_traits.h \
@@ -8903,8 +9137,11 @@ CMakeFiles/daq_capstone.dir/src/ui/Sidebar.cpp.o: /home/asmaych/An-Open-Source-D
   /usr/include/c++/14/bits/iterator_concepts.h \
   /usr/include/c++/14/bits/locale_classes.h \
   /usr/include/c++/14/bits/locale_classes.tcc \
+  /usr/include/c++/14/bits/locale_conv.h \
   /usr/include/c++/14/bits/locale_facets.h \
   /usr/include/c++/14/bits/locale_facets.tcc \
+  /usr/include/c++/14/bits/locale_facets_nonio.h \
+  /usr/include/c++/14/bits/locale_facets_nonio.tcc \
   /usr/include/c++/14/bits/localefwd.h \
   /usr/include/c++/14/bits/max_size_type.h \
   /usr/include/c++/14/bits/memory_resource.h \
@@ -8919,6 +9156,7 @@ CMakeFiles/daq_capstone.dir/src/ui/Sidebar.cpp.o: /home/asmaych/An-Open-Source-D
   /usr/include/c++/14/bits/postypes.h \
   /usr/include/c++/14/bits/predefined_ops.h \
   /usr/include/c++/14/bits/ptr_traits.h \
+  /usr/include/c++/14/bits/quoted_string.h \
   /usr/include/c++/14/bits/range_access.h \
   /usr/include/c++/14/bits/ranges_algo.h \
   /usr/include/c++/14/bits/ranges_algobase.h \
@@ -8933,6 +9171,7 @@ CMakeFiles/daq_capstone.dir/src/ui/Sidebar.cpp.o: /home/asmaych/An-Open-Source-D
   /usr/include/c++/14/bits/shared_ptr_atomic.h \
   /usr/include/c++/14/bits/shared_ptr_base.h \
   /usr/include/c++/14/bits/specfun.h \
+  /usr/include/c++/14/bits/sstream.tcc \
   /usr/include/c++/14/bits/std_abs.h \
   /usr/include/c++/14/bits/std_function.h \
   /usr/include/c++/14/bits/std_mutex.h \
@@ -8958,6 +9197,8 @@ CMakeFiles/daq_capstone.dir/src/ui/Sidebar.cpp.o: /home/asmaych/An-Open-Source-D
   /usr/include/c++/14/bits/string_view.tcc \
   /usr/include/c++/14/bits/stringfwd.h \
   /usr/include/c++/14/bits/this_thread_sleep.h \
+  /usr/include/c++/14/bits/unicode-data.h \
+  /usr/include/c++/14/bits/unicode.h \
   /usr/include/c++/14/bits/uniform_int_dist.h \
   /usr/include/c++/14/bits/unique_lock.h \
   /usr/include/c++/14/bits/unique_ptr.h \
@@ -8969,6 +9210,8 @@ CMakeFiles/daq_capstone.dir/src/ui/Sidebar.cpp.o: /home/asmaych/An-Open-Source-D
   /usr/include/c++/14/bits/version.h \
   /usr/include/c++/14/cctype \
   /usr/include/c++/14/cerrno \
+  /usr/include/c++/14/charconv \
+  /usr/include/c++/14/chrono \
   /usr/include/c++/14/climits \
   /usr/include/c++/14/clocale \
   /usr/include/c++/14/cmath \
@@ -8991,20 +9234,24 @@ CMakeFiles/daq_capstone.dir/src/ui/Sidebar.cpp.o: /home/asmaych/An-Open-Source-D
   /usr/include/c++/14/ext/numeric_traits.h \
   /usr/include/c++/14/ext/string_conversions.h \
   /usr/include/c++/14/ext/type_traits.h \
+  /usr/include/c++/14/format \
   /usr/include/c++/14/fstream \
   /usr/include/c++/14/functional \
   /usr/include/c++/14/initializer_list \
+  /usr/include/c++/14/iomanip \
   /usr/include/c++/14/ios \
   /usr/include/c++/14/iosfwd \
   /usr/include/c++/14/iostream \
   /usr/include/c++/14/istream \
   /usr/include/c++/14/iterator \
   /usr/include/c++/14/limits \
+  /usr/include/c++/14/locale \
   /usr/include/c++/14/math.h \
   /usr/include/c++/14/memory \
   /usr/include/c++/14/mutex \
   /usr/include/c++/14/new \
   /usr/include/c++/14/numbers \
+  /usr/include/c++/14/optional \
   /usr/include/c++/14/ostream \
   /usr/include/c++/14/pstl/execution_defs.h \
   /usr/include/c++/14/pstl/glue_algorithm_defs.h \
@@ -9012,6 +9259,8 @@ CMakeFiles/daq_capstone.dir/src/ui/Sidebar.cpp.o: /home/asmaych/An-Open-Source-D
   /usr/include/c++/14/pstl/pstl_config.h \
   /usr/include/c++/14/ratio \
   /usr/include/c++/14/semaphore \
+  /usr/include/c++/14/span \
+  /usr/include/c++/14/sstream \
   /usr/include/c++/14/stdexcept \
   /usr/include/c++/14/stdlib.h \
   /usr/include/c++/14/stop_token \
@@ -9037,6 +9286,7 @@ CMakeFiles/daq_capstone.dir/src/ui/Sidebar.cpp.o: /home/asmaych/An-Open-Source-D
   /usr/include/c++/14/typeinfo \
   /usr/include/c++/14/unordered_map \
   /usr/include/c++/14/utility \
+  /usr/include/c++/14/variant \
   /usr/include/c++/14/vector \
   /usr/include/ctype.h \
   /usr/include/dirent.h \
@@ -9045,6 +9295,7 @@ CMakeFiles/daq_capstone.dir/src/ui/Sidebar.cpp.o: /home/asmaych/An-Open-Source-D
   /usr/include/fcntl.h \
   /usr/include/features-time64.h \
   /usr/include/features.h \
+  /usr/include/libintl.h \
   /usr/include/libserialport.h \
   /usr/include/limits.h \
   /usr/include/linux/close_range.h \
@@ -9159,6 +9410,7 @@ CMakeFiles/daq_capstone.dir/src/ui/Sidebar.cpp.o: /home/asmaych/An-Open-Source-D
   /usr/include/wx-3.2/wx/generic/statusbr.h \
   /usr/include/wx-3.2/wx/generic/textdlgg.h \
   /usr/include/wx-3.2/wx/geometry.h \
+  /usr/include/wx-3.2/wx/graphics.h \
   /usr/include/wx-3.2/wx/grid.h \
   /usr/include/wx-3.2/wx/gtk/accel.h \
   /usr/include/wx-3.2/wx/gtk/anybutton.h \
@@ -9451,7 +9703,9 @@ CMakeFiles/daq_capstone.dir/src/ui/Sidebar.cpp.o: /home/asmaych/An-Open-Source-D
   /usr/include/x86_64-linux-gnu/c++/14/bits/error_constants.h \
   /usr/include/x86_64-linux-gnu/c++/14/bits/gthr-default.h \
   /usr/include/x86_64-linux-gnu/c++/14/bits/gthr.h \
+  /usr/include/x86_64-linux-gnu/c++/14/bits/messages_members.h \
   /usr/include/x86_64-linux-gnu/c++/14/bits/os_defines.h \
+  /usr/include/x86_64-linux-gnu/c++/14/bits/time_members.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs.h \
   /usr/include/x86_64-linux-gnu/sys/cdefs.h \
@@ -9731,30 +9985,6 @@ CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.o:
 
 /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/ui/AddSensorDialog.cpp:
 
-/usr/include/x86_64-linux-gnu/c++/14/bits/time_members.h:
-
-/usr/include/x86_64-linux-gnu/c++/14/bits/messages_members.h:
-
-/usr/include/c++/14/sstream:
-
-/usr/include/c++/14/optional:
-
-/usr/include/c++/14/locale:
-
-/usr/include/c++/14/iomanip:
-
-/usr/include/c++/14/format:
-
-/usr/include/c++/14/bits/unicode.h:
-
-/usr/include/c++/14/bits/sstream.tcc:
-
-/usr/include/c++/14/bits/quoted_string.h:
-
-/usr/include/c++/14/bits/locale_facets_nonio.tcc:
-
-/usr/include/c++/14/bits/chrono_io.h:
-
 /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/serial/SerialComm.cpp:
 
 /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/sensor/SensorManager.cpp:
@@ -9808,6 +10038,10 @@ CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.o:
 CMakeFiles/daq_capstone.dir/src/controllers/DataCollector.cpp.o:
 
 /usr/include/x86_64-linux-gnu/gnu/stubs-64.h:
+
+/usr/include/x86_64-linux-gnu/c++/14/bits/time_members.h:
+
+/usr/include/x86_64-linux-gnu/c++/14/bits/messages_members.h:
 
 /usr/include/x86_64-linux-gnu/c++/14/bits/gthr-default.h:
 
@@ -9879,10 +10113,6 @@ CMakeFiles/daq_capstone.dir/src/sensor/SensorManager.cpp.o:
 
 /usr/include/x86_64-linux-gnu/bits/time.h:
 
-/usr/include/libintl.h:
-
-/usr/include/x86_64-linux-gnu/bits/thread-shared-types.h:
-
 /usr/include/x86_64-linux-gnu/bits/syscall.h:
 
 /usr/include/x86_64-linux-gnu/bits/struct_mutex.h:
@@ -9897,41 +10127,35 @@ CMakeFiles/daq_capstone.dir/src/sensor/SensorManager.cpp.o:
 
 /usr/include/x86_64-linux-gnu/bits/ss_flags.h:
 
-/usr/include/x86_64-linux-gnu/bits/sigcontext.h:
-
-/usr/include/wx-3.2/wx/aui/dockart.h:
-
-/usr/include/c++/14/bits/iterator_concepts.h:
-
 /usr/include/x86_64-linux-gnu/bits/sigstack.h:
 
-/usr/include/wx-3.2/wx/aui/auibar.h:
+/usr/include/x86_64-linux-gnu/bits/signum-generic.h:
 
-/lib/x86_64-linux-gnu/libbrotlidec.so.1:
+/usr/include/x86_64-linux-gnu/bits/signum-arch.h:
 
-/usr/include/c++/14/bits/locale_classes.tcc:
+/usr/include/x86_64-linux-gnu/bits/types.h:
 
-/usr/include/wx-3.2/wx/arrstr.h:
+/usr/include/x86_64-linux-gnu/bits/signal_ext.h:
 
-/usr/include/x86_64-linux-gnu/bits/statx.h:
+/usr/include/x86_64-linux-gnu/bits/siginfo-consts.h:
 
-/usr/include/c++/14/bits/specfun.h:
+/usr/include/x86_64-linux-gnu/bits/siginfo-arch.h:
 
-/usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:
+/usr/include/x86_64-linux-gnu/bits/sigcontext.h:
 
-/usr/include/c++/14/bits/ranges_uninitialized.h:
+/usr/include/x86_64-linux-gnu/bits/sched.h:
 
-/lib/x86_64-linux-gnu/libgraphite2.so.3:
+/lib/x86_64-linux-gnu/libgdk-3.so.0:
 
-/usr/include/wx-3.2/wx/anystr.h:
+/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:
 
-/usr/include/wx-3.2/wx/stream.h:
+/usr/include/x86_64-linux-gnu/bits/setjmp.h:
 
-/usr/include/wx-3.2/wx/affinematrix2d.h:
+/usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h:
 
-/usr/include/wx-3.2/wx/accel.h:
+/usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h:
 
-/usr/include/c++/14/bits/atomic_wait.h:
+/usr/include/x86_64-linux-gnu/bits/posix2_lim.h:
 
 /usr/include/strings.h:
 
@@ -9959,8 +10183,6 @@ CMakeFiles/daq_capstone.dir/src/sensor/SensorManager.cpp.o:
 
 /usr/include/linux/close_range.h:
 
-/usr/include/wx-3.2/wx/generic/panelg.h:
-
 /usr/include/fcntl.h:
 
 /usr/lib/linux/uapi/x86/asm/types.h:
@@ -9977,17 +10199,11 @@ CMakeFiles/daq_capstone.dir/src/sensor/SensorManager.cpp.o:
 
 /usr/include/c++/14/type_traits:
 
+/usr/include/x86_64-linux-gnu/bits/select.h:
+
+/usr/include/c++/14/stdexcept:
+
 /usr/include/wx-3.2/wx/gdiobj.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/__FILE.h:
-
-/usr/include/c++/14/tr1/poly_hermite.tcc:
-
-CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o:
-
-/usr/include/wx-3.2/wx/gtk/choice.h:
-
-/usr/include/x86_64-linux-gnu/bits/iscanonical.h:
 
 /usr/include/c++/14/tr1/modified_bessel_func.tcc:
 
@@ -10001,6 +10217,10 @@ CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o:
 
 /usr/include/wx-3.2/wx/textdlg.h:
 
+/usr/include/c++/14/sstream:
+
+/usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h:
+
 /usr/include/c++/14/exception:
 
 /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/data/LiveDataWindow.cpp:
@@ -10010,8 +10230,6 @@ CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o:
 /lib/x86_64-linux-gnu/libexpat.so.1:
 
 /usr/include/wx-3.2/wx/statbmp.h:
-
-/usr/include/x86_64-linux-gnu/bits/sched.h:
 
 CMakeFiles/daq_capstone.dir/src/serial/SerialComm.cpp.o:
 
@@ -10025,13 +10243,13 @@ CMakeFiles/daq_capstone.dir/src/serial/SerialComm.cpp.o:
 
 /usr/include/c++/14/bits/stl_function.h:
 
-/usr/include/x86_64-linux-gnu/c++/14/bits/gthr.h:
+/usr/include/c++/14/locale:
 
-/usr/include/c++/14/iosfwd:
+/usr/include/c++/14/iomanip:
 
-/usr/include/c++/14/ratio:
+/usr/include/x86_64-linux-gnu/bits/unistd_ext.h:
 
-/usr/include/x86_64-linux-gnu/bits/fcntl.h:
+/usr/include/c++/14/limits:
 
 /usr/include/c++/14/initializer_list:
 
@@ -10039,17 +10257,11 @@ CMakeFiles/daq_capstone.dir/src/serial/SerialComm.cpp.o:
 
 /usr/include/c++/14/bits/postypes.h:
 
-/lib/x86_64-linux-gnu/libgdk-3.so.0:
-
-/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:
-
 /usr/include/wx-3.2/wx/object.h:
 
-/usr/include/c++/14/bits/locale_conv.h:
+/usr/include/c++/14/format:
 
-/usr/include/wx-3.2/wx/atomic.h:
-
-/usr/include/wx-3.2/wx/vector.h:
+/usr/include/c++/14/ext/alloc_traits.h:
 
 /usr/include/limits.h:
 
@@ -10059,21 +10271,15 @@ CMakeFiles/daq_capstone.dir/src/serial/SerialComm.cpp.o:
 
 /usr/include/wx-3.2/wx/sizer.h:
 
-/usr/include/c++/14/ext/atomicity.h:
+/usr/include/c++/14/bits/unicode.h:
 
-/usr/include/c++/14/ext/alloc_traits.h:
+/usr/include/c++/14/ext/atomicity.h:
 
 /lib/x86_64-linux-gnu/libmvec.so.1:
 
 /usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h:
 
 /usr/include/c++/14/ctime:
-
-/usr/include/c++/14/charconv:
-
-/usr/include/wx-3.2/wx/meta/pod.h:
-
-/usr/include/wx-3.2/wx/translation.h:
 
 /usr/include/c++/14/cstdio:
 
@@ -10097,12 +10303,6 @@ CMakeFiles/daq_capstone.dir/src/serial/SerialComm.cpp.o:
 
 /usr/include/c++/14/string:
 
-/usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h:
-
-/usr/include/wx-3.2/wx/aui/auibook.h:
-
-/usr/include/c++/14/climits:
-
 CMakeFiles/daq_capstone.dir/src/ui/AddSensorDialog.cpp.o:
 
 /usr/include/c++/14/cerrno:
@@ -10121,15 +10321,29 @@ CMakeFiles/daq_capstone.dir/src/ui/AddSensorDialog.cpp.o:
 
 /usr/include/c++/14/bits/unordered_map.h:
 
-/usr/include/x86_64-linux-gnu/bits/unistd_ext.h:
-
-/usr/include/c++/14/limits:
-
 /usr/include/c++/14/iterator:
 
 /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/SensorSelectionDialog.h:
 
 /usr/include/wx-3.2/wx/wxcrtvararg.h:
+
+/usr/include/wx-3.2/wx/font.h:
+
+/lib/x86_64-linux-gnu/libatspi.so.0:
+
+/usr/include/c++/14/bits/unique_lock.h:
+
+/usr/include/c++/14/bits/stringfwd.h:
+
+/usr/include/c++/14/streambuf:
+
+/usr/include/c++/14/bits/string_view.tcc:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_sched_param.h:
+
+/usr/include/c++/14/bits/streambuf_iterator.h:
+
+/usr/include/c++/14/bits/ranges_cmp.h:
 
 /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/HandshakeDialog.h:
 
@@ -10154,14 +10368,6 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 /usr/include/c++/14/string_view:
 
 /usr/include/c++/14/bits/cxxabi_init_exception.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/wint_t.h:
-
-/usr/include/x86_64-linux-gnu/bits/struct_stat.h:
-
-/usr/include/signal.h:
-
-/usr/include/wx-3.2/wx/app.h:
 
 /usr/include/wx-3.2/wx/gtk/dialog.h:
 
@@ -10205,6 +10411,10 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 
 /usr/include/wx-3.2/wx/choicdlg.h:
 
+/usr/include/c++/14/bits/iterator_concepts.h:
+
+/usr/include/wx-3.2/wx/aui/dockart.h:
+
 /usr/include/c++/14/bits/basic_ios.tcc:
 
 /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/sensor/Sensor.cpp:
@@ -10223,15 +10433,25 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 
 /usr/include/stdio.h:
 
-/usr/include/c++/14/bits/stringfwd.h:
-
 /usr/include/c++/14/bits/alloc_traits.h:
+
+/usr/include/c++/14/bits/chrono_io.h:
+
+/usr/include/c++/14/bits/range_access.h:
+
+/usr/include/wx-3.2/wx/generic/paletteg.h:
+
+/usr/include/wx-3.2/wx/toolbar.h:
 
 /usr/include/wx-3.2/wx/generic/logg.h:
 
 /usr/include/c++/14/backward/binders.h:
 
 /usr/include/wx-3.2/wx/xti2.h:
+
+/usr/include/c++/14/cmath:
+
+/usr/include/wx-3.2/wx/imaggif.h:
 
 /usr/include/wx-3.2/wx/panel.h:
 
@@ -10261,12 +10481,6 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 
 /usr/include/c++/14/bits/cpp_type_traits.h:
 
-/usr/include/x86_64-linux-gnu/bits/types/sigset_t.h:
-
-/usr/include/wx-3.2/wx/aui/tabart.h:
-
-/usr/include/c++/14/new:
-
 /usr/include/x86_64-linux-gnu/bits/stdio_lim.h:
 
 /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/DataSession.h:
@@ -10285,9 +10499,25 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 
 /usr/include/c++/14/bits/stl_construct.h:
 
+/usr/include/c++/14/optional:
+
+/usr/include/x86_64-linux-gnu/bits/thread-shared-types.h:
+
+/usr/include/libintl.h:
+
+/lib/x86_64-linux-gnu/libbrotlidec.so.1:
+
+/usr/include/c++/14/bits/locale_classes.tcc:
+
+/usr/include/wx-3.2/wx/aui/auibar.h:
+
 /usr/include/wx-3.2/wx/gtk/dataform.h:
 
 /usr/include/locale.h:
+
+/usr/include/c++/14/bits/atomic_wait.h:
+
+/usr/include/wx-3.2/wx/accel.h:
 
 /usr/include/c++/14/bits/ostream_insert.h:
 
@@ -10295,17 +10525,13 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 
 /usr/include/c++/14/bits/stl_pair.h:
 
-/usr/include/x86_64-linux-gnu/bits/types/struct_sched_param.h:
-
-/usr/include/c++/14/bits/streambuf_iterator.h:
-
-/usr/include/c++/14/bits/ranges_cmp.h:
-
 /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/data/DataTableWindow.cpp:
 
 /usr/include/c++/14/bits/algorithmfwd.h:
 
 /usr/include/c++/14/bits/ptr_traits.h:
+
+/usr/include/c++/14/bits/locale_facets_nonio.tcc:
 
 /lib/x86_64-linux-gnu/libgtk-3.so.0:
 
@@ -10357,8 +10583,6 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 
 /usr/include/linux/stat.h:
 
-/usr/include/wx-3.2/wx/aui/floatpane.h:
-
 /usr/include/c++/14/bit:
 
 /usr/include/c++/14/bits/locale_facets.tcc:
@@ -10383,14 +10607,6 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 
 /usr/include/asm-generic/errno.h:
 
-/usr/include/c++/14/streambuf:
-
-/usr/include/c++/14/bits/string_view.tcc:
-
-/usr/include/wx-3.2/wx/aui/tabmdi.h:
-
-/usr/include/c++/14/bits/fstream.tcc:
-
 /usr/include/stdlib.h:
 
 /usr/include/c++/14/istream:
@@ -10398,6 +10614,8 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 /usr/include/x86_64-linux-gnu/bits/timesize.h:
 
 /usr/include/c++/14/algorithm:
+
+/usr/include/wx-3.2/wx/aui/floatpane.h:
 
 /usr/include/asm-generic/posix_types.h:
 
@@ -10415,6 +10633,10 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 
 /usr/include/c++/14/array:
 
+/usr/include/wx-3.2/wx/aui/tabmdi.h:
+
+/usr/include/c++/14/bits/fstream.tcc:
+
 /usr/include/c++/14/stop_token:
 
 /usr/include/c++/14/bits/char_traits.h:
@@ -10422,6 +10644,16 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 /usr/include/wx-3.2/wx/hashmap.h:
 
 /usr/include/c++/14/bits/hash_bytes.h:
+
+/usr/include/x86_64-linux-gnu/bits/statx.h:
+
+/usr/include/c++/14/bits/specfun.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:
+
+/usr/include/c++/14/bits/ranges_uninitialized.h:
+
+/usr/include/wx-3.2/wx/arrstr.h:
 
 /usr/include/wx-3.2/wx/buffer.h:
 
@@ -10431,9 +10663,15 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 
 /usr/include/x86_64-linux-gnu/bits/confname.h:
 
-/usr/include/c++/14/bits/ios_base.h:
+/lib/x86_64-linux-gnu/libwayland-egl.so.1:
 
-/usr/include/x86_64-linux-gnu/bits/posix2_lim.h:
+/usr/include/c++/14/bits/this_thread_sleep.h:
+
+/usr/include/c++/14/semaphore:
+
+/usr/include/c++/14/bits/invoke.h:
+
+/usr/include/c++/14/bits/ios_base.h:
 
 /usr/include/x86_64-linux-gnu/bits/getopt_posix.h:
 
@@ -10445,11 +10683,37 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 
 /usr/include/c++/14/backward/auto_ptr.h:
 
+/usr/include/x86_64-linux-gnu/c++/14/bits/gthr.h:
+
+/usr/include/c++/14/iosfwd:
+
+/usr/include/c++/14/ratio:
+
+/usr/include/x86_64-linux-gnu/bits/fcntl.h:
+
+/usr/include/c++/14/bits/atomic_timed_wait.h:
+
+/usr/include/wx-3.2/wx/gtk/window.h:
+
+/usr/include/c++/14/cwchar:
+
+/usr/include/wx-3.2/wx/imagpng.h:
+
+/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so.0:
+
+/usr/include/x86_64-linux-gnu/bits/fcntl-linux.h:
+
 /usr/include/c++/14/bits/streambuf.tcc:
+
+/usr/include/c++/14/bits/std_mutex.h:
+
+/usr/include/wx-3.2/wx/gtk/textctrl.h:
 
 /usr/include/c++/14/bits/localefwd.h:
 
 /usr/include/wx-3.2/wx/gtk/dataobj.h:
+
+/usr/include/c++/14/bits/sstream.tcc:
 
 /usr/include/linux/stddef.h:
 
@@ -10457,13 +10721,15 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 
 /usr/include/c++/14/bits/stl_tempbuf.h:
 
+/usr/include/c++/14/new:
+
+/usr/include/x86_64-linux-gnu/bits/types/sigset_t.h:
+
+/usr/include/wx-3.2/wx/aui/tabart.h:
+
 /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/serial/SerialComm.h:
 
 /usr/include/c++/14/mutex:
-
-/usr/include/x86_64-linux-gnu/bits/setjmp.h:
-
-/usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h:
 
 /usr/include/c++/14/bits/max_size_type.h:
 
@@ -10488,10 +10754,6 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 /usr/include/x86_64-linux-gnu/bits/posix_opt.h:
 
 /usr/include/c++/14/bits/nested_exception.h:
-
-/usr/include/wx-3.2/wx/imaggif.h:
-
-/usr/include/c++/14/cmath:
 
 /usr/lib/x86_64-linux-gnu/libc.so:
 
@@ -10523,15 +10785,23 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 
 /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/App.h:
 
-/usr/include/c++/14/bits/range_access.h:
+/usr/include/x86_64-linux-gnu/bits/types/__FILE.h:
 
-/usr/include/wx-3.2/wx/generic/paletteg.h:
+/usr/include/c++/14/tr1/poly_hermite.tcc:
 
-/usr/include/wx-3.2/wx/toolbar.h:
+CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o:
 
-/usr/include/wx-3.2/wx/any.h:
+/usr/include/wx-3.2/wx/gtk/choice.h:
 
-/usr/include/wx-3.2/wx/utils.h:
+/usr/include/x86_64-linux-gnu/bits/iscanonical.h:
+
+/usr/include/c++/14/bits/quoted_string.h:
+
+/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/ui/SensorConfigDialog.cpp:
+
+/usr/include/wx-3.2/wx/ctrlsub.h:
+
+/usr/include/wx-3.2/wx/defs.h:
 
 /usr/include/c++/14/numbers:
 
@@ -10542,12 +10812,6 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 /usr/include/c++/14/bits/ranges_algo.h:
 
 /usr/include/c++/14/bits/ranges_base.h:
-
-/usr/lib/linux/uapi/x86/asm/unistd_64.h:
-
-/usr/include/c++/14/bits/unique_ptr.h:
-
-/usr/include/wx-3.2/wx/aui/aui.h:
 
 /usr/include/x86_64-linux-gnu/bits/stdlib-float.h:
 
@@ -10569,25 +10833,31 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 
 /usr/include/c++/14/bits/shared_ptr_atomic.h:
 
+/usr/include/c++/14/vector:
+
+/usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h:
+
+/usr/include/c++/14/bits/uniform_int_dist.h:
+
 /usr/include/c++/14/pstl/pstl_config.h:
 
 /usr/include/wx-3.2/wx/dataobj.h:
 
-/usr/include/c++/14/bits/std_mutex.h:
-
-/usr/include/wx-3.2/wx/gtk/textctrl.h:
-
-/usr/include/c++/14/semaphore:
-
-/usr/include/c++/14/bits/invoke.h:
-
-/lib/x86_64-linux-gnu/libwayland-egl.so.1:
-
-/usr/include/c++/14/bits/this_thread_sleep.h:
-
 /usr/include/c++/14/functional:
 
 /usr/include/x86_64-linux-gnu/bits/dirent.h:
+
+/usr/include/wx-3.2/wx/meta/pod.h:
+
+/usr/include/wx-3.2/wx/translation.h:
+
+/usr/include/c++/14/charconv:
+
+/usr/include/c++/14/variant:
+
+/usr/include/c++/14/bits/codecvt.h:
+
+/usr/include/wx-3.2/wx/palette.h:
 
 /usr/include/x86_64-linux-gnu/c++/14/bits/c++locale.h:
 
@@ -10605,18 +10875,6 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 
 /usr/include/wx-3.2/wx/radiobox.h:
 
-/usr/include/c++/14/bits/atomic_timed_wait.h:
-
-/usr/include/wx-3.2/wx/gtk/window.h:
-
-/usr/include/c++/14/cwchar:
-
-/usr/include/wx-3.2/wx/imagpng.h:
-
-/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so.0:
-
-/usr/include/x86_64-linux-gnu/bits/fcntl-linux.h:
-
 /usr/include/x86_64-linux-gnu/c++/14/bits/ctype_base.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/locale_t.h:
@@ -10631,17 +10889,43 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 
 /usr/include/c++/14/bits/stream_iterator.h:
 
-/usr/include/c++/14/vector:
+/usr/include/wx-3.2/wx/affinematrix2d.h:
 
-/usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h:
+/usr/include/wx-3.2/wx/stream.h:
 
-/usr/include/c++/14/bits/uniform_int_dist.h:
+/usr/include/wx-3.2/wx/any.h:
 
-/usr/include/wx-3.2/wx/font.h:
+/usr/include/wx-3.2/wx/utils.h:
 
-/lib/x86_64-linux-gnu/libatspi.so.0:
+/usr/include/wx-3.2/wx/generic/panelg.h:
 
-/usr/include/c++/14/bits/unique_lock.h:
+/lib/x86_64-linux-gnu/libgraphite2.so.3:
+
+/usr/include/wx-3.2/wx/anystr.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/wint_t.h:
+
+/usr/include/x86_64-linux-gnu/bits/struct_stat.h:
+
+/usr/include/signal.h:
+
+/usr/include/wx-3.2/wx/app.h:
+
+/usr/include/c++/14/bits/locale_conv.h:
+
+/usr/include/wx-3.2/wx/atomic.h:
+
+/usr/include/wx-3.2/wx/vector.h:
+
+/usr/lib/linux/uapi/x86/asm/unistd_64.h:
+
+/usr/include/c++/14/bits/unique_ptr.h:
+
+/usr/include/wx-3.2/wx/aui/aui.h:
+
+/usr/include/c++/14/climits:
+
+/usr/include/wx-3.2/wx/aui/auibook.h:
 
 /usr/include/wx-3.2/wx/bitmap.h:
 
@@ -10669,8 +10953,6 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 
 /usr/include/wx-3.2/wx/choice.h:
 
-/usr/include/x86_64-linux-gnu/bits/signum-generic.h:
-
 /usr/include/x86_64-linux-gnu/bits/sigevent-consts.h:
 
 /usr/include/wx-3.2/wx/clntdata.h:
@@ -10692,12 +10974,6 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 /usr/include/wx-3.2/wx/containr.h:
 
 /usr/include/wx-3.2/wx/slider.h:
-
-/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/ui/SensorConfigDialog.cpp:
-
-/usr/include/wx-3.2/wx/ctrlsub.h:
-
-/usr/include/wx-3.2/wx/defs.h:
 
 /usr/include/wx-3.2/wx/cursor.h:
 
@@ -10726,6 +11002,10 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 /usr/include/wx-3.2/wx/debug.h:
 
 /usr/include/wx-3.2/wx/dialog.h:
+
+/usr/include/x86_64-linux-gnu/bits/siginfo-consts-arch.h:
+
+/usr/include/wx-3.2/wx/dirdlg.h:
 
 /usr/include/c++/14/fstream:
 
@@ -10819,6 +11099,8 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 
 /usr/include/wx-3.2/wx/geometry.h:
 
+/usr/include/wx-3.2/wx/graphics.h:
+
 /usr/include/wx-3.2/wx/grid.h:
 
 /usr/include/wx-3.2/wx/gtk/accel.h:
@@ -10844,10 +11126,6 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 /usr/include/c++/14/cstdlib:
 
 /usr/include/wx-3.2/wx/gtk/colour.h:
-
-/usr/include/x86_64-linux-gnu/bits/types.h:
-
-/usr/include/x86_64-linux-gnu/bits/signal_ext.h:
 
 /usr/include/wx-3.2/wx/gtk/combobox.h:
 
@@ -10905,12 +11183,6 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 
 /usr/include/wx-3.2/wx/gtk/slider.h:
 
-/usr/include/c++/14/variant:
-
-/usr/include/c++/14/bits/codecvt.h:
-
-/usr/include/wx-3.2/wx/palette.h:
-
 /usr/include/wx-3.2/wx/gtk/stattext.h:
 
 /usr/include/x86_64-linux-gnu/bits/byteswap.h:
@@ -10924,10 +11196,6 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 /usr/include/wx-3.2/wx/image.h:
 
 /usr/include/wx-3.2/wx/imagiff.h:
-
-/usr/include/c++/14/stdexcept:
-
-/usr/include/x86_64-linux-gnu/bits/select.h:
 
 /usr/include/wx-3.2/wx/imagjpeg.h:
 
@@ -10973,8 +11241,6 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 
 /usr/include/wx-3.2/wx/layout.h:
 
-/usr/include/x86_64-linux-gnu/bits/siginfo-consts.h:
-
 /usr/include/x86_64-linux-gnu/bits/sigthread.h:
 
 /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/GraphWindow.h:
@@ -10989,8 +11255,6 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 
 /usr/include/wx-3.2/wx/localedefs.h:
 
-/usr/include/x86_64-linux-gnu/bits/siginfo-arch.h:
-
 /usr/lib/x86_64-linux-gnu/libgcc_s.so.1:
 
 /usr/include/x86_64-linux-gnu/gnu/stubs.h:
@@ -11002,10 +11266,6 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 /usr/include/asm-generic/int-ll64.h:
 
 /usr/include/wx-3.2/wx/memory.h:
-
-/usr/include/wx-3.2/wx/dirdlg.h:
-
-/usr/include/x86_64-linux-gnu/bits/siginfo-consts-arch.h:
 
 /usr/include/wx-3.2/wx/menu.h:
 
@@ -11161,8 +11421,6 @@ CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o:
 
 /usr/include/x86_64-linux-gnu/bits/errno.h:
 
-/usr/include/x86_64-linux-gnu/bits/signum-arch.h:
-
 /usr/include/x86_64-linux-gnu/bits/floatn.h:
 
 /usr/include/x86_64-linux-gnu/bits/fp-fast.h:
@@ -11178,8 +11436,6 @@ CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o:
 /usr/include/c++/14/concepts:
 
 /usr/include/x86_64-linux-gnu/bits/math-vector.h:
-
-/usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h:
 
 /usr/lib/x86_64-linux-gnu/libwx_gtk3u_aui-3.2.so:
 

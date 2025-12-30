@@ -4,16 +4,23 @@
 DataSession::DataSession(const std::string& sensorName)
 	: m_sensorName(sensorName) 
 {
+	//record the starting time of the session
+	m_startTime = std::chrono::steady_clock::now();
 }
 
 //Add a value to the session by appending it to the vector of values
 void DataSession::addValue(double Value)
 {
 	/* std::lock_guard is a RAII=based mechanism in C++ that simplifies mutex management by automatically
-	   locking a mutex upon creation and keeps reference to it and unlocking it upon destruction (when the scope ends).
+	   locking a mutex upon creation and keeps reference to it and unlocking it upon destruction (when 
+           the scope ends).
 	*/ 
 	std::lock_guard<std::mutex> lock(m_mutex);
 	m_values.push_back(Value);
+
+	//compute and store elapsed tile
+	double t = std::chrono::duration<double>(std::chrono::steady_clock::now() - m_startTime).count();
+	m_timestamps.push_back(t);
 }
 
 //Return all collected values by returning a copy of the values vector
@@ -22,6 +29,13 @@ std::vector<double> DataSession::getValues() const
 	// return a copy under lock to avoid races
 	std::lock_guard<std::mutex> lock(m_mutex);
 	return m_values;
+}
+
+//return timestamp
+std::vector<double>DataSession::getTimestamps() const
+{
+	std::lock_guard<std::mutex> lock(m_mutex);
+	return m_timestamps;
 }
 
 //REturn sensorName
@@ -35,4 +49,8 @@ void DataSession::clear()
 {
 	std::lock_guard<std::mutex> lock(m_mutex);
 	m_values.clear();
+
+	m_timestamps.clear(); //clear timestmps
+	m_startTime = std::chrono::steady_clock::now(); //new restart time
 }
+

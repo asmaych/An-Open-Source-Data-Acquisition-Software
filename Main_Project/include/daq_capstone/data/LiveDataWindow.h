@@ -1,6 +1,9 @@
 #pragma once
 #include <wx/wx.h>
 #include "data/DataSession.h"
+#include "ui/Events.h"
+#include "sensor/Sensor.h"
+#include <vector>
 
 /* LiveDataWIndow class shows live values from sensor.
    It is a simple window that updates every time a new value is received from the sensor.
@@ -15,24 +18,20 @@ class LiveDataWindow : public wxFrame
 		here i am using explicit cause i don't want someone to accidentally pass two pointers and have the compiler
 		convert them into a LiveDataWindow without meaning to(do not create this object automatically).
 		*/
-		explicit LiveDataWindow(wxWindow* parent, DataSession* session);
+		LiveDataWindow(wxWindow* parent, const std::vector<Sensor*>& activeSensors);
 		
-		//default constructor (we do not need custom cleanup)
-		~LiveDataWindow() override = default;
-
-		//append the buffer of data received in serialComm to LiveDisplay
-		void appendBuffer(const std::string& buffer);
-
-		//Add a value to both the live display and the DataSession
+		//Called by ProjectPanel when new values arrive
 		void addValue(double value);
 
-		//Close handler - we keep default behavior (destruction)
+		// clears the display (used when user presses reset)
 		void clearDisplay();
 
 	private:
-		DataSession* m_session; //pointer to sensor's DataSession
+		void onFlush(wxTimerEvent& evt);
+
+		std::vector<double> m_buffer;
+		wxTimer m_timer; //Gui update timer (each 100 ms for now)
 		wxTextCtrl* m_display; //Multi-line text box to display real-time values
 		
-		
-
+		std::vector<Sensor*> m_sensors; //dynamically tracks sensors
 };

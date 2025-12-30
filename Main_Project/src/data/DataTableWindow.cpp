@@ -98,21 +98,25 @@ void DataTableWindow::updateTable()
 
 void DataTableWindow::appendRow(const std::vector<double>& rowValues)
 {
-	/*if(rowValues.empty())
-		return;
-	int colCount = m_grid -> GetNumberCols();
 
-	//safety check to ignore extra values and fill out missing with 0
-	std::vector<double> fixed = rowValues;
-	fixed.resize(colCount, 0.0);
-*/
 	int newRow = m_grid->GetNumberRows();
     	m_grid->AppendRows(1);
 
     	for(size_t col = 0; col < rowValues.size(); ++col)
     	{
-        	m_grid->SetCellValue(newRow, col, wxString::Format("%.2f", rowValues[col]));
-    	}
+		if(std::isnan(rowValues[col])){
+        		m_grid->SetCellValue(newRow, col, "0.0");
+    		}else{
+			if(col == 0){
+				//timestamp (double seconds)
+				time_t secs = static_cast<time_t>(rowValues[col]);
+				wxString tsStr = wxString::Format("%.3f", rowValues[col]);
+				m_grid -> SetCellValue(newRow, col, tsStr);
+			} else{
+				m_grid -> SetCellValue(newRow, col, wxString::Format("%.2f", rowValues[col]));
+			}
+		}
+	}
 
     	m_grid->AutoSizeColumns();
     	m_grid->ForceRefresh();

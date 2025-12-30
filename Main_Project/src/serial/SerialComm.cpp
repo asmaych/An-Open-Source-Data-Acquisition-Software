@@ -263,118 +263,97 @@ void SerialComm::addSensor(const std::string& sensorName, int pin)
 
 void SerialComm::readDataFrame(std::vector<std::unique_ptr<Sensor>>& sensors, std::string* rawFrame)
 {
-	/* \brief 	This function takes a reference to the vector of sensors
-	 * 		owned by Project, reads a data-frame from the connected 
-	 * 		microcontroller, and parses it into individual indexed
-	 * 		sensor readings. The readings are assigned to each
-	 * 		sensor in the vector, and the function call terminates.
-	 *
-	 * 		If there is no data available from the microcontroller,
-	 * 		the function terminates without doing anything.
-	 *
-	 * 		This function is designed to run on a continous
-	 * 		background thread - updating each sensor reading in the
-	 * 		project with new values as they are transmitted.
-	 */
+	 /* \brief       This function takes a reference to the vector of sensors
+         *              owned by Project, reads a data-frame from the connected 
+         *              microcontroller, and parses it into individual indexed
+         *              sensor readings. The readings are assigned to each
+         *              sensor in the vector, and the function call terminates.
+         *
+         *              If there is no data available from the microcontroller,
+         *              the function terminates without doing anything.
+         *
+         *              This function is designed to run on a continous
+         *              background thread - updating each sensor reading in the
+         *              project with new values as they are transmitted.
+         */
 
-	//quick check to make sure the port is opened for communication
-        if (port_status == PORT_CLOSED)
-        {
-                throw std::runtime_error("Error: Attempt to poll data from closed port");
-        }
+        //quick check to make sure the port is opened for communication
+	if (port_status == PORT_CLOSED)
+        	throw std::runtime_error("Error: Attempt to poll data from closed port");
 
 	//---------------------------------------------------------------------------------------------------
-	//READ A DATAFRAME FROM THE MICROCONTROLLER
-	//---------------------------------------------------------------------------------------------------
+        //READ A DATAFRAME FROM THE MICROCONTROLLER
+        //---------------------------------------------------------------------------------------------------
 
-	//make a buffer to store input
-	//max sensors = 10 (for now)  -> "r1,r2,r3,...,r10" <- dataframe structure
-	//
-	//9 commas, plus 10 readings of 0-4096 means a maximum of 49 characters in a dataframe
-	//
-	//let's just allocate 64 for now, and come back to this later if it bites us
+        //make a buffer to store input
+        //max sensors = 10 (for now)  -> "r1,r2,r3,...,r10" <- dataframe structure
+        //
+        //9 commas, plus 10 readings of 0-4096 means a maximum of 49 characters in a dataframe
+        //
+        //let's just allocate 64 for now, and come back to this later if it bites us
+        
 	char buffer[64];
 
-	//position variable used to help step through the indexes of buffer and read into each
-	int pos = 0;
-	
-	while (pos <= sizeof(buffer)-1)
-	{
-		//read a byte into each index of the buffer
-		int n = sp_blocking_read(port, &buffer[pos], 1, 100);
+    	// read as much data as possible in a single blocking call
+    	// - buffer size is limited to prevent overflow
+   	// - timeout is 100 ms
+    	int n = sp_blocking_read(port, buffer, sizeof(buffer) - 1, 100);
 
-		//break if the read ever returns an error
-		if (n <= 0)
-		{
-			break;
-		}
+    	// If no bytes were read, exit early
+    	if (n <= 0)
+        	return;
 
-		//if we reach a newline, also break
-		if (buffer[pos] == '\n')
-		{
-			break;
-		}
+    	// null-terminate the received data so it can be treated as a C-string
+   	buffer[n] = '\0';
 
-		//finally, increment the pos for the buffer reader
-		pos++;
+    	// remove newline or carriage return characters from the frame
+    	buffer[strcspn(buffer, "\r\n")] = '\0';
 
-	}
+    	// optionally return the raw frame string to the caller if requested
+    	if (rawFrame)
+        	*rawFrame = buffer;
+	std::cout << buffer << std::endl;
 
-	//null-terminate the buffer
-	buffer[pos] = '\0';
+    	// ---------------- PARSE FRAME ----------------
+    	// we expect a frame format of: "value1,value2,value3,..."
 
-	//HEREEEEE
-	std::cout << buffer << "\n" << std::endl;
+    	// pointer used to iterate through the buffer character by character
+    	char* ptr = buffer;
 
-	//return raw frame exactly as printed
-	if (rawFrame)
-		*rawFrame = buffer;
+    	// pointer marking the start of the current numeric token
+    	char* start = buffer;
 
-	//---------------------------------------------------------------------------------------------------
-	//NOW THAT WE HAVE THE DATAFRAME, WE PARSE IT AND UPDATE SENSOR VALUES
-	//---------------------------------------------------------------------------------------------------
-	
-	//pointer that will be used to traverse the buffer
-	char* ptr = buffer;
+    	// index used to map parsed values to sensor objects
+    	int index = 0;
 
-	//pointer that will be used always to point to the front of current token
-	char* start = buffer;
+    	// walk through the buffer until end-of-string or all sensors are filled
+    	for (; *ptr != '\0' && index < (int)sensors.size(); ++ptr)
+    	{
+        	// comma indicates the end of one numeric value (value of one sensor)
+        	if (*ptr == ',')
+        	{
+            		// replace comma with null terminator to isolate the number
+            		*ptr = '\0';
 
-	int index = 0;
+            		// convert ASCII number to integer and store in sensor
+            		sensors[index]->setReading(atoi(start));
 
-	//now iterate through the buffer, creating temporary c-style substrings
-	//each time we find a comma
-	for (; *ptr != '\0' && index < sensors.size(); ++ptr)
-	{
-		//if ptr points to a comma, then we change its value to a null
-		//so that we can read from start -> ptr as a single string, where
-		//we can convert the contents to int
-		if(*ptr == ',')
-		{
-			//replace comma with null character
-			*ptr = '\0';
-			
-			//set the corresponding sensor reading with the value
-			//that is cast to integer
-			sensors[index]->setReading(atoi(start));
+            		// jump to the next sensor
+            		index++;
 
-			//move the start pointer to one position past ptr
-			start = ptr+1;
+           		// move start pointer to the character after the comma
+            		start = ptr + 1;
+        	}
+    	}
 
-			//increment the index
-			index++;
-		}
-	}
+    	// handle the final value after the last comma (or the only value)
+    	if (index < (int)sensors.size() && *start != '\0')
+    	{
+        	// convert and store the final sensor reading
+        	sensors[index]->setReading(atoi(start));
+    	}
 
-	
-
-	//since there is no comma after the last reading, the above code will not
-	//capture it, so we need to manually handle it at the end
-	if (index < sensors.size() && *start != '\0')
-	{
-		sensors[index]->setReading(atoi(start));
-	}
-
+    	//std::cout << buffer << std::endl;
 }
 
 void SerialComm::cleanPort()

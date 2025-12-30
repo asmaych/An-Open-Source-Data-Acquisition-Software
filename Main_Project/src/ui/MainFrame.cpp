@@ -1,5 +1,6 @@
 #include "MainFrame.h"
 #include "ProjectPanel.h"
+#include "SensorSelectionDialog.h"
 #include <wx/wx.h>
 #include <wx/artprov.h> //this one provides default system icons for toolbar items
 #include "Sidebar.h"
@@ -198,52 +199,64 @@ void MainFrame::onOpenProject(wxCommandEvent& evt)
 
 void MainFrame::onStartToggle(wxCommandEvent&)
 {
-    ProjectPanel* p = getCurrentProjectPanel();
-    if (!p) { wxMessageBox("Please open or load a project first!", "Warning"); return; }
-    p->toggleStartStop(); // implemented in ProjectPanel
+    	ProjectPanel* p = getCurrentProjectPanel();
+    	if (!p) { wxMessageBox("Please open or load a project first!", "Warning"); return; }
+    	p->toggleStartStop(); // implemented in ProjectPanel
 }
 
 void MainFrame::onReset(wxCommandEvent&)
 {
-    ProjectPanel* p = getCurrentProjectPanel();
-    if (!p) { wxMessageBox("Please open or load a project first!", "Warning"); return; }
-    p->resetSessionData();
+    	ProjectPanel* p = getCurrentProjectPanel();
+    	if (!p) { wxMessageBox("Please open or load a project first!", "Warning"); return; }
+    	p->resetSessionData();
 }
 
 void MainFrame::onCollect(wxCommandEvent&)
 {
-    ProjectPanel* p = getCurrentProjectPanel();
-    if (!p) { wxMessageBox("Please open or load a project first!", "Warning"); return; }
-    p->collectContinuous();
+    	ProjectPanel* p = getCurrentProjectPanel();
+    	if (!p) { wxMessageBox("Please open or load a project first!", "Warning"); return; }
+    	p->collectContinuous();
 }
 
 void MainFrame::onCollectCurrent(wxCommandEvent&)
 {
-    ProjectPanel* p = getCurrentProjectPanel();
-    if (!p) { wxMessageBox("Please open or load a project first!", "Warning"); return; }
-    p->collectCurrentValues();
+    	ProjectPanel* p = getCurrentProjectPanel();
+    	if (!p) { wxMessageBox("Please open or load a project first!", "Warning"); return; }
+    	p->collectCurrentValues();
 }
 
-void MainFrame::onGraph(wxCommandEvent&)
+void MainFrame::onGraph(wxCommandEvent& evt)
 {
-    ProjectPanel* p = getCurrentProjectPanel();
-    if (!p) { wxMessageBox("Please open or load a project first!", "Warning"); return; }
-    p->graphSelectedSensor();
+         ProjectPanel* p = getCurrentProjectPanel();
+         if (!p) { wxMessageBox("Please open or load a project first!", "Warning"); return; }
+
+        //open selection dialog
+        std::vector<std::string> names;
+        for(auto& s : p -> m_sensors)
+                names.push_back(s -> getName());
+        SensorSelectionDialog dlg(this, names);
+        if(dlg.ShowModal() != wxID_OK)
+                return;
+        auto selected = dlg.getSelectedIndexes();
+
+        if(selected.empty()){
+                wxMessageBox("No sensor selected");
+        	return;
+	}
+
+        //only graph first selected
+        wxCommandEvent ev(wxEVT_NULL);
+        ev.SetInt(selected[0]);
+
+         p->graphSelectedSensor(ev);
 }
 
-/*void MainFrame::onSensor(wxCommandEvent&)
-{
-    ProjectPanel* p = getCurrentProjectPanel();
-    if (!p) { wxMessageBox("Please open or load a project first!", "Warning"); return; }
-    p->openSensorPanel();
-}
-*/
 void MainFrame::onExport(wxCommandEvent&)
 {
     ProjectPanel* p = getCurrentProjectPanel();
     if (!p) { wxMessageBox("Please open or load a project first!", "Warning"); return; }
     p->exportSessions();
-}
+} 
 
 void MainFrame::onSensor(wxCommandEvent& evt)
 {
@@ -254,6 +267,7 @@ void MainFrame::onSensor(wxCommandEvent& evt)
         }
         project ->onSensors();
 }
+
 
 void MainFrame::setStartToggleToStop()
 {

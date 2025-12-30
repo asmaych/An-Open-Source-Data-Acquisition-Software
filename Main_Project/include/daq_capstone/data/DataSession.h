@@ -3,6 +3,7 @@
 #include <string>
 #include <fstream>
 #include <mutex>
+#include <chrono>
 
 /* DataSession is a simple container that stores the collected data for a single sensor. 
    Each sensor has its own DataSession object to hold all the values that we read from the sensor which keeps data organized per     
@@ -21,6 +22,7 @@ class DataSession{
 		//return all values collected so far & sensorName
 		std::vector<double> getValues() const;
 		std::string getSensorName() const;
+		std::vector<double> getTimestamps() const;
 		
 		//clear all values to reset session
 		void clear();
@@ -34,5 +36,8 @@ class DataSession{
 		mutable std::mutex m_mutex;
 		
 		std::vector<double> m_values; //List of the values collected
+
+		std::vector<double> m_timestamps;
+		std::chrono::steady_clock::time_point m_startTime;
 };
 
