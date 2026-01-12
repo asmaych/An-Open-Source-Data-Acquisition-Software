@@ -28,6 +28,7 @@ add_executable(daq_capstone
 	src/data/LiveDataWindow.cpp
 	src/data/GraphWindow.cpp
 	src/data/DataSession.cpp
+	src/data/Run.cpp
 	src/controllers/SessionController.cpp
         src/controllers/DataCollector.cpp
         src/controllers/ExportManager.cpp

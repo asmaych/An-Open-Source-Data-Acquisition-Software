@@ -6,7 +6,7 @@
 #include <thread>
 #include "serial/SerialComm.h"
 #include "ui/ProjectPanel.h"
-
+#include "data/Run.h"
 
 /* SessionController is a class that is responsible for start/stop/reset lifecycle handling.
    It doesn't itself poll the serial port, projectPanel still polls.
@@ -22,7 +22,7 @@ class SessionController {
 
 	public:
 		SessionController();
-		SessionController(SerialComm* serial, std::vector<std::unique_ptr<DataSession>>* sessions, DataCollector* collector, 
+		SessionController(SerialComm* serial, std::vector<std::shared_ptr<Run>>* runs,
 					ProjectPanel* panel, std::vector<std::unique_ptr<Sensor>>* sensors);
 
 		//Start the experiment (set running as true). returns true if started.
@@ -42,9 +42,8 @@ class SessionController {
 
 	private:
 		SerialComm* m_serial = nullptr;
-    		std::vector<std::unique_ptr<DataSession>>* m_sessions = nullptr;
-    		DataCollector* m_collector = nullptr;
-    		ProjectPanel* m_panel = nullptr;
+    		std::vector<std::shared_ptr<Run>>* m_runs = nullptr;
+     		ProjectPanel* m_panel = nullptr;
 		std::vector<std::unique_ptr<Sensor>>* m_sensors = nullptr;
 		std::atomic<bool> m_running;
 		std::thread m_thread;

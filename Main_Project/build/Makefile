@@ -321,6 +321,30 @@ src/data/LiveDataWindow.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.s
 .PHONY : src/data/LiveDataWindow.cpp.s
 
+src/data/Run.o: src/data/Run.cpp.o
+.PHONY : src/data/Run.o
+
+# target to build an object file
+src/data/Run.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/data/Run.cpp.o
+.PHONY : src/data/Run.cpp.o
+
+src/data/Run.i: src/data/Run.cpp.i
+.PHONY : src/data/Run.i
+
+# target to preprocess a source file
+src/data/Run.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/data/Run.cpp.i
+.PHONY : src/data/Run.cpp.i
+
+src/data/Run.s: src/data/Run.cpp.s
+.PHONY : src/data/Run.s
+
+# target to generate assembly for a file
+src/data/Run.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/data/Run.cpp.s
+.PHONY : src/data/Run.cpp.s
+
 src/sensor/Sensor.o: src/sensor/Sensor.cpp.o
 .PHONY : src/sensor/Sensor.o
 
@@ -618,6 +642,9 @@ help:
 	@echo "... src/data/LiveDataWindow.o"
 	@echo "... src/data/LiveDataWindow.i"
 	@echo "... src/data/LiveDataWindow.s"
+	@echo "... src/data/Run.o"
+	@echo "... src/data/Run.i"
+	@echo "... src/data/Run.s"
 	@echo "... src/sensor/Sensor.o"
 	@echo "... src/sensor/Sensor.i"
 	@echo "... src/sensor/Sensor.s"

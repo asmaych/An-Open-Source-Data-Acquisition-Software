@@ -1,43 +1,44 @@
 #pragma once
 #include <wx/wx.h>
+#include <wx/notebook.h>
+#include <memory>
 #include "data/DataSession.h"
+#include "data/Run.h"
 #include "ui/Events.h"
 #include "sensor/Sensor.h"
 #include <vector>
 
-/* LiveDataWIndow class shows live values from sensor.
-   It is a simple window that updates every time a new value is received from the sensor.
-   I am usong wxTextCntrl to display values in a multi-line form.
-   It also stores a reference to the DataSession object, so every new value is saved to the session as well as shown live.
+class Run;
+/* LiveDataWIndow class displays live data during acquisition.
+   Each run is shown in its OWN tab.
+   Format: time : v1, v2, v3 ...
+   wxTextCntrl is used to display values in a multi-line form.
 */
 
 class LiveDataWindow : public wxFrame
 {
 	public:
-		/*constructor where parent is the parent window (the Mainframe) and session is a pointer to DataSession
-		here i am using explicit cause i don't want someone to accidentally pass two pointers and have the compiler
-		convert them into a LiveDataWindow without meaning to(do not create this object automatically).
+		/*Constructor
+			- parent is the parent window (the Mainframe).
+			- explicit is used to protect the compiler from passing a pointer by accident and convert it
+			into a LiveDataWindow without meaning to(do not create this object automatically).
 		*/
-		LiveDataWindow(wxWindow* parent, const std::vector<Sensor*>& activeSensors);
+		LiveDataWindow(wxWindow* parent);
 		
-		//Called by ProjectPanel when new values arrive
-		void addValue(double value);
+		//called when Start pressed
+		void startNewRun(std::shared_ptr<Run> run);
 
-		//return a copy of all buffered values
-		std::vector <double> getBufferedValues() const;
+		//called when Stop is pressed
+		void stopRun();
 
-		//clears the buffer
-		void clearBuffer();
+		//called for every incoming frame
+		void addFrame(double time, const std::vector<double>& values);
 
-		// clears the display (used when user presses reset)
-		void clearDisplay();
+		//clear all liveWIndow
+		void clearAll();
 
 	private:
-		void onFlush(wxTimerEvent& evt);
-
-		std::vector<double> m_buffer;
-		wxTimer m_timer; //Gui update timer (each 100 ms for now)
-		wxTextCtrl* m_display; //Multi-line text box to display real-time values
-		
-		std::vector<Sensor*> m_sensors; //dynamically tracks sensors
+		wxNotebook* m_notebook = nullptr;; //notebook to create tabs
+		wxTextCtrl* m_activeTextCtrl = nullptr; //Multi-line text box to display real-time values
+		std::shared_ptr<Run> m_activeRun; //currently active/open run
 };

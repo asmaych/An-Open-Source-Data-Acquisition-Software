@@ -277,6 +277,7 @@ void SerialComm::readDataFrame(std::vector<std::unique_ptr<Sensor>>& sensors, st
          *              project with new values as they are transmitted.
          */
 
+
         //quick check to make sure the port is opened for communication
 	if (port_status == PORT_CLOSED)
         	throw std::runtime_error("Error: Attempt to poll data from closed port");
@@ -299,7 +300,7 @@ void SerialComm::readDataFrame(std::vector<std::unique_ptr<Sensor>>& sensors, st
    	// - timeout is 100 ms
     	int n = sp_blocking_read(port, buffer, sizeof(buffer) - 1, 100);
 
-    	// If no bytes were read, exit early
+ 	// If no bytes were read, exit early
     	if (n <= 0)
         	return;
 
@@ -312,7 +313,7 @@ void SerialComm::readDataFrame(std::vector<std::unique_ptr<Sensor>>& sensors, st
     	// optionally return the raw frame string to the caller if requested
     	if (rawFrame)
         	*rawFrame = buffer;
-	std::cout << buffer << std::endl;
+	//std::cout << buffer << std::endl;
 
     	// ---------------- PARSE FRAME ----------------
     	// we expect a frame format of: "value1,value2,value3,..."

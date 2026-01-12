@@ -7,17 +7,12 @@ CMakeFiles/daq_capstone.dir/src/App.cpp.o: /home/asmaych/An-Open-Source-Data-Acq
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/controllers/ExportManager.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/controllers/SessionController.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/DataSession.h \
-  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/DataTableWindow.h \
-  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/GraphWindow.h \
-  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/LiveDataWindow.h \
+  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/Run.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/sensor/Sensor.h \
-  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/sensor/SensorManager.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/serial/SerialComm.h \
-  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/Events.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/HandshakeDialog.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/MainFrame.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/ProjectPanel.h \
-  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/SensorConfigDialog.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/Sidebar.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/bitsperlong.h \
@@ -332,9 +327,6 @@ CMakeFiles/daq_capstone.dir/src/App.cpp.o: /home/asmaych/An-Open-Source-Data-Acq
   /usr/include/wx-3.2/wx/gdiobj.h \
   /usr/include/wx-3.2/wx/generic/accel.h \
   /usr/include/wx-3.2/wx/generic/choicdgg.h \
-  /usr/include/wx-3.2/wx/generic/grid.h \
-  /usr/include/wx-3.2/wx/generic/gridctrl.h \
-  /usr/include/wx-3.2/wx/generic/grideditors.h \
   /usr/include/wx-3.2/wx/generic/icon.h \
   /usr/include/wx-3.2/wx/generic/imaglist.h \
   /usr/include/wx-3.2/wx/generic/listctrl.h \
@@ -345,8 +337,6 @@ CMakeFiles/daq_capstone.dir/src/App.cpp.o: /home/asmaych/An-Open-Source-Data-Acq
   /usr/include/wx-3.2/wx/generic/statusbr.h \
   /usr/include/wx-3.2/wx/generic/textdlgg.h \
   /usr/include/wx-3.2/wx/geometry.h \
-  /usr/include/wx-3.2/wx/graphics.h \
-  /usr/include/wx-3.2/wx/grid.h \
   /usr/include/wx-3.2/wx/gtk/accel.h \
   /usr/include/wx-3.2/wx/gtk/anybutton.h \
   /usr/include/wx-3.2/wx/gtk/app.h \
@@ -1273,18 +1263,10 @@ CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o: /home/asmay
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/controllers/ExportManager.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/controllers/SessionController.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/DataSession.h \
-  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/DataTableWindow.h \
-  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/GraphWindow.h \
-  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/LiveDataWindow.h \
+  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/Run.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/sensor/Sensor.h \
-  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/sensor/SensorManager.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/serial/SerialComm.h \
-  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/Events.h \
-  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/HandshakeDialog.h \
-  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/MainFrame.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/ProjectPanel.h \
-  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/SensorConfigDialog.h \
-  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/Sidebar.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/bitsperlong.h \
   /usr/include/asm-generic/errno-base.h \
@@ -1535,19 +1517,10 @@ CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o: /home/asmay
   /usr/include/wx-3.2/wx/app.h \
   /usr/include/wx-3.2/wx/arrstr.h \
   /usr/include/wx-3.2/wx/atomic.h \
-  /usr/include/wx-3.2/wx/aui/aui.h \
-  /usr/include/wx-3.2/wx/aui/auibar.h \
-  /usr/include/wx-3.2/wx/aui/auibook.h \
-  /usr/include/wx-3.2/wx/aui/dockart.h \
-  /usr/include/wx-3.2/wx/aui/floatpane.h \
-  /usr/include/wx-3.2/wx/aui/framemanager.h \
-  /usr/include/wx-3.2/wx/aui/tabart.h \
-  /usr/include/wx-3.2/wx/aui/tabmdi.h \
   /usr/include/wx-3.2/wx/beforestd.h \
   /usr/include/wx-3.2/wx/bitmap.h \
   /usr/include/wx-3.2/wx/bmpbndl.h \
   /usr/include/wx-3.2/wx/bmpbuttn.h \
-  /usr/include/wx-3.2/wx/bookctrl.h \
   /usr/include/wx-3.2/wx/brush.h \
   /usr/include/wx-3.2/wx/buffer.h \
   /usr/include/wx-3.2/wx/build.h \
@@ -1598,9 +1571,6 @@ CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o: /home/asmay
   /usr/include/wx-3.2/wx/gdiobj.h \
   /usr/include/wx-3.2/wx/generic/accel.h \
   /usr/include/wx-3.2/wx/generic/choicdgg.h \
-  /usr/include/wx-3.2/wx/generic/grid.h \
-  /usr/include/wx-3.2/wx/generic/gridctrl.h \
-  /usr/include/wx-3.2/wx/generic/grideditors.h \
   /usr/include/wx-3.2/wx/generic/icon.h \
   /usr/include/wx-3.2/wx/generic/imaglist.h \
   /usr/include/wx-3.2/wx/generic/listctrl.h \
@@ -1611,8 +1581,6 @@ CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o: /home/asmay
   /usr/include/wx-3.2/wx/generic/statusbr.h \
   /usr/include/wx-3.2/wx/generic/textdlgg.h \
   /usr/include/wx-3.2/wx/geometry.h \
-  /usr/include/wx-3.2/wx/graphics.h \
-  /usr/include/wx-3.2/wx/grid.h \
   /usr/include/wx-3.2/wx/gtk/accel.h \
   /usr/include/wx-3.2/wx/gtk/anybutton.h \
   /usr/include/wx-3.2/wx/gtk/app.h \
@@ -1642,10 +1610,8 @@ CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o: /home/asmay
   /usr/include/wx-3.2/wx/gtk/mdi.h \
   /usr/include/wx-3.2/wx/gtk/menu.h \
   /usr/include/wx-3.2/wx/gtk/menuitem.h \
-  /usr/include/wx-3.2/wx/gtk/minifram.h \
   /usr/include/wx-3.2/wx/gtk/msgdlg.h \
   /usr/include/wx-3.2/wx/gtk/nonownedwnd.h \
-  /usr/include/wx-3.2/wx/gtk/notebook.h \
   /usr/include/wx-3.2/wx/gtk/pen.h \
   /usr/include/wx-3.2/wx/gtk/radiobox.h \
   /usr/include/wx-3.2/wx/gtk/radiobut.h \
@@ -1705,13 +1671,11 @@ CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o: /home/asmay
   /usr/include/wx-3.2/wx/meta/movable.h \
   /usr/include/wx-3.2/wx/meta/pod.h \
   /usr/include/wx-3.2/wx/meta/removeref.h \
-  /usr/include/wx-3.2/wx/minifram.h \
   /usr/include/wx-3.2/wx/module.h \
   /usr/include/wx-3.2/wx/mousestate.h \
   /usr/include/wx-3.2/wx/msgdlg.h \
   /usr/include/wx-3.2/wx/msgout.h \
   /usr/include/wx-3.2/wx/nonownedwnd.h \
-  /usr/include/wx-3.2/wx/notebook.h \
   /usr/include/wx-3.2/wx/object.h \
   /usr/include/wx-3.2/wx/palette.h \
   /usr/include/wx-3.2/wx/panel.h \
@@ -2200,6 +2164,7 @@ CMakeFiles/daq_capstone.dir/src/data/DataSession.cpp.o: /home/asmaych/An-Open-So
 CMakeFiles/daq_capstone.dir/src/data/DataTableWindow.cpp.o: /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/data/DataTableWindow.cpp \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/DataSession.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/DataTableWindow.h \
+  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/Run.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/bitsperlong.h \
   /usr/include/asm-generic/errno-base.h \
@@ -3412,6 +3377,7 @@ CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o: /home/asmaych/An-Open-So
 CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/data/LiveDataWindow.cpp \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/DataSession.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/LiveDataWindow.h \
+  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/Run.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/sensor/Sensor.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/Events.h \
   /usr/include/alloca.h \
@@ -3425,6 +3391,7 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: /home/asmaych/An-Open
   /usr/include/c++/14/algorithm \
   /usr/include/c++/14/array \
   /usr/include/c++/14/atomic \
+  /usr/include/c++/14/backward/auto_ptr.h \
   /usr/include/c++/14/backward/binders.h \
   /usr/include/c++/14/bit \
   /usr/include/c++/14/bits/algorithmfwd.h \
@@ -3490,10 +3457,12 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: /home/asmaych/An-Open
   /usr/include/c++/14/bits/ranges_algobase.h \
   /usr/include/c++/14/bits/ranges_base.h \
   /usr/include/c++/14/bits/ranges_cmp.h \
+  /usr/include/c++/14/bits/ranges_uninitialized.h \
   /usr/include/c++/14/bits/ranges_util.h \
   /usr/include/c++/14/bits/refwrap.h \
   /usr/include/c++/14/bits/requires_hosted.h \
   /usr/include/c++/14/bits/shared_ptr.h \
+  /usr/include/c++/14/bits/shared_ptr_atomic.h \
   /usr/include/c++/14/bits/shared_ptr_base.h \
   /usr/include/c++/14/bits/specfun.h \
   /usr/include/c++/14/bits/sstream.tcc \
@@ -3510,6 +3479,7 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: /home/asmaych/An-Open
   /usr/include/c++/14/bits/stl_iterator_base_funcs.h \
   /usr/include/c++/14/bits/stl_iterator_base_types.h \
   /usr/include/c++/14/bits/stl_pair.h \
+  /usr/include/c++/14/bits/stl_raw_storage_iter.h \
   /usr/include/c++/14/bits/stl_relops.h \
   /usr/include/c++/14/bits/stl_tempbuf.h \
   /usr/include/c++/14/bits/stl_uninitialized.h \
@@ -3569,6 +3539,7 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: /home/asmaych/An-Open
   /usr/include/c++/14/limits \
   /usr/include/c++/14/locale \
   /usr/include/c++/14/math.h \
+  /usr/include/c++/14/memory \
   /usr/include/c++/14/mutex \
   /usr/include/c++/14/new \
   /usr/include/c++/14/numbers \
@@ -3576,6 +3547,7 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: /home/asmaych/An-Open
   /usr/include/c++/14/ostream \
   /usr/include/c++/14/pstl/execution_defs.h \
   /usr/include/c++/14/pstl/glue_algorithm_defs.h \
+  /usr/include/c++/14/pstl/glue_memory_defs.h \
   /usr/include/c++/14/pstl/pstl_config.h \
   /usr/include/c++/14/ratio \
   /usr/include/c++/14/span \
@@ -3653,6 +3625,7 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: /home/asmaych/An-Open
   /usr/include/wx-3.2/wx/bitmap.h \
   /usr/include/wx-3.2/wx/bmpbndl.h \
   /usr/include/wx-3.2/wx/bmpbuttn.h \
+  /usr/include/wx-3.2/wx/bookctrl.h \
   /usr/include/wx-3.2/wx/brush.h \
   /usr/include/wx-3.2/wx/buffer.h \
   /usr/include/wx-3.2/wx/build.h \
@@ -3704,6 +3677,7 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: /home/asmaych/An-Open
   /usr/include/wx-3.2/wx/generic/accel.h \
   /usr/include/wx-3.2/wx/generic/choicdgg.h \
   /usr/include/wx-3.2/wx/generic/icon.h \
+  /usr/include/wx-3.2/wx/generic/imaglist.h \
   /usr/include/wx-3.2/wx/generic/logg.h \
   /usr/include/wx-3.2/wx/generic/msgdlgg.h \
   /usr/include/wx-3.2/wx/generic/paletteg.h \
@@ -3742,6 +3716,7 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: /home/asmaych/An-Open
   /usr/include/wx-3.2/wx/gtk/menuitem.h \
   /usr/include/wx-3.2/wx/gtk/msgdlg.h \
   /usr/include/wx-3.2/wx/gtk/nonownedwnd.h \
+  /usr/include/wx-3.2/wx/gtk/notebook.h \
   /usr/include/wx-3.2/wx/gtk/pen.h \
   /usr/include/wx-3.2/wx/gtk/radiobox.h \
   /usr/include/wx-3.2/wx/gtk/radiobut.h \
@@ -3767,6 +3742,7 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: /home/asmaych/An-Open
   /usr/include/wx-3.2/wx/imaggif.h \
   /usr/include/wx-3.2/wx/imagiff.h \
   /usr/include/wx-3.2/wx/imagjpeg.h \
+  /usr/include/wx-3.2/wx/imaglist.h \
   /usr/include/wx-3.2/wx/imagpcx.h \
   /usr/include/wx-3.2/wx/imagpng.h \
   /usr/include/wx-3.2/wx/imagpnm.h \
@@ -3802,6 +3778,7 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: /home/asmaych/An-Open
   /usr/include/wx-3.2/wx/msgdlg.h \
   /usr/include/wx-3.2/wx/msgout.h \
   /usr/include/wx-3.2/wx/nonownedwnd.h \
+  /usr/include/wx-3.2/wx/notebook.h \
   /usr/include/wx-3.2/wx/object.h \
   /usr/include/wx-3.2/wx/palette.h \
   /usr/include/wx-3.2/wx/panel.h \
@@ -3859,6 +3836,7 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: /home/asmaych/An-Open
   /usr/include/wx-3.2/wx/weakref.h \
   /usr/include/wx-3.2/wx/window.h \
   /usr/include/wx-3.2/wx/windowid.h \
+  /usr/include/wx-3.2/wx/withimages.h \
   /usr/include/wx-3.2/wx/wx.h \
   /usr/include/wx-3.2/wx/wxcrt.h \
   /usr/include/wx-3.2/wx/wxcrtbase.h \
@@ -4016,6 +3994,79 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: /home/asmaych/An-Open
   /usr/lib/linux/uapi/x86/asm/unistd.h \
   /usr/lib/linux/uapi/x86/asm/unistd_64.h \
   /usr/lib/x86_64-linux-gnu/wx/include/gtk3-unicode-3.2/wx/setup.h
+
+CMakeFiles/daq_capstone.dir/src/data/Run.cpp.o: /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/data/Run.cpp \
+  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/Run.h \
+  /usr/include/c++/14/backward/binders.h \
+  /usr/include/c++/14/bit \
+  /usr/include/c++/14/bits/alloc_traits.h \
+  /usr/include/c++/14/bits/allocator.h \
+  /usr/include/c++/14/bits/concept_check.h \
+  /usr/include/c++/14/bits/cpp_type_traits.h \
+  /usr/include/c++/14/bits/exception.h \
+  /usr/include/c++/14/bits/exception_defines.h \
+  /usr/include/c++/14/bits/functexcept.h \
+  /usr/include/c++/14/bits/functional_hash.h \
+  /usr/include/c++/14/bits/hash_bytes.h \
+  /usr/include/c++/14/bits/invoke.h \
+  /usr/include/c++/14/bits/iterator_concepts.h \
+  /usr/include/c++/14/bits/max_size_type.h \
+  /usr/include/c++/14/bits/memory_resource.h \
+  /usr/include/c++/14/bits/memoryfwd.h \
+  /usr/include/c++/14/bits/move.h \
+  /usr/include/c++/14/bits/new_allocator.h \
+  /usr/include/c++/14/bits/predefined_ops.h \
+  /usr/include/c++/14/bits/ptr_traits.h \
+  /usr/include/c++/14/bits/range_access.h \
+  /usr/include/c++/14/bits/ranges_base.h \
+  /usr/include/c++/14/bits/ranges_cmp.h \
+  /usr/include/c++/14/bits/ranges_util.h \
+  /usr/include/c++/14/bits/refwrap.h \
+  /usr/include/c++/14/bits/requires_hosted.h \
+  /usr/include/c++/14/bits/stl_algobase.h \
+  /usr/include/c++/14/bits/stl_bvector.h \
+  /usr/include/c++/14/bits/stl_construct.h \
+  /usr/include/c++/14/bits/stl_function.h \
+  /usr/include/c++/14/bits/stl_iterator.h \
+  /usr/include/c++/14/bits/stl_iterator_base_funcs.h \
+  /usr/include/c++/14/bits/stl_iterator_base_types.h \
+  /usr/include/c++/14/bits/stl_pair.h \
+  /usr/include/c++/14/bits/stl_uninitialized.h \
+  /usr/include/c++/14/bits/stl_vector.h \
+  /usr/include/c++/14/bits/uses_allocator.h \
+  /usr/include/c++/14/bits/uses_allocator_args.h \
+  /usr/include/c++/14/bits/utility.h \
+  /usr/include/c++/14/bits/vector.tcc \
+  /usr/include/c++/14/bits/version.h \
+  /usr/include/c++/14/compare \
+  /usr/include/c++/14/concepts \
+  /usr/include/c++/14/cstddef \
+  /usr/include/c++/14/debug/assertions.h \
+  /usr/include/c++/14/debug/debug.h \
+  /usr/include/c++/14/ext/alloc_traits.h \
+  /usr/include/c++/14/ext/numeric_traits.h \
+  /usr/include/c++/14/ext/type_traits.h \
+  /usr/include/c++/14/initializer_list \
+  /usr/include/c++/14/new \
+  /usr/include/c++/14/numbers \
+  /usr/include/c++/14/pstl/pstl_config.h \
+  /usr/include/c++/14/tuple \
+  /usr/include/c++/14/type_traits \
+  /usr/include/c++/14/vector \
+  /usr/include/features-time64.h \
+  /usr/include/features.h \
+  /usr/include/stdc-predef.h \
+  /usr/include/x86_64-linux-gnu/bits/long-double.h \
+  /usr/include/x86_64-linux-gnu/bits/timesize.h \
+  /usr/include/x86_64-linux-gnu/bits/wordsize.h \
+  /usr/include/x86_64-linux-gnu/c++/14/bits/c++allocator.h \
+  /usr/include/x86_64-linux-gnu/c++/14/bits/c++config.h \
+  /usr/include/x86_64-linux-gnu/c++/14/bits/cpu_defines.h \
+  /usr/include/x86_64-linux-gnu/c++/14/bits/os_defines.h \
+  /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
+  /usr/include/x86_64-linux-gnu/gnu/stubs.h \
+  /usr/include/x86_64-linux-gnu/sys/cdefs.h \
+  /usr/lib/gcc/x86_64-linux-gnu/14/include/stddef.h
 
 CMakeFiles/daq_capstone.dir/src/sensor/Sensor.cpp.o: /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/sensor/Sensor.cpp \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/sensor/Sensor.h \
@@ -6592,17 +6643,13 @@ CMakeFiles/daq_capstone.dir/src/ui/MainFrame.cpp.o: /home/asmaych/An-Open-Source
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/controllers/ExportManager.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/controllers/SessionController.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/DataSession.h \
-  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/DataTableWindow.h \
-  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/GraphWindow.h \
-  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/LiveDataWindow.h \
+  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/Run.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/sensor/Sensor.h \
-  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/sensor/SensorManager.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/serial/SerialComm.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/Events.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/HandshakeDialog.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/MainFrame.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/ProjectPanel.h \
-  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/SensorConfigDialog.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/SensorSelectionDialog.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/Sidebar.h \
   /usr/include/alloca.h \
@@ -6919,9 +6966,6 @@ CMakeFiles/daq_capstone.dir/src/ui/MainFrame.cpp.o: /home/asmaych/An-Open-Source
   /usr/include/wx-3.2/wx/gdiobj.h \
   /usr/include/wx-3.2/wx/generic/accel.h \
   /usr/include/wx-3.2/wx/generic/choicdgg.h \
-  /usr/include/wx-3.2/wx/generic/grid.h \
-  /usr/include/wx-3.2/wx/generic/gridctrl.h \
-  /usr/include/wx-3.2/wx/generic/grideditors.h \
   /usr/include/wx-3.2/wx/generic/icon.h \
   /usr/include/wx-3.2/wx/generic/imaglist.h \
   /usr/include/wx-3.2/wx/generic/listctrl.h \
@@ -6932,8 +6976,6 @@ CMakeFiles/daq_capstone.dir/src/ui/MainFrame.cpp.o: /home/asmaych/An-Open-Source
   /usr/include/wx-3.2/wx/generic/statusbr.h \
   /usr/include/wx-3.2/wx/generic/textdlgg.h \
   /usr/include/wx-3.2/wx/geometry.h \
-  /usr/include/wx-3.2/wx/graphics.h \
-  /usr/include/wx-3.2/wx/grid.h \
   /usr/include/wx-3.2/wx/gtk/accel.h \
   /usr/include/wx-3.2/wx/gtk/anybutton.h \
   /usr/include/wx-3.2/wx/gtk/app.h \
@@ -7260,6 +7302,7 @@ CMakeFiles/daq_capstone.dir/src/ui/ProjectPanel.cpp.o: /home/asmaych/An-Open-Sou
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/DataTableWindow.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/GraphWindow.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/LiveDataWindow.h \
+  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/Run.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/sensor/Sensor.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/sensor/SensorManager.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/serial/SerialComm.h \
@@ -9072,17 +9115,13 @@ CMakeFiles/daq_capstone.dir/src/ui/Sidebar.cpp.o: /home/asmaych/An-Open-Source-D
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/controllers/ExportManager.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/controllers/SessionController.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/DataSession.h \
-  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/DataTableWindow.h \
-  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/GraphWindow.h \
-  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/LiveDataWindow.h \
+  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/Run.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/sensor/Sensor.h \
-  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/sensor/SensorManager.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/serial/SerialComm.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/Events.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/HandshakeDialog.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/MainFrame.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/ProjectPanel.h \
-  /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/SensorConfigDialog.h \
   /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/Sidebar.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/bitsperlong.h \
@@ -9397,9 +9436,6 @@ CMakeFiles/daq_capstone.dir/src/ui/Sidebar.cpp.o: /home/asmaych/An-Open-Source-D
   /usr/include/wx-3.2/wx/gdiobj.h \
   /usr/include/wx-3.2/wx/generic/accel.h \
   /usr/include/wx-3.2/wx/generic/choicdgg.h \
-  /usr/include/wx-3.2/wx/generic/grid.h \
-  /usr/include/wx-3.2/wx/generic/gridctrl.h \
-  /usr/include/wx-3.2/wx/generic/grideditors.h \
   /usr/include/wx-3.2/wx/generic/icon.h \
   /usr/include/wx-3.2/wx/generic/imaglist.h \
   /usr/include/wx-3.2/wx/generic/listctrl.h \
@@ -9410,8 +9446,6 @@ CMakeFiles/daq_capstone.dir/src/ui/Sidebar.cpp.o: /home/asmaych/An-Open-Source-D
   /usr/include/wx-3.2/wx/generic/statusbr.h \
   /usr/include/wx-3.2/wx/generic/textdlgg.h \
   /usr/include/wx-3.2/wx/geometry.h \
-  /usr/include/wx-3.2/wx/graphics.h \
-  /usr/include/wx-3.2/wx/grid.h \
   /usr/include/wx-3.2/wx/gtk/accel.h \
   /usr/include/wx-3.2/wx/gtk/anybutton.h \
   /usr/include/wx-3.2/wx/gtk/app.h \
@@ -9834,6 +9868,7 @@ daq_capstone: /lib/x86_64-linux-gnu/libICE.so.6 \
   CMakeFiles/daq_capstone.dir/src/data/DataTableWindow.cpp.o \
   CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o \
   CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o \
+  CMakeFiles/daq_capstone.dir/src/data/Run.cpp.o \
   CMakeFiles/daq_capstone.dir/src/sensor/Sensor.cpp.o \
   CMakeFiles/daq_capstone.dir/src/sensor/SensorManager.cpp.o \
   CMakeFiles/daq_capstone.dir/src/serial/SerialComm.cpp.o \
@@ -9989,7 +10024,23 @@ CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.o:
 
 /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/sensor/SensorManager.cpp:
 
+/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/data/Run.cpp:
+
+/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/Events.h:
+
+/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/LiveDataWindow.h:
+
+/usr/include/wx-3.2/wx/graphics.h:
+
 /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/data/GraphWindow.cpp:
+
+/usr/include/wx-3.2/wx/grid.h:
+
+/usr/include/wx-3.2/wx/generic/grideditors.h:
+
+/lib/x86_64-linux-gnu/libharfbuzz.so.0:
+
+/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/DataTableWindow.h:
 
 /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/data/DataSession.cpp:
 
@@ -10113,9 +10164,15 @@ CMakeFiles/daq_capstone.dir/src/sensor/SensorManager.cpp.o:
 
 /usr/include/x86_64-linux-gnu/bits/time.h:
 
+CMakeFiles/daq_capstone.dir/src/data/Run.cpp.o:
+
 /usr/include/x86_64-linux-gnu/bits/syscall.h:
 
 /usr/include/x86_64-linux-gnu/bits/struct_mutex.h:
+
+/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/sensor/SensorManager.h:
+
+/usr/include/x86_64-linux-gnu/bits/stdint-intn.h:
 
 /usr/include/x86_64-linux-gnu/bits/waitstatus.h:
 
@@ -10143,19 +10200,19 @@ CMakeFiles/daq_capstone.dir/src/sensor/SensorManager.cpp.o:
 
 /usr/include/x86_64-linux-gnu/bits/sigcontext.h:
 
-/usr/include/x86_64-linux-gnu/bits/sched.h:
+/usr/include/wx-3.2/wx/stream.h:
 
-/lib/x86_64-linux-gnu/libgdk-3.so.0:
+/usr/include/wx-3.2/wx/affinematrix2d.h:
 
-/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:
+/usr/include/wx-3.2/wx/accel.h:
 
-/usr/include/x86_64-linux-gnu/bits/setjmp.h:
+/usr/include/c++/14/bits/atomic_wait.h:
 
-/usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h:
+/usr/include/time.h:
 
-/usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h:
+/usr/include/wx-3.2/wx/cpp.h:
 
-/usr/include/x86_64-linux-gnu/bits/posix2_lim.h:
+/usr/include/wx-3.2/wx/stringimpl.h:
 
 /usr/include/strings.h:
 
@@ -10199,9 +10256,11 @@ CMakeFiles/daq_capstone.dir/src/sensor/SensorManager.cpp.o:
 
 /usr/include/c++/14/type_traits:
 
-/usr/include/x86_64-linux-gnu/bits/select.h:
+/usr/include/wx-3.2/wx/generic/gridctrl.h:
 
-/usr/include/c++/14/stdexcept:
+/usr/include/wx-3.2/wx/generic/grid.h:
+
+/usr/include/c++/14/tr1/special_function_util.h:
 
 /usr/include/wx-3.2/wx/gdiobj.h:
 
@@ -10217,6 +10276,8 @@ CMakeFiles/daq_capstone.dir/src/sensor/SensorManager.cpp.o:
 
 /usr/include/wx-3.2/wx/textdlg.h:
 
+/usr/include/c++/14/thread:
+
 /usr/include/c++/14/sstream:
 
 /usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h:
@@ -10230,6 +10291,8 @@ CMakeFiles/daq_capstone.dir/src/sensor/SensorManager.cpp.o:
 /lib/x86_64-linux-gnu/libexpat.so.1:
 
 /usr/include/wx-3.2/wx/statbmp.h:
+
+/usr/include/x86_64-linux-gnu/bits/sched.h:
 
 CMakeFiles/daq_capstone.dir/src/serial/SerialComm.cpp.o:
 
@@ -10256,6 +10319,10 @@ CMakeFiles/daq_capstone.dir/src/serial/SerialComm.cpp.o:
 /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h:
 
 /usr/include/c++/14/bits/postypes.h:
+
+/lib/x86_64-linux-gnu/libgdk-3.so.0:
+
+/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:
 
 /usr/include/wx-3.2/wx/object.h:
 
@@ -10303,6 +10370,8 @@ CMakeFiles/daq_capstone.dir/src/serial/SerialComm.cpp.o:
 
 /usr/include/c++/14/string:
 
+/usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h:
+
 CMakeFiles/daq_capstone.dir/src/ui/AddSensorDialog.cpp.o:
 
 /usr/include/c++/14/cerrno:
@@ -10333,17 +10402,13 @@ CMakeFiles/daq_capstone.dir/src/ui/AddSensorDialog.cpp.o:
 
 /usr/include/c++/14/bits/unique_lock.h:
 
-/usr/include/c++/14/bits/stringfwd.h:
+/usr/include/pthread.h:
 
-/usr/include/c++/14/streambuf:
+/usr/include/c++/14/bits/functexcept.h:
 
-/usr/include/c++/14/bits/string_view.tcc:
+/usr/include/wx-3.2/wx/gtk/cursor.h:
 
-/usr/include/x86_64-linux-gnu/bits/types/struct_sched_param.h:
-
-/usr/include/c++/14/bits/streambuf_iterator.h:
-
-/usr/include/c++/14/bits/ranges_cmp.h:
+/usr/include/wx-3.2/wx/gtk/dialog.h:
 
 /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/HandshakeDialog.h:
 
@@ -10352,6 +10417,10 @@ CMakeFiles/daq_capstone.dir/src/ui/AddSensorDialog.cpp.o:
 /usr/include/wx-3.2/wx/icon.h:
 
 /usr/include/wx-3.2/wx/rtti.h:
+
+/usr/include/linux/stat.h:
+
+/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/Sidebar.h:
 
 /usr/include/c++/14/bits/enable_special_members.h:
 
@@ -10369,13 +10438,15 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 
 /usr/include/c++/14/bits/cxxabi_init_exception.h:
 
-/usr/include/wx-3.2/wx/gtk/dialog.h:
+/usr/include/c++/14/bits/align.h:
 
-/usr/include/pthread.h:
+/usr/include/c++/14/ext/aligned_buffer.h:
 
-/usr/include/c++/14/bits/functexcept.h:
+/lib/x86_64-linux-gnu/libsystemd.so.0:
 
-/usr/include/wx-3.2/wx/gtk/cursor.h:
+/usr/include/c++/14/bits/ostream.tcc:
+
+/usr/include/c++/14/bits/cpp_type_traits.h:
 
 /usr/include/c++/14/tr1/riemann_zeta.tcc:
 
@@ -10385,41 +10456,11 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 
 /usr/include/c++/14/bits/basic_string.h:
 
-/usr/include/c++/14/thread:
-
-/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/LiveDataWindow.h:
-
-/usr/include/c++/14/bits/move.h:
-
-/usr/include/wx-3.2/wx/event.h:
-
 /usr/include/c++/14/clocale:
 
 /usr/include/c++/14/bits/basic_string.tcc:
 
 /usr/include/c++/14/bits/ranges_util.h:
-
-/usr/lib/x86_64-linux-gnu/libcairo-gobject.so.2:
-
-/usr/include/c++/14/stdlib.h:
-
-/usr/include/x86_64-linux-gnu/bits/long-double.h:
-
-/usr/include/c++/14/pstl/glue_memory_defs.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/timer_t.h:
-
-/usr/include/wx-3.2/wx/choicdlg.h:
-
-/usr/include/c++/14/bits/iterator_concepts.h:
-
-/usr/include/wx-3.2/wx/aui/dockart.h:
-
-/usr/include/c++/14/bits/basic_ios.tcc:
-
-/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/sensor/Sensor.cpp:
-
-/usr/include/c++/14/bits/charconv.h:
 
 /usr/include/c++/14/bits/allocator.h:
 
@@ -10433,71 +10474,9 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 
 /usr/include/stdio.h:
 
+/usr/include/c++/14/bits/stringfwd.h:
+
 /usr/include/c++/14/bits/alloc_traits.h:
-
-/usr/include/c++/14/bits/chrono_io.h:
-
-/usr/include/c++/14/bits/range_access.h:
-
-/usr/include/wx-3.2/wx/generic/paletteg.h:
-
-/usr/include/wx-3.2/wx/toolbar.h:
-
-/usr/include/wx-3.2/wx/generic/logg.h:
-
-/usr/include/c++/14/backward/binders.h:
-
-/usr/include/wx-3.2/wx/xti2.h:
-
-/usr/include/c++/14/cmath:
-
-/usr/include/wx-3.2/wx/imaggif.h:
-
-/usr/include/wx-3.2/wx/panel.h:
-
-/usr/include/c++/14/bits/shared_ptr.h:
-
-/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/Events.h:
-
-/lib/x86_64-linux-gnu/libharfbuzz.so.0:
-
-/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/DataTableWindow.h:
-
-/usr/include/wx-3.2/wx/dynarray.h:
-
-/usr/include/c++/14/bits/istream.tcc:
-
-/usr/include/wx-3.2/wx/checklst.h:
-
-/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/ProjectPanel.h:
-
-/usr/include/c++/14/bits/align.h:
-
-/usr/include/c++/14/ext/aligned_buffer.h:
-
-/lib/x86_64-linux-gnu/libsystemd.so.0:
-
-/usr/include/c++/14/bits/ostream.tcc:
-
-/usr/include/c++/14/bits/cpp_type_traits.h:
-
-/usr/include/x86_64-linux-gnu/bits/stdio_lim.h:
-
-/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/DataSession.h:
-
-/usr/include/assert.h:
-
-/usr/include/c++/14/bits/stl_iterator_base_funcs.h:
-
-/usr/include/x86_64-linux-gnu/bits/floatn-common.h:
-
-/usr/include/linux/sched/types.h:
-
-/usr/include/linux/limits.h:
-
-/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/controllers/SessionController.h:
-
-/usr/include/c++/14/bits/stl_construct.h:
 
 /usr/include/c++/14/optional:
 
@@ -10515,15 +10494,47 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 
 /usr/include/locale.h:
 
-/usr/include/c++/14/bits/atomic_wait.h:
+/usr/include/x86_64-linux-gnu/bits/floatn-common.h:
 
-/usr/include/wx-3.2/wx/accel.h:
+/usr/include/linux/sched/types.h:
 
-/usr/include/c++/14/bits/ostream_insert.h:
+/usr/include/linux/limits.h:
 
-/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/ui/HandshakeDialog.cpp:
+/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/controllers/SessionController.h:
 
-/usr/include/c++/14/bits/stl_pair.h:
+/usr/include/c++/14/bits/stl_construct.h:
+
+/usr/include/wx-3.2/wx/dynarray.h:
+
+/usr/include/c++/14/bits/istream.tcc:
+
+/usr/include/wx-3.2/wx/checklst.h:
+
+/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/ProjectPanel.h:
+
+/usr/lib/x86_64-linux-gnu/libcairo-gobject.so.2:
+
+/usr/include/c++/14/stdlib.h:
+
+/usr/include/x86_64-linux-gnu/bits/long-double.h:
+
+/usr/include/c++/14/pstl/glue_memory_defs.h:
+
+/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/Run.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/timer_t.h:
+
+/usr/include/wx-3.2/wx/choicdlg.h:
+
+/usr/include/c++/14/bits/iterator_concepts.h:
+
+/usr/include/wx-3.2/wx/aui/dockart.h:
+
+/usr/include/c++/14/bits/basic_ios.tcc:
+
+/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/sensor/Sensor.cpp:
+
+/usr/include/c++/14/bits/charconv.h:
 
 /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/data/DataTableWindow.cpp:
 
@@ -10533,19 +10544,41 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 
 /usr/include/c++/14/bits/locale_facets_nonio.tcc:
 
-/lib/x86_64-linux-gnu/libgtk-3.so.0:
+/usr/include/x86_64-linux-gnu/bits/stdio_lim.h:
 
-/usr/include/alloca.h:
+/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/DataSession.h:
 
-/usr/include/wx-3.2/wx/itemattr.h:
+/usr/include/assert.h:
 
-/usr/include/time.h:
+/usr/include/c++/14/bits/stl_iterator_base_funcs.h:
 
-/usr/include/wx-3.2/wx/cpp.h:
+/usr/include/c++/14/cmath:
 
-/usr/include/wx-3.2/wx/stringimpl.h:
+/usr/include/wx-3.2/wx/imaggif.h:
 
-/usr/include/wx-3.2/wx/gtk/brush.h:
+/usr/include/wx-3.2/wx/panel.h:
+
+/usr/include/c++/14/bits/shared_ptr.h:
+
+/usr/include/c++/14/bits/chrono_io.h:
+
+/usr/include/c++/14/bits/range_access.h:
+
+/usr/include/wx-3.2/wx/generic/paletteg.h:
+
+/usr/include/wx-3.2/wx/toolbar.h:
+
+/usr/include/wx-3.2/wx/generic/logg.h:
+
+/usr/include/c++/14/backward/binders.h:
+
+/usr/include/wx-3.2/wx/xti2.h:
+
+/usr/include/c++/14/unordered_map:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h:
+
+/usr/include/wx-3.2/wx/gtk/scrolbar.h:
 
 /usr/include/c++/14/utility:
 
@@ -10573,16 +10606,6 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 
 /usr/include/c++/14/bits/cxxabi_forced.h:
 
-/usr/include/c++/14/unordered_map:
-
-/usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h:
-
-/usr/include/wx-3.2/wx/gtk/scrolbar.h:
-
-/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/ui/Sidebar.h:
-
-/usr/include/linux/stat.h:
-
 /usr/include/c++/14/bit:
 
 /usr/include/c++/14/bits/locale_facets.tcc:
@@ -10607,6 +10630,14 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 
 /usr/include/asm-generic/errno.h:
 
+/usr/include/c++/14/streambuf:
+
+/usr/include/c++/14/bits/string_view.tcc:
+
+/usr/include/wx-3.2/wx/aui/tabmdi.h:
+
+/usr/include/c++/14/bits/fstream.tcc:
+
 /usr/include/stdlib.h:
 
 /usr/include/c++/14/istream:
@@ -10614,6 +10645,18 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 /usr/include/x86_64-linux-gnu/bits/timesize.h:
 
 /usr/include/c++/14/algorithm:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_sched_param.h:
+
+/usr/include/c++/14/bits/streambuf_iterator.h:
+
+/usr/include/c++/14/bits/ranges_cmp.h:
+
+/usr/include/c++/14/bits/ostream_insert.h:
+
+/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/ui/HandshakeDialog.cpp:
+
+/usr/include/c++/14/bits/stl_pair.h:
 
 /usr/include/wx-3.2/wx/aui/floatpane.h:
 
@@ -10630,12 +10673,6 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 /lib/x86_64-linux-gnu/libfreetype.so.6:
 
 /usr/include/wx-3.2/wx/gtk/mdi.h:
-
-/usr/include/c++/14/array:
-
-/usr/include/wx-3.2/wx/aui/tabmdi.h:
-
-/usr/include/c++/14/bits/fstream.tcc:
 
 /usr/include/c++/14/stop_token:
 
@@ -10655,6 +10692,8 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 
 /usr/include/wx-3.2/wx/arrstr.h:
 
+/usr/include/c++/14/array:
+
 /usr/include/wx-3.2/wx/buffer.h:
 
 /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/ui/MainFrame.cpp:
@@ -10663,15 +10702,9 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 
 /usr/include/x86_64-linux-gnu/bits/confname.h:
 
-/lib/x86_64-linux-gnu/libwayland-egl.so.1:
-
-/usr/include/c++/14/bits/this_thread_sleep.h:
-
-/usr/include/c++/14/semaphore:
-
-/usr/include/c++/14/bits/invoke.h:
-
 /usr/include/c++/14/bits/ios_base.h:
+
+/usr/include/x86_64-linux-gnu/bits/posix2_lim.h:
 
 /usr/include/x86_64-linux-gnu/bits/getopt_posix.h:
 
@@ -10731,6 +10764,10 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 
 /usr/include/c++/14/mutex:
 
+/usr/include/x86_64-linux-gnu/bits/setjmp.h:
+
+/usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h:
+
 /usr/include/c++/14/bits/max_size_type.h:
 
 /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/App.cpp:
@@ -10774,16 +10811,6 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o:
 /usr/include/sched.h:
 
 /usr/include/c++/14/bits/new_allocator.h:
-
-/usr/include/c++/14/tr1/beta_function.tcc:
-
-/usr/include/x86_64-linux-gnu/bits/wctype-wchar.h:
-
-/usr/include/c++/14/bits/shared_ptr_base.h:
-
-/usr/include/wx-3.2/wx/generic/statusbr.h:
-
-/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/App.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/__FILE.h:
 
@@ -10839,9 +10866,23 @@ CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o:
 
 /usr/include/c++/14/bits/uniform_int_dist.h:
 
+/usr/include/x86_64-linux-gnu/bits/wctype-wchar.h:
+
+/usr/include/c++/14/bits/shared_ptr_base.h:
+
+/usr/include/c++/14/tr1/beta_function.tcc:
+
 /usr/include/c++/14/pstl/pstl_config.h:
 
 /usr/include/wx-3.2/wx/dataobj.h:
+
+/usr/include/c++/14/semaphore:
+
+/usr/include/c++/14/bits/invoke.h:
+
+/lib/x86_64-linux-gnu/libwayland-egl.so.1:
+
+/usr/include/c++/14/bits/this_thread_sleep.h:
 
 /usr/include/c++/14/functional:
 
@@ -10883,15 +10924,11 @@ CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o:
 
 /usr/include/c++/14/bits/stl_relops.h:
 
-/usr/include/x86_64-linux-gnu/bits/stdint-intn.h:
-
-/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/sensor/SensorManager.h:
-
 /usr/include/c++/14/bits/stream_iterator.h:
 
-/usr/include/wx-3.2/wx/affinematrix2d.h:
+/usr/include/wx-3.2/wx/generic/statusbr.h:
 
-/usr/include/wx-3.2/wx/stream.h:
+/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/App.h:
 
 /usr/include/wx-3.2/wx/any.h:
 
@@ -11015,6 +11052,10 @@ CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o:
 
 /usr/include/wx-3.2/wx/dlimpexp.h:
 
+/usr/include/c++/14/bits/move.h:
+
+/usr/include/wx-3.2/wx/event.h:
+
 /usr/include/wx-3.2/wx/eventfilter.h:
 
 /usr/include/c++/14/pstl/glue_algorithm_defs.h:
@@ -11065,18 +11106,6 @@ CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o:
 
 /usr/include/wx-3.2/wx/generic/choicdgg.h:
 
-/usr/include/c++/14/tr1/special_function_util.h:
-
-/usr/include/wx-3.2/wx/generic/grid.h:
-
-/usr/include/wx-3.2/wx/generic/gridctrl.h:
-
-/usr/include/wx-3.2/wx/generic/grideditors.h:
-
-/usr/include/wx-3.2/wx/gtk/anybutton.h:
-
-/usr/include/wx-3.2/wx/nonownedwnd.h:
-
 /usr/include/wx-3.2/wx/generic/imaglist.h:
 
 /usr/include/wx-3.2/wx/variant.h:
@@ -11099,17 +11128,19 @@ CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o:
 
 /usr/include/wx-3.2/wx/geometry.h:
 
-/usr/include/wx-3.2/wx/graphics.h:
-
-/usr/include/wx-3.2/wx/grid.h:
-
 /usr/include/wx-3.2/wx/gtk/accel.h:
+
+/usr/include/wx-3.2/wx/gtk/anybutton.h:
+
+/usr/include/wx-3.2/wx/nonownedwnd.h:
 
 /usr/include/wx-3.2/wx/gtk/app.h:
 
 /usr/include/wx-3.2/wx/valtext.h:
 
 /usr/include/wx-3.2/wx/gtk/bmpbuttn.h:
+
+/usr/include/wx-3.2/wx/gtk/brush.h:
 
 /usr/include/wx-3.2/wx/dcclient.h:
 
@@ -11197,6 +11228,10 @@ CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o:
 
 /usr/include/wx-3.2/wx/imagiff.h:
 
+/usr/include/c++/14/stdexcept:
+
+/usr/include/x86_64-linux-gnu/bits/select.h:
+
 /usr/include/wx-3.2/wx/imagjpeg.h:
 
 /usr/include/x86_64-linux-gnu/bits/sigaction.h:
@@ -11237,13 +11272,19 @@ CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o:
 
 /usr/include/wx-3.2/wx/ioswrap.h:
 
+/lib/x86_64-linux-gnu/libgtk-3.so.0:
+
+/usr/include/alloca.h:
+
+/usr/include/wx-3.2/wx/itemattr.h:
+
 /usr/include/c++/14/debug/assertions.h:
 
 /usr/include/wx-3.2/wx/layout.h:
 
-/usr/include/x86_64-linux-gnu/bits/sigthread.h:
-
 /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/include/daq_capstone/data/GraphWindow.h:
+
+/usr/include/x86_64-linux-gnu/bits/sigthread.h:
 
 /usr/include/wx-3.2/wx/listbase.h:
 

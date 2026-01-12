@@ -1,18 +1,21 @@
 #include <wx/msgdlg.h>
 #include <wx/filedlg.h>
+#include <wx/datetime.h>
 #include "ProjectPanel.h"
 #include "Events.h"
 #include "HandshakeDialog.h"
+#include "SensorConfigDialog.h"
 #include "data/GraphWindow.h"
+#include "data/LiveDataWindow.h"
 #include "data/DataTableWindow.h"
 #include "data/DataSession.h"
 #include "sensor/Sensor.h"
 #include "sensor/SensorManager.h"
 #include "serial/SerialComm.h"
 #include "SensorSelectionDialog.h"
-#include <chrono>
-#include <iostream>
-#include <thread>
+#include "data/Run.h"
+#include "controllers/SessionController.h"
+#include "MainFrame.h"
 
 ProjectPanel::ProjectPanel(wxWindow* parent, const wxString& title)
 	: wxPanel(parent, wxID_ANY)
@@ -45,92 +48,53 @@ ProjectPanel::ProjectPanel(wxWindow* parent, const wxString& title)
 		refreshSensorList();
 	});
 
-	//create data collector
-	m_collector = std::make_unique<DataCollector>();
-	m_collector -> setMode(CollectionMode::Continuous);
+	m_liveWindow = std::make_unique<LiveDataWindow>(this);
 
 	//Bind events
 	Bind(wxEVT_SERIAL_UPDATE, &ProjectPanel::onSerialUpdate, this);
 	Bind(wxEVT_HANDSHAKE, &ProjectPanel::onHandshakeSuccess, this);
-	//Bind(wxEVT_OPEN_SENSOR_GRAPH, &ProjectPanel::onGraph, this);
 }
 
 
 ProjectPanel::~ProjectPanel()
 {
-	/* This destructor is explicitly implemented so that the threads 
-	 * created during runtime get shut down when the ProjectFrame
-	 * lifetime ends
-	 */
-	stopPollingIfNeeded();
-
-	for(auto* graph: m_graphWindows){
-		delete graph;
-	}
-	
-	m_graphWindows.clear();
-	
-	//delete the single collect window
-	if(m_tableWindow){
-		m_tableWindow -> Destroy();
-		m_tableWindow = nullptr;
-	}
+	//make sure no run is left active when panel is destroyed
+	stopRun();
 }
 
 
-int ProjectPanel::getSelectedSensorIndex() const
-{
-	long index = m_sensorList -> GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-	if(index == -1){
-		return -1;
-	}
-	return static_cast<int>(index);
-}
-
-
-void ProjectPanel::refreshSensorList()
-{
-	m_sensorList -> DeleteAllItems();
-	for(size_t i = 0; i < m_sensors.size(); ++i){
-		auto* s = m_sensors[i].get();
-		long index = m_sensorList -> InsertItem(i, s -> getName());
-		m_sensorList -> SetItem(index, 1, std::to_string (s -> getPin()));
-		ensureSessionForSensor(i);
-	}
-}
-
-//open Handshake dialog
+//opens the dialog that lets the user pick a serial port and perform the handshake with the microprocessor
 void ProjectPanel::openConnectDialog()
 {
-	//if handshake already done, let the user know
-	if (handshakeComplete) {
-		wxMessageBox("Already connected to microprocessor.", "Info");
-		return;
-	}
-	//stack allocate the dialog, and show it:
-	HandshakeDialog handshaker(this, "Select serial port", m_serial.get());
-	handshaker.ShowModal();
+	HandshakeDialog dlg(this, "Connect", m_serial.get());
+	dlg.ShowModal();
 }
 
 
+//called when the handshake dialog finishes, to check whether the connection succeeded or not
 void ProjectPanel::onHandshakeSuccess(wxThreadEvent& evt)
 {
-	//evt is a thread event, and GetPayload<bool> gets the result of the handshake (T = success)
- 	bool success = evt.GetPayload<bool>();
-    	if (success)
-    	{
-		handshakeComplete = true;
-        	wxLogStatus("Handshake successful - ready to poll!");
-        
-		// Start polling sensors now that the connection is ready
-        	m_controller = std::make_unique<SessionController>(m_serial.get(), &m_sessions, m_collector.get(), this, &m_sensors);
-    	}
-    	else
-    	{
-        	wxLogError("Handshake failed!");
-    	}
+	bool success = evt.GetPayload<bool>();
+	if(!success){
+		wxLogStatus("Handshake failed!");
+		return;
+	}
+
+	handshakeComplete = true;
+
+	wxLogStatus("Handshake successful!");
+
+	//Create the session controller
+	m_controller = std::make_unique<SessionController>(m_serial.get(), &m_runs, this, &m_sensors);
+
+	//start polling immediately
+	m_controller -> start();
 }
 
+
+// ========================== RUN CONTROL ===============================
+
+//called when start/stop button is pressed to toggle between starting a new run and stopping the current one
 void ProjectPanel::toggleStartStop()
 {
 	if(!handshakeComplete){
@@ -138,291 +102,208 @@ void ProjectPanel::toggleStartStop()
 		return;
 	}
 
-	if(!isRunning){
-		//TRYING SMTH
+	if(!m_isRunning){
+		// ================= START RUN ==================
+		// tell the microprocessor to start streaming
 		if(m_serial){
 			m_serial -> writeString("start");
 		}
 
-		startPollingIfNeeded();
-		wxLogStatus("Started Polling");
+		//start the run
+		startRun();
 
-		//update toolbar button from start to stop
+		//update toolbar button
 		if(m_mainFrame){
 			m_mainFrame -> setStartToggleToStop();
 		}
-		isRunning = true;
+
+		wxLogStatus("Run Started");
 	}
 
 	else{
+		// ================= STOP RUN ======================
+		//tell the microprocessor to stop streaming
+		if(m_serial){
+			m_serial -> writeString("stop");
+		}
 
-		stopPollingIfNeeded();
-		wxLogStatus("Stopped polling");
+		//stop the run
+		stopRun();
 
-		//here as well
-                if(m_serial){
-                        m_serial -> writeString("stop");
-                }
-
-
-		//update toolbar
+		//update toolbar button
 		if(m_mainFrame){
 			m_mainFrame -> setStartToggleToStart();
 		}
-		isRunning = false;
-	}
 
+		wxLogStatus("Run stopped");
+	}
 }
 
 
-void ProjectPanel::startPollingIfNeeded()
+//starts a new continuous acquisition run taht stores timestamps and frmaes (vector of sensor values)
+void ProjectPanel::startRun()
 {
-	/* \brief 	This function is used to open up a background thread
-	 * 		whose only purpose is to read the incoming dataframes
-	 * 		from the connected microcontroller, parse each frame,
-	 * 		and assign sensor readings to all objects in the 
-	 * 		class member m_sensors.
-	 */
+	//create a new run with an incrementing run number
+	m_currentRun = std::make_shared<Run>(m_runs.size() + 1);
+	m_runs.push_back(m_currentRun);
 
-	if(!handshakeComplete)
-		return;
-	if(isRunning)
-		return;
+	//store absolute OS time so we can convert to "run time"
+	m_runStartTime = wxGetUTCTimeMillis().ToDouble() / 1000.0;
 
-	//populate activeSensors with the current sensor pointers
-	m_activeSensors.clear();
-	for(auto& sensor: m_sensors) {
-		m_activeSensors.push_back(sensor.get());
-	}
+	//tell the live window to create a new tab for this run
+	m_liveWindow -> startNewRun(m_currentRun);
+	m_liveWindow -> Show();
 
-	//create LiveDataWindow if it doesn't exist
-	if(!m_liveWindow){
-		m_liveWindow = std::make_unique<LiveDataWindow>(this, m_activeSensors);
-		m_liveWindow -> Show();
-	}
-
-	if (m_controller){
-		m_controller -> start();
-	}
-
-	isRunning = true;
+	m_isRunning = true;
 }
 
 
-void ProjectPanel::stopPollingIfNeeded()
+//stops the current run and the data remains stored in m_run
+void ProjectPanel::stopRun()
 {
-	/* \brief the purpose of this method is to safely shut down the 
-	 * background polling of sensor data from the microcontroller. 
-	 *
-	 *
-	 */
-
-	if(m_controller){
-		m_controller -> stop();
-	}
-
-	isRunning = false;
-}
-
-
-void ProjectPanel::ensureSessionForSensor(size_t index)
-{
-	if(index >= m_sessions.size()){
-		while(m_sessions.size() <= index) {
-			//use the actual sensor name
-			std::string sensorName = m_sensors[m_sessions.size()] -> getName();
-			m_sessions.push_back(std::make_unique<DataSession>(sensorName));
-		}
-	}
-}
-
-void ProjectPanel::collectContinuous()
-{
-	//if no sensors selected yet or table not created
-	if(m_selectedContinuousIndexes.empty())
-	{
-		//check if there are any sensors in the project
-		if(m_sensors.empty()){
-			wxMessageBox("No sensors available in project.");
-			return;
-		}
-
-		//prepare a list of sensor names for the selection dialog
-		std::vector<std::string> names;
-		for(auto& sensor : m_sensors){
-			names.push_back(sensor -> getName());
-		}
-
-		//create and show the sensor selection dialog
-		SensorSelectionDialog dlg(this, names);
-
-		//exit if user cancels
-		if(dlg.ShowModal() != wxID_OK){
-			return;
-		}
-
-		//get indexes of sensors selected by the user
-		m_selectedContinuousIndexes = dlg.getSelectedIndexes();
-
-		//warn if none selected
-		if(m_selectedContinuousIndexes.empty()){
-			wxMessageBox("No sensors selected");
-			return;
-		}
-	}
-
-	if(!m_liveWindow){
-		wxMessageBox("Live window not running. Start polling first.");
+	if(!m_isRunning)
 		return;
-	}
 
-	//read all buffered values from live window
-	std::vector<double> bufferedValues = m_liveWindow -> getBufferedValues();
+	//stop live display from appending new data
+	m_liveWindow -> stopRun();
 
-	//if no new values were received/read
-	if(bufferedValues.empty()){
-		wxLogStatus("No new data to collect");
-		return;
-	}
-
-	//create rows per frame where each row corresponds to one frame of readings from all selected sensors
-	size_t sensorCount = m_selectedContinuousIndexes.size();
-	std::vector<std::vector<double>> rows;
-
-	for(size_t i = 0; i < bufferedValues.size(); i += sensorCount){
-		std::vector<double> row;
-
-		for(size_t j = 0; j < sensorCount && (i + j) < bufferedValues.size(); ++j){
-			int sensorIndex = m_selectedContinuousIndexes[j];
-
-			//add the sensor value to the current row
-			row.push_back(bufferedValues[i + j]);
-
-			//ensure a session exists for this sensor
-			ensureSessionForSensor(sensorIndex);
-
-			//add the value to the correspondng session for data storage
-			m_sessions[sensorIndex] -> addValue(bufferedValues[i + j]);
-		}
-	//store completed frame now
-	rows.push_back(row);
-	}
-
-	//prepare dataSessions for the table window
-	std::vector<std::shared_ptr<DataSession>> selectedSessions;
-	for(int index : m_selectedContinuousIndexes){
-		//create shared_ptr wrapper without deleting original datasession
-		selectedSessions.push_back(std::shared_ptr<DataSession>(m_sessions[index].get(), [](DataSession*){}));
-	}
-
-	//show or update the continuous data table
-	if(!m_continuousTableWindow){
-		//if the table doesn't exist yet, create it & display it
-		m_continuousTableWindow = new DataTableWindow(this, selectedSessions);
-		m_continuousTableWindow -> Show();
-	}
-
-	//append collected rows to the table
-	for(auto& row: rows){
-		m_continuousTableWindow -> appendRow(row);
-	}
-
-	//clear the buffer in the live window so that next collection only grabs new data
-	m_liveWindow -> clearBuffer();
-
-	//log status for the user
-	wxLogStatus("Collected continuous data into sessions.");
+	//release the active run
+	m_currentRun.reset();
+	m_isRunning = false;
 }
 
+// ========================= DATA FLOW ==========================
 
+//called whenever the microcontroller sends a new frame of data
 void ProjectPanel::onSerialUpdate(wxThreadEvent& evt)
 {
-	auto readings = evt.GetPayload<std::vector<int>>();
+	//ignore data if no run is active
+	if(!m_isRunning || !m_currentRun)
+		return;
 
-    	for(size_t i=0; i<readings.size() && i<m_sessions.size(); ++i){
-		ensureSessionForSensor(i);
-		
-		double value = static_cast <double>(readings[i]);
+	auto values = evt.GetPayload<std::vector<double>>(); //where each element is a sensor value
 
-		//store once in dataSession
-		m_sessions[i] -> addValue(value);
+	//current OS time in seconds
+	double now = wxGetUTCTimeMillis().ToDouble() / 1000.0;
 
-		//show only first sensor live (simple & safe)
-		if (m_liveWindow && i == 0)
-			m_liveWindow -> addValue(value); 
-	}
+	//convert OS time into "time since this run started"
+	double t = now - m_runStartTime;
+
+	//store permanently in the run object
+	m_currentRun -> addFrame(t, values);
+
+	//display it
+	m_liveWindow -> addFrame(t, values);
 }
 
 
+// ======================= COLLECT ON DEMAND =====================
+
+//takes the most recent frame from the active run and plug it into a table 
 void ProjectPanel::collectCurrentValues()
 {
-	//check if no table created
-	if(m_selectedCurrentIndexes.empty() || !m_tableWindow){
-		
-		if(m_sensors.empty()){
-			wxMessageBox("No sensors to collect.");
-			return;
-		}
-
-		//let the user pick sensors to collect
-		std::vector<std::string> names;
-		for(auto& s : m_sensors){
-			names.push_back( s -> getName());
-		}
-
-		SensorSelectionDialog dlg(this, names);
-		if(dlg.ShowModal() != wxID_OK){
-			return;
-		}
-
-		m_selectedCurrentIndexes = dlg.getSelectedIndexes();
-
-		if(m_selectedCurrentIndexes.empty()){
-			wxMessageBox("No sensors selected");
-			return;
-		}
+	//check if there is an active run
+	if(!m_currentRun){
+		wxMessageBox("No active run to collect from!", "Warning");
+		return;
 	}
 
-	//read latest value for each selected sensor and append to its session
-	std::vector<double> rowValues;
-	rowValues.reserve(m_selectedCurrentIndexes.size());
+	//check if a collect on demand table exists
+	if(m_tableWindow){
+		//compare if this table is already collecting from this run
+		if(m_tableWindow -> getAssociatedRun() != m_currentRun){
+			int answer = wxMessageBox("A collect-on-demand table is already open.\n"
+						  "Switching to the different run will clear the old table.\n"
+						  "Proceed?",
+						  "Confirm",
+						  wxYES_NO | wxICON_QUESTION);
 
-	for(int index : m_selectedCurrentIndexes){
-		ensureSessionForSensor(index);
-		//read latest values - if sensor is valid, get reading; otherwise, default to 0
-		double latest = (m_sensors[index] ? m_sensors[index] -> getReading() : 0);
-	
-		//add to corresponding session
-		m_sessions[index] -> addValue(latest); 
-	
-		rowValues.push_back(latest);
+			if(answer == wxNO)
+				return; //user canceled
+
+			//destroy old table
+			m_tableWindow -> Destroy();
+			m_tableWindow = nullptr;
+		}
+	//else table already collecting from this run -> append new row
 	}
 
-	//prepare DataSessions for the grid/table
-	std::vector<std::shared_ptr<DataSession>> selectedSessions;
-	for(int index : m_selectedCurrentIndexes){
-		selectedSessions.push_back(std::shared_ptr<DataSession>(m_sessions[index].get(), [](DataSession*){}));
+	//get latest frame
+	auto& times = m_currentRun -> getTimes();
+	auto& frames = m_currentRun -> getFrames();
+
+	if(times.empty() || frames.empty()){
+		wxMessageBox("No data available in the current run.", "Info");
+		return;
 	}
 
-	//update the DataTableWindow if it exists
+	size_t lastIndex = times.size() - 1;
+	double timestamp = times[lastIndex];
+	const std::vector<double>& sensorValues = frames[lastIndex];
+
+	//create table window if it doesn't exist
 	if(!m_tableWindow){
-		m_tableWindow = new DataTableWindow(this, selectedSessions);
+		std::vector<std::shared_ptr<DataSession>> sessions;
+		sessions.push_back(std::make_shared<DataSession>("Time")); //first column
+		for(auto& s : m_sensors)
+			sessions.push_back(std::make_shared<DataSession>(s -> getName()));
+
+		m_tableWindow = std::make_unique<DataTableWindow>(this, sessions, m_currentRun);
 		m_tableWindow -> Show();
-	}/*else{
-		m_tableWindow -> setSelectedSessions(selectedSessions);
-	}*/
+	}
 
-	//append row
-	m_tableWindow -> appendRow(rowValues);
+	//append row: timestamp + sensor values
+	std::vector<double> row;
+	row.push_back(timestamp);
+	row.insert(row.end(), sensorValues.begin(), sensorValues.end());
 
-	//log status for user feedback
-	wxLogStatus("Collected last values into sessions.");
+	m_tableWindow -> appendRow(row);
 }
 
 
+// ============================ RESET ============================
+
+//clears all runs and all live data, everything starts from scratch
+void ProjectPanel::resetSessionData()
+{
+	m_runs.clear();
+	m_currentRun.reset();
+
+	//clear all tabs in the display
+	if(m_liveWindow)
+		m_liveWindow -> clearAll();
+
+	//clear the snapshot table
+	if(m_tableWindow)
+	{
+		m_tableWindow -> Destroy();
+		m_tableWindow = nullptr;
+	}
+
+	wxLogStatus("all data cleared");
+}
+
+
+// ============================= UI =================================
+
+//resreshes the sensor list in the ui, called whenever sensors are added or removed
+void ProjectPanel::refreshSensorList()
+{
+	m_sensorList -> DeleteAllItems();
+
+	for(size_t i = 0; i < m_sensors.size(); ++i){
+		auto* s = m_sensors[i].get();
+		long index = m_sensorList -> InsertItem(i, s -> getName());
+		m_sensorList -> SetItem(index, 1, std::to_string(s -> getPin()));
+	}
+}
+
+
+// ============================= GRAPH ===========================
 void ProjectPanel::graphSelectedSensor(wxCommandEvent& evt)
 {
-	int sensorIndex = evt.GetInt();
+	wxMessageBox("graphingg");
+/*	int sensorIndex = evt.GetInt();
 
 	if(sensorIndex < 0 || sensorIndex >= (int)m_sensors.size()){
 		wxMessageBox("Select a sensor first.");
@@ -441,22 +322,25 @@ void ProjectPanel::graphSelectedSensor(wxCommandEvent& evt)
 	graph -> Show();
 
 	//m_graphWindows.push_back(graph);
+*/
 }
 
 
+// ======================== EXPORT ==========================
 void ProjectPanel::exportSessions()
 {
+	wxMessageBox("exportingg");
 	//get the index of the currently selected sensor in the user interface
-	int index = getSelectedSensorIndex();
-
+/*	int index = getSelectedSensorIndex();
+*/
 	/* check if the index is valid:
 		1. a sensor is actually selected
 		2. the session exists in the vector
 		3. the dataSession pointer is valid
 	*/
-	if(index < 0 || m_sessions.size() <= static_cast<size_t>(index) || !m_sessions[index])
+/*	if(index < 0 || m_sessions.size() <= static_cast<size_t>(index) || !m_sessions[index])
 		return;
-
+*/
 	/*we use a file dialog to ask the user where to save the CSV file
 		this : parent window
 		"save csv" : our dialog title
@@ -464,34 +348,79 @@ void ProjectPanel::exportSessions()
 		"CSV files (*.csv) | * .csv": filter to show only csv files (no other files)
 		wxFD_SAVE | ...: flags to save nd warn if overwriting an existing file
 	*/
-	wxFileDialog dlg(this, "Save CSV", "", "", "CSV files (*.csv)|*.csv", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+/*	wxFileDialog dlg(this, "Save CSV", "", "", "CSV files (*.csv)|*.csv", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
 	//show the dialog and check is the user presses OK -> if not cancel
 	if(dlg.ShowModal() != wxID_OK)
 		return;
-
+*/
 	/*Export the selected Datasession to a csv file
 		1. dlg.GetPath(): path chosen by the user
 		2. m_sessions[index].get(): raw pointer to the dataSession to export
 	we return true if seccessful, else false
 	*/
-	if(!ExportManager::exportSessionToCSV(std::string(dlg.GetPath().mb_str()), m_sessions[index].get()))
+/*	if(!ExportManager::exportSessionToCSV(std::string(dlg.GetPath().mb_str()), m_sessions[index].get()))
 		wxMessageBox("Export failed", "Error", wxICON_ERROR);
+*/
 }
 
 
+// ========================== UI ==========================
 
-void ProjectPanel::resetSessionData()
+//helper to parse a csv string from serial frame meaning to go from "23.4,50.1,1013" to vector <double> {23.4, 50.1, 1013}
+std::vector<double> ProjectPanel::parseSerialFrame(const std::string& frame)
 {
-	if (m_controller){
-		m_controller->reset(m_sessions);
-    	}
+	std::vector<double> values;
+	std::stringstream ss(frame);
+	std::string item;
 
-	if(m_liveWindow){
-		m_liveWindow -> clearDisplay();
+	//split by comma
+	while (std::getline(ss, item, ','))
+	{
+		try{
+			//convert to double
+			values.push_back(std::stod(item));
+		}
+
+		catch (const std::exception& e){
+			//if parsing fails, store 0.0
+			values.push_back(0.0);
+		}
 	}
 
-	wxLogStatus("Live window and sessions reset.");
+	return values;
+}
+
+//only needed if sessionController wants to push raw string frames
+void ProjectPanel::onNewDataFrame(const std::string& frame)
+{
+	//ignore if run hasn't started
+	if(!m_isRunning || !m_currentRun)
+		return;
+
+	//build values vector from current sensor readings
+	std::vector<double> values;
+	values.reserve(m_sensors.size());
+
+	for(auto& s : m_sensors)
+		values.push_back(s -> getReading());
+
+
+	//compute time relative to the run start
+
+	//get current time in seconds
+	double now = wxGetUTCTimeMillis().ToDouble() / 1000.0;
+
+	//convert to time since run started
+	double t = now - m_runStartTime;
+
+	//store in the current run
+	m_currentRun -> addFrame(t, values);
+
+	//push this frame to the live graph window
+	if(m_liveWindow)
+		m_liveWindow -> addFrame(t, values);
+
 }
 
 
@@ -500,22 +429,4 @@ void ProjectPanel::onSensors()
 	//launch the SensorConfigDialog chain
 	SensorConfigDialog dlg(this, "Sensor Configuration", m_serial.get(), m_sensorManager.get(), m_sensors);
 	dlg.ShowModal();
-}
-
-void ProjectPanel::openSensorPanel()
-{
-    // TODO: implement sensor panel opening logic
-}
-
-void ProjectPanel::onNewDataFrame(const std::string& frame)
-{
-	//update liveDataWindow with latest readings
-	if(m_liveWindow)
-	{
-		for(Sensor* sensor : m_activeSensors)
-		{
-			//push each sensor's current reading into liveDataWindow
-			m_liveWindow -> addValue(sensor -> getReading());
-		}
-	}
 }

@@ -1,9 +1,12 @@
 #include "data/DataTableWindow.h"
+#include "data/Run.h"
 
 //constructor to set up the window and grid
-DataTableWindow::DataTableWindow(wxWindow* parent, const std::vector<std::shared_ptr<DataSession>>& sessions)
+DataTableWindow::DataTableWindow(wxWindow* parent, const std::vector<std::shared_ptr<DataSession>>& sessions,
+				 std::shared_ptr<Run> run)
 	: wxFrame(parent, wxID_ANY, "Collected Data", wxDefaultPosition, wxSize(600,400)),
-          m_sessions(sessions)
+          m_sessions(sessions),
+	  m_associatedRun(run)
 {
 	
 	//create a wxGrid for table display
@@ -98,10 +101,15 @@ void DataTableWindow::updateTable()
 
 void DataTableWindow::appendRow(const std::vector<double>& rowValues)
 {
+	//make sure grid has enough columns
+	if(m_grid -> GetNumberCols() < (int) rowValues.size())
+		m_grid -> AppendCols(rowValues.size() - m_grid -> GetNumberCols());
 
+	//append a new row
 	int newRow = m_grid->GetNumberRows();
     	m_grid->AppendRows(1);
 
+	//fill the row
     	for(size_t col = 0; col < rowValues.size(); ++col)
     	{
 		if(std::isnan(rowValues[col])){
@@ -122,3 +130,7 @@ void DataTableWindow::appendRow(const std::vector<double>& rowValues)
     	m_grid->ForceRefresh();
 }
 
+std::shared_ptr<Run> DataTableWindow::getAssociatedRun() const
+{
+	return m_associatedRun;
+}

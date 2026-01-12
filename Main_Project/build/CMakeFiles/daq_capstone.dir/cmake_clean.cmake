@@ -16,6 +16,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o.d"
   "CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o"
   "CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o.d"
+  "CMakeFiles/daq_capstone.dir/src/data/Run.cpp.o"
+  "CMakeFiles/daq_capstone.dir/src/data/Run.cpp.o.d"
   "CMakeFiles/daq_capstone.dir/src/sensor/Sensor.cpp.o"
   "CMakeFiles/daq_capstone.dir/src/sensor/Sensor.cpp.o.d"
   "CMakeFiles/daq_capstone.dir/src/sensor/SensorManager.cpp.o"

@@ -1,99 +1,93 @@
 #pragma once
 #include <memory>
 #include <wx/wx.h>
-#include "SerialComm.h"
 #include <wx/listctrl.h>
 #include <vector>
 #include <thread>
-#include <atomic>
-#include <chrono>
 #include"controllers/SessionController.h"
 #include "controllers/DataCollector.h"
 #include "controllers/ExportManager.h"
-#include "data/DataSession.h"
-#include "sensor/Sensor.h"
-#include "Events.h"
-#include "data/LiveDataWindow.h"
-#include "data/DataTableWindow.h"
-#include "data/GraphWindow.h"
-#include "HandshakeDialog.h"
-#include "SensorManager.h"
-#include "SensorConfigDialog.h"
-#include "MainFrame.h"
 
 /* ProjectPanel class represents one project tab, it contains:
-   List of sensors, SerialComm instance for readings, DataSessions for each sensor
-   It provides: start/stop live readings, collect data, graph it, add/remove sensor
+   All sensors in a project, SerialComm instance for readings, Runs (continuous acquisition buffers)
+   It provides: start/stop live readings, collect data, graph & export it, add/remove sensor
 */
+
 class SerialComm;
 class Sensor;
+class SensorManager;
+class Run;
 class DataSession;
 class LiveDataWindow;
 class DataTableWindow;
 class GraphWindow;
 class HandshakeDialog;
 class SessionController;
+class MainFrame;
 
 class ProjectPanel : public wxPanel
 {
 	public:
 		ProjectPanel(wxWindow* parent, const wxString& title);
-		~ProjectPanel() override;
+		~ProjectPanel();
 
-		void toggleStartStop(); //start or stop polling
-		void resetSessionData(); //reset live window and session data
-		void collectContinuous(); //collects continuously selected sensors (append)
-		void collectCurrentValues(); //collects last value from all selected sensors
+		//Toolbar actions from Mainframe
+		void toggleStartStop(); //start or stop a Run
+		void resetSessionData(); //clears all runs and reset live window
+		void collectCurrentValues(); //collects on demand from the current run
 		void graphSelectedSensor(wxCommandEvent& evt); //open graph window for selected sensor
-		void openSensorPanel(); //open sensorConfig dialog
-		void exportSessions(); //export collected session(s)
+		void exportSessions(); //export collected runs
 		void onSensors(); //open sensor selection/management dialog
-		void onNewDataFrame(const std::string& frame);
 
+		//MainFrame needs this to change toolbar state
 		void setMainFrame(MainFrame* frame) {m_mainFrame = frame;}
 
+		void onNewDataFrame(const std::string& frame);
+
+		//parse csv string into vector<double>
+                std::vector<double> parseSerialFrame(const std::string& frame);
+
+		//Mainframe needs access to sensors for selection dialogs
 		std::vector<std::unique_ptr<Sensor>> m_sensors; 
 
 	private:
+		//Run lifecycle
+		void startRun(); //creates a new run and starts collecting
+		void stopRun(); //stops the current run
 
-		wxListCtrl* m_sensorList = nullptr; //display all available sensors
-		wxButton* m_connect_button = nullptr; //button to open handshake dialog
-
-		std::unique_ptr<SerialComm> m_serial; //SerialComm instance
-
-		std::vector<std::unique_ptr<DataSession>> m_sessions; //a vector of data sessions
-		std::unique_ptr<LiveDataWindow> m_liveWindow; //single embedded live window
-		std::vector<GraphWindow*> m_graphWindows; //graph windows
-		DataTableWindow* m_tableWindow = nullptr; //single collect window per project for last-value collection
-		DataTableWindow* m_continuousTableWindow = nullptr; //single collect window for continuous collection
-
-		std::unique_ptr<DataCollector> m_collector;
-		std::shared_ptr<SessionController> m_controller;
-		std::unique_ptr<SensorManager> m_sensorManager; //sensorManager object
-//                std::vector<std::unique_ptr<Sensor>> m_sensors; //all added Sensor objects  
-		std::vector<Sensor*> m_activeSensors; //sensors selected for reading
-		std::vector<int> m_selectedSensorIndexes; //stores user-selected sensor indexes for collection
-		std::vector<size_t> m_lastCollectedIndex;
-		std::vector<int> m_selectedContinuousIndexes; 
-		std::vector<int> m_selectedCurrentIndexes;
-
-
-		MainFrame* m_mainFrame = nullptr;
-
-		bool handshakeComplete = false;
-		bool isRunning = false;
-		std::atomic <bool> m_running {false};
-		std::thread m_runningThread;
-
-		int getSelectedSensorIndex() const;
-		void startPollingIfNeeded();
-		void stopPollingIfNeeded();
+		//ui helpers
 		void openConnectDialog();
-		void onSerialUpdate(wxThreadEvent& evt);
-		void onHandshakeSuccess(wxThreadEvent& evt);
 		void refreshSensorList();
 
-		void ensureSessionForSensor(size_t index);
+		wxListCtrl* m_sensorList{}; //display all available sensors
+		wxButton* m_connect_button{}; //button to open handshake dialog
+
+		//hardware & control
+		std::unique_ptr<SerialComm> m_serial; //SerialComm instance
+		std::unique_ptr<SensorManager> m_sensorManager;
+		std::unique_ptr<SessionController> m_controller;
+
+		//live display & tables
+		std::unique_ptr<LiveDataWindow> m_liveWindow; //single embedded live window
+		std::unique_ptr<DataTableWindow> m_tableWindow; //single collect window collection
+
+		//all recorded runs for this project
+		std::vector<std::shared_ptr<Run>> m_runs;
+
+		//currently active run
+		std::shared_ptr<Run> m_currentRun;
+
+		//mainFrame
+		MainFrame* m_mainFrame = nullptr;
+
+		//Absolute start time of the active run in seconds
+		double m_runStartTime = 0.0;
+
+		//Events sent from background serial thread
+                void onHandshakeSuccess(wxThreadEvent& evt);
+                void onSerialUpdate(wxThreadEvent& evt);
+
+		//State flags
+		bool m_isRunning = false;
+		bool handshakeComplete = false;
 };
-
-

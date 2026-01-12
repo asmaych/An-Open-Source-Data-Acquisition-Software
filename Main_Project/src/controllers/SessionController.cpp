@@ -1,6 +1,8 @@
 #include "controllers/SessionController.h"
 #include "data/DataSession.h"
 #include "sensor/Sensor.h"
+#include "data/Run.h"
+#include "ui/ProjectPanel.h"
 
 SessionController::SessionController()
 	//we initialize the atomic boolean m_running to false so that when the controller is created, it's not running
@@ -10,13 +12,11 @@ SessionController::SessionController()
 }
 
 SessionController::SessionController(SerialComm* serial,
-                                     std::vector<std::unique_ptr<DataSession>>* sessions,
-                                     DataCollector* collector,
+                                     std::vector<std::shared_ptr<Run>>* runs,
                                      ProjectPanel* panel,
 				     std::vector<std::unique_ptr<Sensor>>* sensors)
     : m_serial(serial),
-      m_sessions(sessions),
-      m_collector(collector),
+      m_runs(runs),
       m_panel(panel),
       m_sensors(sensors),
       m_running(false)
@@ -36,9 +36,10 @@ bool SessionController::start()
 
 				if(m_serial && m_sensors){
 					std::string rawFrame;
+					//read from serial and update sensor readings
 					m_serial -> readDataFrame(*m_sensors, &rawFrame);
 
-					//send raw frame to a project panel's live window
+					//send raw frame to a project panel's live window and run storage
 					if(!rawFrame.empty() && m_panel){
 						m_panel -> onNewDataFrame(rawFrame);
 					}

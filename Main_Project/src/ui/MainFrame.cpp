@@ -46,11 +46,6 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title, w
 		       	wxArtProvider::GetBitmap(wxART_DELETE, wxART_TOOLBAR),
 		       	"Reset sessions");
 
-	toolbar -> AddTool(ID_Collect,
-		       	"Collect",
-		       	wxArtProvider::GetBitmap(wxART_REPORT_VIEW, wxART_TOOLBAR),
-		       	"Collect data");
-
 	toolbar -> AddTool(ID_Collect_Current,
                         "CollectNow",
                         wxArtProvider::GetBitmap(wxART_NEW, wxART_TOOLBAR),
@@ -121,7 +116,6 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title, w
         
 	Bind(wxEVT_TOOL, &MainFrame::onStartToggle, this, ID_StartToggle);
 	Bind(wxEVT_TOOL, &MainFrame::onReset, this, ID_Reset);
-        Bind(wxEVT_TOOL, &MainFrame::onCollect, this, ID_Collect);
 	Bind(wxEVT_TOOL, &MainFrame::onCollectCurrent, this, ID_Collect_Current);
         Bind(wxEVT_TOOL, &MainFrame::onGraph, this, ID_Graph);
 	Bind(wxEVT_TOOL, &MainFrame::onSensor, this, ID_Sensor);
@@ -209,13 +203,6 @@ void MainFrame::onReset(wxCommandEvent&)
     	ProjectPanel* p = getCurrentProjectPanel();
     	if (!p) { wxMessageBox("Please open or load a project first!", "Warning"); return; }
     	p->resetSessionData();
-}
-
-void MainFrame::onCollect(wxCommandEvent&)
-{
-    	ProjectPanel* p = getCurrentProjectPanel();
-    	if (!p) { wxMessageBox("Please open or load a project first!", "Warning"); return; }
-    	p->collectContinuous();
 }
 
 void MainFrame::onCollectCurrent(wxCommandEvent&)
