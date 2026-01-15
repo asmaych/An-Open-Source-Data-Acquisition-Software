@@ -30,9 +30,14 @@ class DataTableWindow : public wxFrame
 
 		std::shared_ptr<Run> getAssociatedRun() const;
 
+		const std::vector<double>& getTimes() const { return m_times; }
+		const std::vector<std::vector<double>>& getValues() const { return  m_values; }
+		wxGrid* getGrid() const { return m_grid; }
+
 	private:
 		std::shared_ptr<Run> m_associatedRun;
 		std::vector<std::shared_ptr<DataSession>> m_sessions; //sessions currently displayed
+		std::vector<double> m_times;
+                std::vector<std::vector<double>> m_values;
 		wxGrid* m_grid; //Grid widget to display the table
-
 };

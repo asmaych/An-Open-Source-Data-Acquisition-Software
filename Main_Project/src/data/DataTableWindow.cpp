@@ -101,6 +101,23 @@ void DataTableWindow::updateTable()
 
 void DataTableWindow::appendRow(const std::vector<double>& rowValues)
 {
+	if(rowValues.empty())
+		return;
+
+	// ============== STORE THE DATASHEET ===============
+	double t = rowValues[0]; //time column
+	m_times.push_back(t);
+
+	size_t sensorCount = rowValues.size() - 1;
+
+	//first time: create storage for each sensor
+	if(m_values.empty())
+		m_values.resize(sensorCount);
+
+	for(size_t i = 0; i < sensorCount; ++i)
+		m_values[i].push_back(rowValues[i + 1]);
+
+	// ================= UPDATE THE GRID ================
 	//make sure grid has enough columns
 	if(m_grid -> GetNumberCols() < (int) rowValues.size())
 		m_grid -> AppendCols(rowValues.size() - m_grid -> GetNumberCols());
@@ -117,7 +134,6 @@ void DataTableWindow::appendRow(const std::vector<double>& rowValues)
     		}else{
 			if(col == 0){
 				//timestamp (double seconds)
-				time_t secs = static_cast<time_t>(rowValues[col]);
 				wxString tsStr = wxString::Format("%.3f", rowValues[col]);
 				m_grid -> SetCellValue(newRow, col, tsStr);
 			} else{

@@ -58,7 +58,9 @@ class ProjectPanel : public wxPanel
 		//ui helpers
 		void openConnectDialog();
 		void refreshSensorList();
-
+		void graphTable(DataTableWindow*); //graph collect on demand table
+		void graphRun(std::shared_ptr<Run> run); //graph a full run
+	       
 		wxListCtrl* m_sensorList{}; //display all available sensors
 		wxButton* m_connect_button{}; //button to open handshake dialog
 
@@ -69,10 +71,15 @@ class ProjectPanel : public wxPanel
 
 		//live display & tables
 		std::unique_ptr<LiveDataWindow> m_liveWindow; //single embedded live window
-		std::unique_ptr<DataTableWindow> m_tableWindow; //single collect window collection
+		std::unique_ptr<DataTableWindow> m_tableWindow; //single collect on demand window collection
+		std::unique_ptr<DataTableWindow> m_continuousTableWindow; //table for run
+		std::unique_ptr<GraphWindow> m_graphWindow; //current graph window
 
 		//all recorded runs for this project
 		std::vector<std::shared_ptr<Run>> m_runs;
+
+		//one shared graph window
+		GraphWindow* m_graphWin = nullptr;
 
 		//currently active run
 		std::shared_ptr<Run> m_currentRun;

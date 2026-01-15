@@ -1,7 +1,5 @@
 #pragma once
 #include <wx/wx.h>
-#include "DataSession.h"
-#include <wx/graphics.h>
 #include <vector>
 #include <string>
 
@@ -14,18 +12,24 @@ class GraphWindow : public wxFrame
 {
 	public:
 		//constructor with a parent with is the mainFrame and a pointer to DataSession
-		GraphWindow(wxWindow* parent, const std::vector<double>& timestamps, 
-				const std::vector<double>& values, const std::string& sensorName);
+		GraphWindow(wxWindow* parent);
 
-		
+		//Add one curve (one sensor from one run)
+		void addCurve(const std::vector<double>& x, const std::vector<double>& y,
+			      const std::string& label, const std::string& id);
+
+		//remove all curves
+		void clear();
+
 	private:
-		void OnPaint(wxPaintEvent& evt);
-		void drawGraph(wxDC& dc);
+		struct Curve{ std::vector<double> x; std::vector<double> y; std::string label;
+				wxColour color; std::string id; }; //id is a unique key: runID
 
-		std::vector<double> m_timestamps;
-		std::vector<double> m_values;
-		std::string m_sensorName; //Collected data to be graphed
 		wxPanel* m_panel;
+		std::vector<Curve> m_curves;
+
+		void OnPaint(wxPaintEvent& evt);
+		void draw(wxDC& dc);
 
 		wxDECLARE_EVENT_TABLE();
 };

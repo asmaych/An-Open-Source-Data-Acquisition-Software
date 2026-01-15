@@ -302,29 +302,107 @@ void ProjectPanel::refreshSensorList()
 // ============================= GRAPH ===========================
 void ProjectPanel::graphSelectedSensor(wxCommandEvent& evt)
 {
-	wxMessageBox("graphingg");
-/*	int sensorIndex = evt.GetInt();
+	// Decide source - is it collect on demand or active run
+    	if (m_tableWindow) {
+        	//graph collect on demand table
+        	graphTable(m_tableWindow.get());
+	}
 
-	if(sensorIndex < 0 || sensorIndex >= (int)m_sensors.size()){
-		wxMessageBox("Select a sensor first.");
+	//otherwise, graph the current run
+	else if (m_currentRun){
+		graphRun(m_currentRun);
+	}
+
+	//otherwise, no data
+	else {
+		wxMessageBox("No data available to graph!", "Info", wxOK | wxICON_INFORMATION);
+	}
+}
+
+
+// ======================= GRAPH COLLECT NOW ======================
+void ProjectPanel::graphTable(DataTableWindow* table)
+{
+	if(!table)
+		return;
+
+	auto run = table -> getAssociatedRun();
+
+	if(!run){
+		wxMessageBox("This table is not associated with any run.", "Error");
 		return;
 	}
 
-	auto values = m_sessions[sensorIndex] -> getValues();
-	auto timestamps = m_sessions[sensorIndex] -> getTimestamps();
+	//a collect on demand table is just a view of a run here
+	//so we grave the run that was used to produce the table
+	graphRun(run);
 
-	if(values.empty()){
-		wxMessageBox("No data collected for this sensor yet.", "Info");
-		return;
+// FOR NOW I AM GRAPHING ONLY THE RUNS (TO BE DISCUSSED WITH THE CLIENT)
+/*
+	// =============== GET SESSIONS AND TIMESTAMPS ==============
+	//each column in the table is a sensor in collect on demand
+	auto sessions = table -> getSelectedSessions();
+	auto timestamps = table -> getTimestamps();
+
+	//loop over sensors
+	for(size_t col = 0; col < sessions.size(); ++col){
+		std::vector<double> values;
+
+		//collect the sensor values from each row
+		for(size_t row = 0; row < timestamps.size(); ++row){
+			values.push_back(sessions[col] -> getValueAt(row));
+		}
+
+		//create a new graph window for each sensor
+		auto graphWin = new GraphWindow(this, timestamps, values, sessions[col] -> getSensorName());
+		graphWin -> Show();
+
+		//keep track of graph windows
+		m_graphWindows.push_back(graphWin);
 	}
-
-	GraphWindow* graph = new GraphWindow(this, timestamps, values, m_sensors[sensorIndex] -> getName());
-	graph -> Show();
-
-	//m_graphWindows.push_back(graph);
 */
 }
 
+
+
+// ========================== GRAPH RUN ============================
+void ProjectPanel::graphRun(std::shared_ptr<Run> run)
+{
+	if(!run || run -> getFrames().empty())
+		return;
+
+	//create window if not open
+	if(!m_graphWindow)
+	{
+		m_graphWindow = std::make_unique<GraphWindow>(this);
+		m_graphWindow -> Show();
+	}
+
+	auto& times = run -> getTimes();  //vector<double> of times
+	auto& frames = run -> getFrames(); //vector<vector<double>>: rows = time, columns = sensors
+
+	size_t sensorCount = frames[0].size();
+
+	// ================== LOOP OVER SENSORS ===============
+	//each sensor gets its own curve
+	for(size_t sensor = 0; sensor < sensorCount; ++sensor){
+		std::vector<double> y;
+
+		//extract this sensor's values from each frame
+		for(auto& frame: frames){
+			y.push_back(frame[sensor]);
+		}
+
+		//Assign a default sensor name for NOW
+		std::string name = m_sensors[sensor] -> getName();
+
+		//unique id = runNumber + sensorIndex
+		std::string id = "run" + std::to_string(run -> getRunNumber()) + "_sensor" + std::to_string(sensor);
+
+		//add the curve to the graph window
+		m_graphWindow -> addCurve(times, y, name, id);
+	}
+}
 
 // ======================== EXPORT ==========================
 void ProjectPanel::exportSessions()
@@ -421,6 +499,9 @@ void ProjectPanel::onNewDataFrame(const std::string& frame)
 	if(m_liveWindow)
 		m_liveWindow -> addFrame(t, values);
 
+	//if graph window already exists update it while the run is going
+	if(m_graphWindow)
+		graphRun(m_currentRun);
 }
 
 
