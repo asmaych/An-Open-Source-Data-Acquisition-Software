@@ -150,3 +150,34 @@ std::shared_ptr<Run> DataTableWindow::getAssociatedRun() const
 {
 	return m_associatedRun;
 }
+
+//apply the selected theme (dark or light) to the data table window
+void DataTableWindow::applyTheme(Theme theme)
+{
+	//determine background and foreground colors based on theme
+	wxColour bg, fg;
+
+	if(theme == Theme::Dark){
+		bg = wxColour(30, 30, 30);
+		fg = wxColour(220, 220, 220);
+	} else{
+		bg = *wxWHITE;
+		fg = *wxBLACK;
+	}
+
+	//apply the colors to the wxGrid widget that displays the tabe
+	m_grid -> SetBackgroundColour(bg); //sets the overall grid background
+	m_grid -> SetForegroundColour(fg); //sets the text color for all cells
+	m_grid->SetDefaultCellBackgroundColour(bg);
+    	m_grid->SetDefaultCellTextColour(fg);
+    	m_grid->SetLabelBackgroundColour(bg);
+    	m_grid->SetLabelTextColour(fg);
+
+    	m_grid->ClearSelection();
+
+    	Layout();
+    	Refresh();
+    	m_grid->Refresh();
+    	m_grid->Update();
+	//m_grid -> ForceRefresh(); //force the grid to refresh immediately
+}

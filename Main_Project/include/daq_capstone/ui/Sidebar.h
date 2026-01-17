@@ -2,6 +2,7 @@
 #include <wx/wx.h>
 #include <wx/panel.h> 
 #include <wx/button.h>
+#include "Theme.h"
 
 /* Forward declaration of MainFrame to allow event handling callbacks
    In other words, I am telling the compiler that a class called MainFRame exists but not defined here, because the sidebar
@@ -15,6 +16,7 @@ class Sidebar : public wxPanel
 		//a pointer to the parent window (MainFrame)
 		Sidebar(MainFrame* parent);
 
+		void applyTheme(Theme theme);
 	private:
 		//Buttons for the sidebar actions: NewProject, LoadProject
 		wxButton* new_project_button;

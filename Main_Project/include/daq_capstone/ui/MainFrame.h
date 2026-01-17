@@ -5,6 +5,7 @@
 #include "Sidebar.h"
 #include "ProjectPanel.h"
 #include "HandshakeDialog.h"
+#include "Theme.h"
 
 /* MainFrame class is the main application window, it contains:
    A toolbar with features like Start, Stop, Collect, Sensor and Graph, 
@@ -27,8 +28,10 @@ class MainFrame : public wxFrame
 			ID_Collect_Current,
 			ID_Graph,
 			ID_Sensor,
-			ID_Export
+			ID_Export,
+			ID_Theme
 		};
+
 		MainFrame(const wxString& title);
 		//----------------------------------------------------
                 //      PROJECT ACTIONS
@@ -54,7 +57,10 @@ class MainFrame : public wxFrame
 		void onCollectCurrent(wxCommandEvent& evt);
 		void onGraph(wxCommandEvent& evt);
 		void onSensor(wxCommandEvent& evt);
-		void onExport(wxCommandEvent& evt); 
+		void onExport(wxCommandEvent& evt);
+		void onToggleTheme(wxCommandEvent& evt);
+		void applyThemeToAll(Theme theme);
+
 		//----------------------------------------------------
 		//	CLASS ATTRIBUTES
 		//----------------------------------------------------
@@ -71,5 +77,7 @@ class MainFrame : public wxFrame
 		//Toolbar pointer (new) = stores a pointer to the toolbar so u can access it later 
 		wxToolBar* toolbar = nullptr;
 
+		//current app theme
+		Theme m_theme;
 
 };

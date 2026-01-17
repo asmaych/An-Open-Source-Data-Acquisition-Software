@@ -7,6 +7,8 @@
 #include"controllers/SessionController.h"
 #include "controllers/DataCollector.h"
 #include "controllers/ExportManager.h"
+#include "Theme.h"
+#include "data/DataTableWindow.h"
 
 /* ProjectPanel class represents one project tab, it contains:
    All sensors in a project, SerialComm instance for readings, Runs (continuous acquisition buffers)
@@ -36,13 +38,21 @@ class ProjectPanel : public wxPanel
 		void resetSessionData(); //clears all runs and reset live window
 		void collectCurrentValues(); //collects on demand from the current run
 		void graphSelectedSensor(wxCommandEvent& evt); //open graph window for selected sensor
-		void exportSessions(); //export collected runs
+		void exportSessions(wxCommandEvent& evt); //export collected runs
 		void onSensors(); //open sensor selection/management dialog
+		void applyTheme(Theme theme); //black/light theme
 
 		//MainFrame needs this to change toolbar state
 		void setMainFrame(MainFrame* frame) {m_mainFrame = frame;}
 
 		void onNewDataFrame(const std::string& frame);
+
+		//helper of export
+		static wxString askSaveFile(wxWindow* parent);
+
+		DataTableWindow* getTableWindow();
+		GraphWindow* getGraphWindow();
+		std::shared_ptr<Run> getCurrentRun();
 
 		//parse csv string into vector<double>
                 std::vector<double> parseSerialFrame(const std::string& frame);
@@ -58,9 +68,16 @@ class ProjectPanel : public wxPanel
 		//ui helpers
 		void openConnectDialog();
 		void refreshSensorList();
+
+		//graph helpers
 		void graphTable(DataTableWindow*); //graph collect on demand table
 		void graphRun(std::shared_ptr<Run> run); //graph a full run
-	       
+
+		//export helpers
+		void exportRun(const std::shared_ptr<Run>& run, const wxString& path);
+		void exportTable(DataTableWindow* table, const wxString& path);
+		void exportGraph(GraphWindow* graph, const wxString& path);
+
 		wxListCtrl* m_sensorList{}; //display all available sensors
 		wxButton* m_connect_button{}; //button to open handshake dialog
 
@@ -78,14 +95,15 @@ class ProjectPanel : public wxPanel
 		//all recorded runs for this project
 		std::vector<std::shared_ptr<Run>> m_runs;
 
-		//one shared graph window
-		GraphWindow* m_graphWin = nullptr;
 
 		//currently active run
 		std::shared_ptr<Run> m_currentRun;
 
 		//mainFrame
 		MainFrame* m_mainFrame = nullptr;
+
+		//current theme by default
+		Theme m_currentTheme;
 
 		//Absolute start time of the active run in seconds
 		double m_runStartTime = 0.0;

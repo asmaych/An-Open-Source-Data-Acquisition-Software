@@ -76,7 +76,7 @@ void ProjectPanel::onHandshakeSuccess(wxThreadEvent& evt)
 {
 	bool success = evt.GetPayload<bool>();
 	if(!success){
-		wxLogStatus("Handshake failed!");
+ 		wxLogStatus("Handshake failed!");
 		return;
 	}
 
@@ -249,6 +249,7 @@ void ProjectPanel::collectCurrentValues()
 			sessions.push_back(std::make_shared<DataSession>(s -> getName()));
 
 		m_tableWindow = std::make_unique<DataTableWindow>(this, sessions, m_currentRun);
+		m_tableWindow -> applyTheme(m_currentTheme); //inherit theme
 		m_tableWindow -> Show();
 	}
 
@@ -375,6 +376,7 @@ void ProjectPanel::graphRun(std::shared_ptr<Run> run)
 	if(!m_graphWindow)
 	{
 		m_graphWindow = std::make_unique<GraphWindow>(this);
+		m_graphWindow -> setTheme(m_currentTheme); //inherit theme
 		m_graphWindow -> Show();
 	}
 
@@ -393,7 +395,7 @@ void ProjectPanel::graphRun(std::shared_ptr<Run> run)
 			y.push_back(frame[sensor]);
 		}
 
-		//Assign a default sensor name for NOW
+		//Assign the name of the sensor
 		std::string name = m_sensors[sensor] -> getName();
 
 		//unique id = runNumber + sensorIndex
@@ -404,21 +406,64 @@ void ProjectPanel::graphRun(std::shared_ptr<Run> run)
 	}
 }
 
-// ======================== EXPORT ==========================
-void ProjectPanel::exportSessions()
+
+// ======================= GETTERS =========================
+DataTableWindow* ProjectPanel::getTableWindow()
 {
-	wxMessageBox("exportingg");
-	//get the index of the currently selected sensor in the user interface
-/*	int index = getSelectedSensorIndex();
-*/
-	/* check if the index is valid:
-		1. a sensor is actually selected
-		2. the session exists in the vector
-		3. the dataSession pointer is valid
-	*/
-/*	if(index < 0 || m_sessions.size() <= static_cast<size_t>(index) || !m_sessions[index])
+	return m_tableWindow.get();
+}
+
+GraphWindow* ProjectPanel::getGraphWindow()
+{
+	return m_graphWindow.get();
+}
+
+std::shared_ptr<Run> ProjectPanel::getCurrentRun()
+{
+	return m_currentRun;
+}
+
+
+// ======================== EXPORT ==========================
+void ProjectPanel::exportSessions(wxCommandEvent& evt)
+{
+	ProjectPanel* panel = this;
+	if(!panel){
+		wxMessageBox("No active project to export!", "Error", wxOK | wxICON_ERROR);
 		return;
-*/
+	}
+
+	wxString path = askSaveFile(this);
+	if(path.IsEmpty())
+		return;
+
+	//if a graph exists, export it with its table
+	if(panel -> getGraphWindow()) {
+		exportGraph(panel -> getGraphWindow(), path);
+		m_graphWindow -> exportImage(path + "_graph.png");
+	}
+
+	//else if only table exists, export it
+	else if(panel -> getTableWindow()) {
+		exportTable(panel -> getTableWindow(), path);
+	}
+
+	//else export the current run
+	else if(panel -> getCurrentRun()) {
+		exportRun(panel -> getCurrentRun(), path);
+	}
+
+	else {
+		wxMessageBox("No data available to export!", "Error", wxOK | wxICON_ERROR);
+		return;
+	}
+
+	wxMessageBox("Export Complete!", "Info", wxOK | wxICON_INFORMATION);
+}
+
+// ===================== HELPERS TO EXPORT ==================
+wxString ProjectPanel::askSaveFile(wxWindow* parent)
+{
 	/*we use a file dialog to ask the user where to save the CSV file
 		this : parent window
 		"save csv" : our dialog title
@@ -426,22 +471,124 @@ void ProjectPanel::exportSessions()
 		"CSV files (*.csv) | * .csv": filter to show only csv files (no other files)
 		wxFD_SAVE | ...: flags to save nd warn if overwriting an existing file
 	*/
-/*	wxFileDialog dlg(this, "Save CSV", "", "", "CSV files (*.csv)|*.csv", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+	wxFileDialog dlg(parent, "Export data", "", "", "CSV files (*.csv) |*.csv|TextFiles(*.txt)|*.txt",
+			 wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
-	//show the dialog and check is the user presses OK -> if not cancel
-	if(dlg.ShowModal() != wxID_OK)
-		return;
-*/
-	/*Export the selected Datasession to a csv file
-		1. dlg.GetPath(): path chosen by the user
-		2. m_sessions[index].get(): raw pointer to the dataSession to export
-	we return true if seccessful, else false
-	*/
-/*	if(!ExportManager::exportSessionToCSV(std::string(dlg.GetPath().mb_str()), m_sessions[index].get()))
-		wxMessageBox("Export failed", "Error", wxICON_ERROR);
-*/
+	//show the dialog and check if the user presses cancel
+	if(dlg.ShowModal() == wxID_CANCEL)
+		return "";
+
+	wxString path = dlg.GetPath();
+
+	if(!path.EndsWith(".csv") && !path.EndsWith(".txt"))
+		path += ".csv";
+
+	return path;
 }
 
+void ProjectPanel::exportTable(DataTableWindow* table, const wxString& path)
+{
+	if(!table | m_sensors.empty())
+		return;
+
+	std::ofstream file(path.ToStdString());
+
+	if(!file.is_open())
+		return;
+
+	const auto& times = table -> getTimes();
+	const auto& values = table -> getValues();
+
+	if(times.empty())
+		return;
+
+	//header
+	file << "Time";
+	for(auto& sensor : m_sensors)
+		file << "," << sensor -> getName();
+	file << "\n";
+
+	//rows
+	for(size_t row = 0; row < times.size(); ++row){
+		file << times[row];
+		for(size_t sensor = 0; sensor < values.size(); ++sensor){
+			file << "," << values[sensor][row];
+		}
+		file << "\n";
+	}
+	file.close();
+}
+
+void ProjectPanel::exportGraph(GraphWindow* graph, const wxString& path)
+{
+	if(!graph)
+		return;
+
+	const auto& curves = graph -> getCurves(); //vector <Curve>
+	if(curves.empty())
+		return;
+
+	std::ofstream file(path.ToStdString(), std::ios::app); //append to table if exists
+
+	if(!file.is_open())
+		return;
+
+	//write header
+	file << "Time";
+	for(const auto& curve : curves){
+		file << "," << curve.label;
+	}
+	file << "\n";
+
+	//find row count
+	size_t points = curves[0].x.size(); //time base
+	for(const auto& curve : curves){
+		points = std::min(points, curve.x.size());
+	}
+
+	//write rows (data)
+	for(size_t j = 0; j < points; ++j){
+		//time from first curve
+		file << curves[0].x[j];
+		for(const auto& curve : curves){
+			double v = (j < curve.y.size()) ? curve.y[j] : 0.0;
+			file << "," << v;
+		}
+		file << "\n";
+	}
+	file.close();
+}
+
+void ProjectPanel::exportRun(const std::shared_ptr<Run>& run, const wxString& path)
+{
+	if(!run)
+		return;
+
+	auto& times = run -> getTimes();
+	auto& frames = run -> getFrames();
+
+	if(times.empty() || frames.empty())
+		return;
+
+	std::ofstream file(path.ToStdString());
+	if(!file.is_open())
+		return;
+
+	//header
+	file <<"Time,";
+	for(size_t s = 0; s < frames[0].size(); ++s)
+		file << m_sensors[s] -> getName();
+	file << "\n";
+
+	//data
+	for(size_t i = 0; i < times.size(); ++i){
+		file << times[i];
+		for(auto val : frames[i])
+			file << "," << val;
+		file << "\n";
+	}
+	file.close();
+}
 
 // ========================== UI ==========================
 
@@ -510,4 +657,42 @@ void ProjectPanel::onSensors()
 	//launch the SensorConfigDialog chain
 	SensorConfigDialog dlg(this, "Sensor Configuration", m_serial.get(), m_sensorManager.get(), m_sensors);
 	dlg.ShowModal();
+}
+
+
+// ======================= THEME ==========================
+void ProjectPanel::applyTheme(Theme theme)
+{
+	m_currentTheme = theme; 
+
+	//colors that will be applied to this panel and all child UI elements
+	wxColour bg, fg;
+
+	//choose colors based on the selected theme
+	if(theme == Theme::Dark){
+		//dark mode, dark background with light text
+		bg = wxColour(30, 30, 30);
+		fg = wxColour(220, 220, 220);
+	}
+	else{
+		//light mode: white backgound with black text
+		bg = *wxWHITE;
+		fg = *wxBLACK;
+	}
+
+	//apply the colors to this projectPanel
+	SetBackgroundColour(bg);
+	SetForegroundColour(fg);
+
+	//propogate the theme change to the data table window (if it exists)
+	//this insures that the table matches the main UI theme
+	if(m_tableWindow)
+		m_tableWindow -> applyTheme(theme);
+
+	//we do the same with the graph
+       	if (m_graphWindow)
+        	m_graphWindow -> setTheme(theme);
+
+    	//force the panel to redraw itself using the new colors
+    	Refresh();
 }

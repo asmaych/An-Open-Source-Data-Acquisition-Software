@@ -4,8 +4,11 @@
 #include <memory>
 #include "data/DataSession.h"
 #include "data/Run.h"
+#include "ui/Theme.h"
+#include "ui/ProjectPanel.h"
 
 class Run;
+enum class Theme;
 
 /* DataTableWindow is a single table window that displays collected sensor values in a table
    After an experiment, we can show all values collected for a sensor in a structured table (wxGrid) where each value appears
@@ -27,6 +30,9 @@ class DataTableWindow : public wxFrame
 
 		//append a single value to a specific column
 		void appendRow(const std::vector<double>& rowValues);
+
+		//change the table theme
+		void applyTheme(Theme theme);
 
 		std::shared_ptr<Run> getAssociatedRun() const;
 

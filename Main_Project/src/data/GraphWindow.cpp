@@ -32,6 +32,7 @@ void GraphWindow::addCurve(const std::vector<double>& x, const std::vector<doubl
 	//check if the curve already exists
 	for(auto& c : m_curves){
 		if(c.id == id){
+			//updates values only, keep color and label the same
 			c.x = x;
 			c.y = y;
 			m_panel -> Refresh();
@@ -45,7 +46,7 @@ void GraphWindow::addCurve(const std::vector<double>& x, const std::vector<doubl
 	c.x = x;  //x values of the curve
 	c.y = y;  //y values of the curve
 	c.label = label;  //label for legend
-	c.color = COLORS[m_curves.size() % 7];  //pick color cyclically from palette
+	c.color = COLORS[m_curves.size() % (sizeof(COLORS)/sizeof(COLORS[0]))];  //pick color cyclically from palette
 
 	m_curves.push_back(c);  //store the curve
 	m_panel -> Refresh();  //trigger repaint of panel
@@ -73,7 +74,6 @@ void GraphWindow::OnPaint(wxPaintEvent& evt)
 
 // ==================== DRAW FUNCTION ===================
 //draws all curves
-
 void GraphWindow::draw(wxDC& dc)
 {
 	//if there is no data
@@ -117,8 +117,18 @@ void GraphWindow::draw(wxDC& dc)
     	if (minX == maxX || minY == maxY)
         	return;
 
+	// ====== Theme colors ======
+	wxColour axisColor, labelColor;
+	if(m_currentTheme == Theme::Dark){
+		axisColor = *wxWHITE;
+		labelColor = *wxWHITE;
+	} else {
+		axisColor = *wxBLACK;
+		labelColor = *wxBLACK;
+	}
+
     	// ======== Draw axes ========
-    	dc.SetPen(*wxBLACK_PEN);
+    	dc.SetPen(wxPen(axisColor, 2)); //(color, width)
 
     	// Y axis
     	dc.DrawLine(left, top, left, bottom);
@@ -144,6 +154,7 @@ void GraphWindow::draw(wxDC& dc)
 
         	// Y ticks
         	dc.DrawLine(left - 5, y, left, y);
+		dc.SetTextForeground(labelColor);
         	dc.DrawText(wxString::Format("%.2f", yVal), 5, y - 7);
 
         	// X ticks
@@ -182,3 +193,42 @@ void GraphWindow::draw(wxDC& dc)
     	}
 }
 
+//store the current theme (all the updates will be made in draw)
+void GraphWindow::setTheme(Theme theme)
+{
+	m_currentTheme = theme;
+	m_panel -> SetBackgroundColour(theme == Theme :: Dark ? wxColour(30,30,30) : *wxWHITE);
+	m_panel -> Refresh(); //redraw graph with new theme
+}
+
+//export the graph as png
+void GraphWindow::exportImage(const wxString& path)
+{
+	if(m_curves.empty())
+		return;
+
+	//get the current size of graph panel to ensure that the exported image matches on screen size
+	int w,h;
+	m_panel -> GetSize(&w, &h);
+
+	//create an off screen bitmap  with the same size as the panel
+	wxBitmap bitmap(w, h);
+
+	//create a memory device context to draw into the bitmap
+	wxMemoryDC memDC(bitmap);
+
+	//set background color based on the current theme
+	memDC.SetBackground(m_currentTheme == Theme::Dark ? wxBrush(wxColour(30,30,30)) : wxBrush(*wxWHITE));
+
+	//clear the bitmap using the backgrounf brush
+	memDC.Clear();
+
+	//draw the graph exactly like on screen
+	draw(memDC);
+
+	//detach the bitmap from the memory dc which is required before saving the bitmap as a file
+	memDC.SelectObject(wxNullBitmap);
+
+	//save the bitmap as a png image
+	bitmap.SaveFile(path, wxBITMAP_TYPE_PNG);
+}

@@ -29,7 +29,7 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title, w
 	   wxTB_FLAT -> gives a modern flat look
 	   wxTB_TEXT -> displays buttons labels under their icons
 	*/
-	toolbar = CreateToolBar(wxTB_HORIZONTAL | wxNO_BORDER | wxTB_FLAT | wxTB_TEXT);
+	toolbar = CreateToolBar(wxTB_HORIZONTAL | wxNO_BORDER | wxTB_FLAT | wxTB_TEXT | wxTB_NODIVIDER);
 
 	/* Now i will add a start, stop, sensor.. buttons with a default system icon
 	   Addtool (any ID, text shown under the icon, default "new file" icon, tooltip 
@@ -65,6 +65,11 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title, w
                         "Export",
                         wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR),
                         "Export sessions");
+
+	toolbar -> AddTool(ID_Theme,
+			"Theme",
+			wxArtProvider::GetBitmap(wxART_HELP_SETTINGS, wxART_TOOLBAR),
+			"Toggle light/dark theme");
 
 
 	//Finalize and display our toolbar YAAAYYYY!!!!
@@ -120,6 +125,7 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title, w
         Bind(wxEVT_TOOL, &MainFrame::onGraph, this, ID_Graph);
 	Bind(wxEVT_TOOL, &MainFrame::onSensor, this, ID_Sensor);
         Bind(wxEVT_TOOL, &MainFrame::onExport, this, ID_Export);
+	Bind(wxEVT_TOOL, &MainFrame::onToggleTheme, this, ID_Theme);
 
 
 	//Bind custom project events
@@ -238,11 +244,11 @@ void MainFrame::onGraph(wxCommandEvent& evt)
          p->graphSelectedSensor(ev);
 }
 
-void MainFrame::onExport(wxCommandEvent&)
+void MainFrame::onExport(wxCommandEvent& evt)
 {
     ProjectPanel* p = getCurrentProjectPanel();
     if (!p) { wxMessageBox("Please open or load a project first!", "Warning"); return; }
-    p->exportSessions();
+    p->exportSessions(evt);
 } 
 
 void MainFrame::onSensor(wxCommandEvent& evt)
@@ -289,9 +295,71 @@ void MainFrame::setStartToggleToStart()
                               wxNullBitmap, wxITEM_NORMAL, "Start experiment", "");
 
 	toolbar -> Realize();
+
 }
 
+void MainFrame::onToggleTheme(wxCommandEvent& evt)
+{
+	if(m_theme == Theme::Light)
+		m_theme = Theme::Dark;
+	else
+		m_theme = Theme::Light;
 
+	//tell projectPanel/mainFrame to apply it
+	applyThemeToAll(m_theme);
+}
+
+//helper function that applies theme to mainFRame/toolbar/projectPanel...
+void MainFrame::applyThemeToAll(Theme theme)
+{
+	//update Mainframe itself
+	wxColour bg, fg;
+	if(theme == Theme::Dark){
+		bg = wxColour(30, 30, 30);
+		fg = wxColour(220, 220, 220);
+	} else {
+		bg = *wxWHITE;
+		fg = *wxBLACK;
+	}
+
+	SetBackgroundColour(bg);
+	SetForegroundColour(fg);
+
+	//update toolbar
+	//I DONT KNOW WHY ITS NOT WORKINGGGGG!!!!
+	if(toolbar) {
+		wxColour bg, fg;
+
+		if(theme == Theme::Dark){
+			bg = wxColour(30, 30, 30);
+			fg = wxColour(220, 220, 220);
+		} else {
+			bg = *wxWHITE;
+			fg = *wxBLACK;
+		}
+		toolbar -> SetBackgroundColour(bg);
+		toolbar -> SetForegroundColour(fg);
+		toolbar -> Realize();
+		toolbar -> Refresh();
+		toolbar -> Update();
+	}
+
+	//update sidebar
+	if(sidebar)
+		sidebar -> applyTheme(theme);
+
+	//update all projectpanels
+	if(m_notebook){
+		for(size_t i = 0; i < m_notebook -> GetPageCount(); ++i){
+			auto panel = dynamic_cast<ProjectPanel*>(m_notebook -> GetPage(i));
+			if(panel)
+				panel -> applyTheme(theme);
+		}
+	}
+
+	//force to repaint
+	Refresh();
+}
 
 
 
