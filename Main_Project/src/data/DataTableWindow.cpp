@@ -8,7 +8,6 @@ DataTableWindow::DataTableWindow(wxWindow* parent, const std::vector<std::shared
           m_sessions(sessions),
 	  m_associatedRun(run)
 {
-	
 	//create a wxGrid for table display
 	m_grid = new wxGrid(this, wxID_ANY);
 	m_grid -> CreateGrid(0, sessions.size()); //O row and size column initially
@@ -23,6 +22,9 @@ DataTableWindow::DataTableWindow(wxWindow* parent, const std::vector<std::shared
 
 	//automatically size columns to fit the contents
 	m_grid -> AutoSizeColumns();
+
+	//catch the close event
+        Bind(wxEVT_CLOSE_WINDOW, &DataTableWindow::OnClose, this);
 }
 
 
@@ -114,6 +116,11 @@ void DataTableWindow::appendRow(const std::vector<double>& rowValues)
 	if(m_values.empty())
 		m_values.resize(sensorCount);
 
+	if(m_values.size() != sensorCount){
+		m_values.clear();
+		m_values.resize(sensorCount);
+	}
+
 	for(size_t i = 0; i < sensorCount; ++i)
 		m_values[i].push_back(rowValues[i + 1]);
 
@@ -181,3 +188,16 @@ void DataTableWindow::applyTheme(Theme theme)
     	m_grid->Update();
 	//m_grid -> ForceRefresh(); //force the grid to refresh immediately
 }
+
+
+//catch the close event
+void DataTableWindow::OnClose(wxCloseEvent& evt)
+{
+	//tell projectPanel the table is gone
+	if(auto panel = dynamic_cast<ProjectPanel*>(GetParent())) {
+		panel -> resetTableWindow(); //clear unique ptr
+	}
+
+}
+
+

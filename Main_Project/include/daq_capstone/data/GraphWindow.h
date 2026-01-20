@@ -37,6 +37,9 @@ class GraphWindow : public wxFrame
 		//getter
 		const std::vector<Curve>& getCurves() const { return m_curves; }
 
+		//close the event
+		void OnClose(wxCloseEvent& evt);
+
 	private:
 		wxPanel* m_panel;
 		std::vector<Curve> m_curves;

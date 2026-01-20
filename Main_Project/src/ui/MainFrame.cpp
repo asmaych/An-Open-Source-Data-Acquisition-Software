@@ -222,8 +222,9 @@ void MainFrame::onGraph(wxCommandEvent& evt)
 {
          ProjectPanel* p = getCurrentProjectPanel();
          if (!p) { wxMessageBox("Please open or load a project first!", "Warning"); return; }
+	 p -> graphSelectedSensor(evt);
 
-        //open selection dialog
+/*        //open selection dialog
         std::vector<std::string> names;
         for(auto& s : p -> m_sensors)
                 names.push_back(s -> getName());
@@ -242,13 +243,14 @@ void MainFrame::onGraph(wxCommandEvent& evt)
         ev.SetInt(selected[0]);
 
          p->graphSelectedSensor(ev);
+*/
 }
 
 void MainFrame::onExport(wxCommandEvent& evt)
 {
-    ProjectPanel* p = getCurrentProjectPanel();
-    if (!p) { wxMessageBox("Please open or load a project first!", "Warning"); return; }
-    p->exportSessions(evt);
+	ProjectPanel* p = getCurrentProjectPanel();
+    	if (!p) { wxMessageBox("Please open or load a project first!", "Warning"); return; }
+    	p->exportSessions(evt);
 } 
 
 void MainFrame::onSensor(wxCommandEvent& evt)

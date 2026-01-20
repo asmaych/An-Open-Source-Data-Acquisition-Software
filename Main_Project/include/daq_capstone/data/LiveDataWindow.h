@@ -37,6 +37,9 @@ class LiveDataWindow : public wxFrame
 		//clear all liveWIndow
 		void clearAll();
 
+		//close the window (hide it)
+		void OnClose(wxCloseEvent& evt);
+
 	private:
 		wxNotebook* m_notebook = nullptr;; //notebook to create tabs
 		wxTextCtrl* m_activeTextCtrl = nullptr; //Multi-line text box to display real-time values

@@ -167,8 +167,6 @@ void ProjectPanel::stopRun()
 	//stop live display from appending new data
 	m_liveWindow -> stopRun();
 
-	//release the active run
-	m_currentRun.reset();
 	m_isRunning = false;
 }
 
@@ -208,50 +206,39 @@ void ProjectPanel::collectCurrentValues()
 		return;
 	}
 
-	//check if a collect on demand table exists
-	if(m_tableWindow){
-		//compare if this table is already collecting from this run
-		if(m_tableWindow -> getAssociatedRun() != m_currentRun){
-			int answer = wxMessageBox("A collect-on-demand table is already open.\n"
-						  "Switching to the different run will clear the old table.\n"
-						  "Proceed?",
-						  "Confirm",
-						  wxYES_NO | wxICON_QUESTION);
+	//no values received
+	bool hasData = false;
+        const auto& frames = m_currentRun -> getFrames();
+        for (const auto& frame : frames){
+                if(!frame.empty()) {
+                        hasData = true;
+                        break;
+                }
+        }
 
-			if(answer == wxNO)
-				return; //user canceled
+        if(!hasData){
+                wxMessageBox("No data available to collect!", "Error", wxOK | wxICON_ERROR);
+                return;
+        }
 
-			//destroy old table
-			m_tableWindow -> Destroy();
-			m_tableWindow = nullptr;
-		}
-	//else table already collecting from this run -> append new row
+	if(!m_tableWindow){
+		std::vector<std::shared_ptr<DataSession>> sessions;
+                sessions.push_back(std::make_shared<DataSession>("Time")); //first column
+                for(auto& s : m_sensors)
+                        sessions.push_back(std::make_shared<DataSession>(s -> getName()));
+
+                m_tableWindow = std::make_unique<DataTableWindow>(this, sessions, m_currentRun);
+                m_tableWindow -> applyTheme(m_currentTheme); //inherit theme
+                m_tableWindow -> Show();
 	}
 
 	//get latest frame
 	auto& times = m_currentRun -> getTimes();
-	auto& frames = m_currentRun -> getFrames();
-
-	if(times.empty() || frames.empty()){
-		wxMessageBox("No data available in the current run.", "Info");
-		return;
-	}
+	// already declared above auto& frames = m_currentRun -> getFrames();
 
 	size_t lastIndex = times.size() - 1;
 	double timestamp = times[lastIndex];
-	const std::vector<double>& sensorValues = frames[lastIndex];
-
-	//create table window if it doesn't exist
-	if(!m_tableWindow){
-		std::vector<std::shared_ptr<DataSession>> sessions;
-		sessions.push_back(std::make_shared<DataSession>("Time")); //first column
-		for(auto& s : m_sensors)
-			sessions.push_back(std::make_shared<DataSession>(s -> getName()));
-
-		m_tableWindow = std::make_unique<DataTableWindow>(this, sessions, m_currentRun);
-		m_tableWindow -> applyTheme(m_currentTheme); //inherit theme
-		m_tableWindow -> Show();
-	}
+      	const std::vector<double>& sensorValues = frames[lastIndex];
 
 	//append row: timestamp + sensor values
 	std::vector<double> row;
@@ -261,12 +248,16 @@ void ProjectPanel::collectCurrentValues()
 	m_tableWindow -> appendRow(row);
 }
 
-
 // ============================ RESET ============================
 
 //clears all runs and all live data, everything starts from scratch
 void ProjectPanel::resetSessionData()
 {
+	if(!m_currentRun){
+                wxMessageBox("No active run to reset!", "Error", wxOK | wxICON_ERROR);
+                return;
+        }
+
 	m_runs.clear();
 	m_currentRun.reset();
 
@@ -284,6 +275,10 @@ void ProjectPanel::resetSessionData()
 	wxLogStatus("all data cleared");
 }
 
+void ProjectPanel::resetTableWindow()
+{
+	m_tableWindow.reset();
+}
 
 // ============================= UI =================================
 
@@ -303,6 +298,33 @@ void ProjectPanel::refreshSensorList()
 // ============================= GRAPH ===========================
 void ProjectPanel::graphSelectedSensor(wxCommandEvent& evt)
 {
+	if(!m_currentRun){
+                wxMessageBox("No active run to graph!", "Error", wxOK | wxICON_ERROR);
+                return;
+        }
+
+        bool hasData = false;
+        const auto& frames = m_currentRun -> getFrames();
+        for (const auto& frame : frames){
+                if(!frame.empty()) {
+                        hasData = true;
+                        break;
+                }
+        }
+
+        if(!hasData){
+                wxMessageBox("No data available to graph!", "Error", wxOK | wxICON_ERROR);
+                return;
+        }
+
+	//if the window doesn't exist create it, and if its hidden, unhidden it
+	if(!m_graphWindow){
+		m_graphWindow = std::make_unique<GraphWindow>(this);
+		m_graphWindow -> setTheme(m_currentTheme);
+	}
+
+	m_graphWindow -> Show();
+
 	// Decide source - is it collect on demand or active run
     	if (m_tableWindow) {
         	//graph collect on demand table
@@ -310,13 +332,8 @@ void ProjectPanel::graphSelectedSensor(wxCommandEvent& evt)
 	}
 
 	//otherwise, graph the current run
-	else if (m_currentRun){
+	if (m_currentRun){
 		graphRun(m_currentRun);
-	}
-
-	//otherwise, no data
-	else {
-		wxMessageBox("No data available to graph!", "Info", wxOK | wxICON_INFORMATION);
 	}
 }
 
@@ -369,19 +386,8 @@ void ProjectPanel::graphTable(DataTableWindow* table)
 // ========================== GRAPH RUN ============================
 void ProjectPanel::graphRun(std::shared_ptr<Run> run)
 {
-	if(!run || run -> getFrames().empty())
-		return;
-
-	//create window if not open
-	if(!m_graphWindow)
-	{
-		m_graphWindow = std::make_unique<GraphWindow>(this);
-		m_graphWindow -> setTheme(m_currentTheme); //inherit theme
-		m_graphWindow -> Show();
-	}
-
 	auto& times = run -> getTimes();  //vector<double> of times
-	auto& frames = run -> getFrames(); //vector<vector<double>>: rows = time, columns = sensors
+	auto& frames = run -> getFrames(); // (vector<vector<double>>: rows = time, columns = sensors)
 
 	size_t sensorCount = frames[0].size();
 
@@ -428,11 +434,28 @@ std::shared_ptr<Run> ProjectPanel::getCurrentRun()
 void ProjectPanel::exportSessions(wxCommandEvent& evt)
 {
 	ProjectPanel* panel = this;
-	if(!panel){
-		wxMessageBox("No active project to export!", "Error", wxOK | wxICON_ERROR);
+
+	// =========== Error handling ============
+	if(!m_currentRun){
+		wxMessageBox("No active run to export!", "Error", wxOK | wxICON_ERROR);
 		return;
 	}
 
+	bool hasData = false;
+	const auto& frames = m_currentRun -> getFrames();
+	for (const auto& frame : frames){
+		if(!frame.empty()) {
+			hasData = true;
+			break;
+		}
+	}
+
+	if(!hasData){
+		wxMessageBox("No data available to export!", "Error", wxOK | wxICON_ERROR);
+		return;
+	}
+
+	// ============ continue with the export ===========
 	wxString path = askSaveFile(this);
 	if(path.IsEmpty())
 		return;

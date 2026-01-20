@@ -1,3 +1,4 @@
+
 #pragma once
 #include <memory>
 #include <wx/wx.h>
@@ -41,6 +42,7 @@ class ProjectPanel : public wxPanel
 		void exportSessions(wxCommandEvent& evt); //export collected runs
 		void onSensors(); //open sensor selection/management dialog
 		void applyTheme(Theme theme); //black/light theme
+                void resetTableWindow(); //Set the pointer tp null
 
 		//MainFrame needs this to change toolbar state
 		void setMainFrame(MainFrame* frame) {m_mainFrame = frame;}

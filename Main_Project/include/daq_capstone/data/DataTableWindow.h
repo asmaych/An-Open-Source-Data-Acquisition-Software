@@ -7,6 +7,7 @@
 #include "ui/Theme.h"
 #include "ui/ProjectPanel.h"
 
+class ProjectPanel;
 class Run;
 enum class Theme;
 
@@ -33,6 +34,9 @@ class DataTableWindow : public wxFrame
 
 		//change the table theme
 		void applyTheme(Theme theme);
+
+		//close event
+		void OnClose(wxCloseEvent& evt);
 
 		std::shared_ptr<Run> getAssociatedRun() const;
 

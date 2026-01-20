@@ -21,6 +21,7 @@ GraphWindow::GraphWindow(wxWindow* parent)
 {
 	m_panel = new wxPanel(this);
 	m_panel -> Bind(wxEVT_PAINT, &GraphWindow::OnPaint, this);
+	Bind(wxEVT_CLOSE_WINDOW, &GraphWindow::OnClose, this);
 }
 
 
@@ -98,7 +99,7 @@ void GraphWindow::draw(wxDC& dc)
 
     	for (auto& c : m_curves)
     	{
-        	if (c.x.empty()) 
+        	if (c.x.empty())
 			continue;
 
 		//x range uses time values
@@ -231,4 +232,11 @@ void GraphWindow::exportImage(const wxString& path)
 
 	//save the bitmap as a png image
 	bitmap.SaveFile(path, wxBITMAP_TYPE_PNG);
+}
+
+
+void GraphWindow::OnClose(wxCloseEvent& evt)
+{
+	//hide the window instead of destroying it
+	Hide();
 }

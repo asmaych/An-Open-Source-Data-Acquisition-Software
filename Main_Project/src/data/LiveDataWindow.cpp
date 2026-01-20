@@ -6,6 +6,9 @@ LiveDataWindow::LiveDataWindow(wxWindow* parent)
 {
 	// Notebook allows multiple runs as tabs
 	m_notebook = new wxNotebook(this, wxID_ANY);
+
+	//catch the close event
+	Bind(wxEVT_CLOSE_WINDOW, &LiveDataWindow::OnClose, this);
 }
 
 //creates a new tab and marks it as active
@@ -53,4 +56,14 @@ void LiveDataWindow::clearAll()
 	m_notebook -> DeleteAllPages();
 	m_activeRun.reset();
 	m_activeTextCtrl = nullptr;
+}
+
+void LiveDataWindow::OnClose(wxCloseEvent& evt)
+{
+	//stop live updating
+	m_activeRun.reset();
+	m_activeTextCtrl = nullptr;
+
+	//Im using hide instead of destroy to not stop live updating of graph (TBD)
+	Hide();
 }
