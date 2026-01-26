@@ -10,6 +10,10 @@
 #include <thread>
 #include "Sensor.h"
 #include <memory>
+#include <set>
+
+//initialize the global set of port names
+std::set<std::string> SerialComm::g_ports_in_use;
 
 SerialComm::SerialComm()
 {
@@ -82,6 +86,15 @@ bool SerialComm::handshake(std::string portname)
 	 * 		the function will return false.
 	 */
 
+	//---------------------------------------------------------------------------------------------------
+	//MAKE SURE THAT THE PORT IS NOT ALREADY IN USE BY ANOTHER SERIALCOMM OBJECT
+	//---------------------------------------------------------------------------------------------------
+	if (g_ports_in_use.count(portname))
+	{
+		throw std::runtime_error("Port already in use by another project!");
+	}
+	//otherwise, proceed with the handshake
+
 	//capture the incoming name as a c style string
 	//This is necessary because libserialport requires
 	//the use of char* instead of std::string
@@ -110,8 +123,17 @@ bool SerialComm::handshake(std::string portname)
 	//if there are no problems and we get to this point, set the port flag to OPEN
 	port_status = PORT_OPEN;
 
+	//add the port name to the global list so no other instances try to use it
+	g_ports_in_use.insert(portname);
+	m_portName = portname;
+
 	//load the default configuration into the port
 	check(sp_set_config(port, default_config));
+
+	//---------------------------------------------------------------------------------------------------
+	//CLEAR ANYTHING THAT MAY HAVE BEEN IN THE INCOMING BUFFER
+	//---------------------------------------------------------------------------------------------------
+	sp_flush(port, static_cast<sp_buffer>(SP_BUF_INPUT));
 
 	//---------------------------------------------------------------------------------------------------
 	//TRY TO SEND THE "ping\n" PACKET
@@ -325,10 +347,11 @@ void SerialComm::readDataFrame(std::vector<std::unique_ptr<Sensor>>& sensors, st
     	char* start = buffer;
 
     	// index used to map parsed values to sensor objects
-    	int index = 0;
+	// note that it is of type size_t to match with the return type of sensors.size()
+	std::size_t index = 0;
 
     	// walk through the buffer until end-of-string or all sensors are filled
-    	for (; *ptr != '\0' && index < (int)sensors.size(); ++ptr)
+    	for (; *ptr != '\0' && index < sensors.size(); ++ptr)
     	{
         	// comma indicates the end of one numeric value (value of one sensor)
         	if (*ptr == ',')
@@ -348,21 +371,38 @@ void SerialComm::readDataFrame(std::vector<std::unique_ptr<Sensor>>& sensors, st
     	}
 
     	// handle the final value after the last comma (or the only value)
-    	if (index < (int)sensors.size() && *start != '\0')
+    	if (index < sensors.size() && *start != '\0')
     	{
         	// convert and store the final sensor reading
         	sensors[index]->setReading(atoi(start));
     	}
 
-    	//std::cout << buffer << std::endl;
 }
 
-void SerialComm::cleanPort()
+void SerialComm::reset()
 {
-                sp_flush(port, static_cast<sp_buffer>(SP_BUF_INPUT | SP_BUF_OUTPUT));
-                check(sp_close(port));
-                port_status = PORT_CLOSED;
-                sp_free_port(port);
+	/* \brief 	This function takes no parameters, and simply sends a single
+	 * 		command to the microntroller. This command causes a complete
+	 * 		reset of the microcontroller device.
+	 *
+	 * 		This is only intended to be run when the ProjectPanel is done
+	 * 		interacting with the physical hardware - for instance, when it
+	 * 		is close - and we want reset the initial state of the device so
+	 * 		that other projects can use it.
+	 */
+
+	std::cout << "oh boyyy we are resettingg the arduinooo\n";
+	//first make sure the port is open
+	if (port_status == PORT_CLOSED)
+	{
+		throw std::runtime_error("Error: Attempt to send command over closed port");
+	}
+
+	//generate the command to send
+	std::string reset_command = "reset\n";
+
+	//send the command
+	(void) check(sp_blocking_write(port,reset_command.c_str(), reset_command.size(), 1000));
 }
 
 bool SerialComm::writeString(const std::string& str)
@@ -373,11 +413,26 @@ bool SerialComm::writeString(const std::string& str)
     return written == (int)s.size();
 }
 
+void SerialComm::cleanPort()
+{
+                sp_flush(port, static_cast<sp_buffer>(SP_BUF_INPUT | SP_BUF_OUTPUT));
+                check(sp_close(port));
+		sp_free_port(port);
+
+		//free the name of the port from the global list
+		g_ports_in_use.erase(m_portName);
+
+
+		//reset member attributes, because this instance might yet be used for 
+		//a new port with a different configuration.
+		port = nullptr;
+                port_status = PORT_CLOSED;
+		m_portName.clear();
+}
 
 /* Helper function for error handling. */
 int SerialComm::check(enum sp_return result)
 {
-        /* For this example we'll just exit on any error by calling abort(). */
         std::string error_message = sp_last_error_message();
         switch (result) {
         case SP_ERR_ARG:

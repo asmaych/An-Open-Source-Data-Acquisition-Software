@@ -8,6 +8,7 @@
 #include <vector>
 #include "Sensor.h"
 #include <memory>
+#include <set>
 
 //explicitly declaring the library for libserialport:
 #include <libserialport.h>
@@ -49,6 +50,7 @@ class SerialComm
 		void addSensor(const std::string& sensorName, int pin);
 		void removeSensor(const std::string& sensorName);
 		void adjustPollingRate(int rate);
+		void reset();
 		bool writeString(const std::string& str);
 
 		void readDataFrame(std::vector<std::unique_ptr<Sensor>>& sensors, 
@@ -65,7 +67,8 @@ class SerialComm
 
 	private:
         	/* A pointer to a null-terminated array of pointers to
-         	 * struct sp_port, which will contain the ports found.*/
+         	 * struct sp_port, which will contain the ports found.
+		 */
         	struct sp_port **port_list;
 
 		//declare the string vector we need to store the values in plaintext.
@@ -76,7 +79,8 @@ class SerialComm
 		 * to an open port to change the parameters.
 		 *
 		 * This particular instance will represent the default communication
-		 * parameters used for communication with arduino devices.*/
+		 * parameters used for communication with arduino devices.
+		 */
 		 struct sp_port_config *default_config;
 
 		/* This struct represents a "port" object that can be used by
@@ -84,11 +88,21 @@ class SerialComm
 		 * here because we wish to use it across multiple class methods.
 		 *
 		 * We will only open communication via a single port, and this is
-		 * that port that will always be used, unconditionally.*/
+		 * that port that will always be used, unconditionally.
+		 */
 		struct sp_port *port = nullptr;
 
 		/* Adding a variable to keep track of the port status*/
 		PORT_STATUS port_status = PORT_CLOSED;
+
+		/*tracker for the port used by this instance
+		 */
+		std::string m_portName;
+
+		/*static set of portnames to avoid port conflicts between instances
+		 * of SerialComm
+		 */
+		static std::set<std::string> g_ports_in_use;
 };
 
 #endif
