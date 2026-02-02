@@ -2,6 +2,7 @@
 #include <wx/wx.h>
 #include <vector>
 #include <string>
+#include <map>
 #include "ui/Theme.h"
 #include "ui/ProjectPanel.h"
 
@@ -12,18 +13,18 @@
 
 enum class Theme;
 
-class GraphWindow : public wxFrame
+class GraphWindow : public wxPanel
 {
 	public:
                 struct Curve{ std::vector<double> x; std::vector<double> y; std::string label;
-                                wxColour color; std::string id; }; //id is a unique key: runID
+                                wxColour color; std::string id; bool visible = true; size_t runNumber; }; //id is a unique key: runID
 
 		//constructor with a parent with is the mainFrame and a pointer to DataSession
 		GraphWindow(wxWindow* parent);
 
 		//Add one curve (one sensor from one run)
-		void addCurve(const std::vector<double>& x, const std::vector<double>& y,
-			      const std::string& label, const std::string& id);
+		void addCurve(const std::vector<double>& x, const std::vector<double>& y, const std::string& label,
+				size_t runNumber, const std::string& id);
 
 		//remove all curves
 		void clear();
@@ -37,16 +38,15 @@ class GraphWindow : public wxFrame
 		//getter
 		const std::vector<Curve>& getCurves() const { return m_curves; }
 
-		//close the event
-		void OnClose(wxCloseEvent& evt);
-
 	private:
 		wxPanel* m_panel;
 		std::vector<Curve> m_curves;
 		Theme m_currentTheme = Theme::Light;
+		wxButton* m_selectedButton; //Selector button for showing/hiding curves
 
 		void OnPaint(wxPaintEvent& evt);
 		void draw(wxDC& dc);
 
-		wxDECLARE_EVENT_TABLE();
+		void openCurveSelector(); //open dialog for curve visibility
+
 };

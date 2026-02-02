@@ -13,7 +13,7 @@ Sidebar::Sidebar(MainFrame* parent)
 {
 	//Create vertical box sizer to layout buttons vertically
 	wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
-	
+
 	//Create NewProject
 	new_project_button = new wxButton(this, wxID_ANY, "New Project");
 
@@ -29,12 +29,30 @@ Sidebar::Sidebar(MainFrame* parent)
         load_project_button -> Bind(wxEVT_BUTTON, &Sidebar::OnLoadProject, this);
 
         sizer -> Add(load_project_button, 0, wxEXPAND | wxALL, 5);
+
+	//Create connect
+        m_connect_button = new wxButton(this, wxID_ANY, "Connect");
+
+        //Bind button
+        m_connect_button -> Bind(wxEVT_BUTTON, &Sidebar::OnConnect, this);
+
+        //Add button to the sizer
+        sizer -> Add(m_connect_button, 0, wxEXPAND | wxALL, 5);
+
+	//create sensor button
+	m_sensor_button = new wxButton(this, wxID_ANY, "Sensors");
+
+	m_sensor_button -> Bind(wxEVT_BUTTON, &Sidebar::OnAddRemoveSensor, this);
+
+	sizer -> Add(m_sensor_button, 0, wxEXPAND | wxALL, 5);
+
 	//setSizer for layout
 	SetSizerAndFit(sizer);
 }
+
 /* Event handler for both "New Project" button & "Load Project" button
    when clicking NewProject, sidebar calls MainFrame's function to create a new project.
-   when clicking LOadProject, the sidebar will call the MainFrame's function to load an existing project.
+   when clicking LoadProject, the sidebar will call the MainFrame's function to load an existing project.
 */
 
 void Sidebar::OnNewProject(wxCommandEvent& evt){
@@ -44,8 +62,48 @@ void Sidebar::OnNewProject(wxCommandEvent& evt){
 }
 
 void Sidebar::OnLoadProject(wxCommandEvent& evt){
-	if(m_parent){ 
+	if(m_parent){
 		m_parent -> onOpenProject(evt);
+	}
+}
+
+void Sidebar::OnConnect(wxCommandEvent&)
+{
+	if(!m_parent)
+		return;
+
+	ProjectPanel* project = m_parent -> getCurrentProjectPanel();
+	if(!project){
+		wxMessageBox("Open or load a project first!", "Warning");
+		return;
+	}
+
+	project -> openConnectDialog();
+}
+
+void Sidebar::OnAddRemoveSensor(wxCommandEvent&)
+{
+    	ProjectPanel* project = m_parent->getCurrentProjectPanel();
+    	if (!project) 
+		return;
+
+    	project->onSensors();
+}
+
+void Sidebar::refreshConnection()
+{
+	ProjectPanel* project = m_parent -> getCurrentProjectPanel();
+	if(!project){
+		m_connect_button -> Disable();
+		return;
+	}
+
+	m_connect_button -> Enable();
+
+	if(project -> isConnected()){
+		m_connect_button->SetLabel("Disconnect");
+	} else{
+		m_connect_button->SetLabel("Connect");
 	}
 }
 
@@ -80,4 +138,3 @@ void Sidebar::applyTheme(Theme theme)
 
 	Refresh();
 }
-

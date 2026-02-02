@@ -1,6 +1,8 @@
 #include <wx/msgdlg.h>
 #include <wx/filedlg.h>
 #include <wx/datetime.h>
+#include <fstream>
+#include <sstream>
 #include "ProjectPanel.h"
 #include "Events.h"
 #include "HandshakeDialog.h"
@@ -20,21 +22,25 @@
 ProjectPanel::ProjectPanel(wxWindow* parent, const wxString& title)
 	: wxPanel(parent, wxID_ANY)
 {
-	//basic UI: sensor List + connect button
-	m_sensorList = new wxListCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_SINGLE_SEL);
-	m_sensorList -> InsertColumn(0, "Sensor Name");
-	m_sensorList -> InsertColumn(1, "Pin");
+	// ================== UI splitter =================
+	//vertical splitter where top has live graphing while bottom has live table
+	m_splitter = new wxSplitterWindow(this, wxID_ANY);
+	m_splitter -> SetSashGravity(0.6);
+	m_splitter -> SetMinimumPaneSize(120);
 
-	m_connect_button = new wxButton(this, wxID_ANY, "Connect");
-	m_connect_button -> Bind(wxEVT_BUTTON, [this](wxCommandEvent&){
-		openConnectDialog();
-	});
+	//create live graph and live table
+	m_graphWindow = std::make_unique<GraphWindow>(m_splitter);
+	m_liveWindow = std::make_unique<LiveDataWindow>(m_splitter);
 
-	wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
-	mainSizer -> Add(m_sensorList, 0, wxEXPAND | wxALL, 5);
-	mainSizer -> Add(m_connect_button, 0, wxALIGN_CENTER | wxALL, 5);
-	SetSizerAndFit(mainSizer);
+	//split vertically
+	m_splitter -> SplitHorizontally(m_graphWindow.get(), m_liveWindow.get());
 
+	//use sizer to fill the panel
+	wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
+	sizer -> Add(m_splitter, 1, wxEXPAND);
+	SetSizer(sizer);
+
+	// ================ serial + sensor ===========
 	//Create SerialComm instance for this project (not connected yet)
 	m_serial = std::make_unique<SerialComm>();
 
@@ -45,10 +51,8 @@ ProjectPanel::ProjectPanel(wxWindow* parent, const wxString& title)
 
 	//set a callback so ui updates automatically when sensors change
 	m_sensorManager -> setOnChangeCallback([this](){
-		refreshSensorList();
+		//refreshSensorList();
 	});
-
-	m_liveWindow = std::make_unique<LiveDataWindow>(this);
 
 	//Bind events
 	Bind(wxEVT_SERIAL_UPDATE, &ProjectPanel::onSerialUpdate, this);
@@ -112,10 +116,10 @@ void ProjectPanel::toggleStartStop()
 		//start the run
 		startRun();
 
-		//update toolbar button
+		/*//update toolbar button
 		if(m_mainFrame){
 			m_mainFrame -> setStartToggleToStop();
-		}
+		}*/
 
 		wxLogStatus("Run Started");
 	}
@@ -131,9 +135,9 @@ void ProjectPanel::toggleStartStop()
 		stopRun();
 
 		//update toolbar button
-		if(m_mainFrame){
+		/*if(m_mainFrame){
 			m_mainFrame -> setStartToggleToStart();
-		}
+		}*/
 
 		wxLogStatus("Run stopped");
 	}
@@ -151,7 +155,7 @@ void ProjectPanel::startRun()
 	m_runStartTime = wxGetUTCTimeMillis().ToDouble() / 1000.0;
 
 	//tell the live window to create a new tab for this run
-	m_liveWindow -> startNewRun(m_currentRun);
+	m_liveWindow -> startNewRun(m_currentRun, m_sensors);
 	m_liveWindow -> Show();
 
 	m_isRunning = true;
@@ -202,7 +206,7 @@ void ProjectPanel::collectCurrentValues()
 {
 	//check if there is an active run
 	if(!m_currentRun){
-		wxMessageBox("No active run to collect from!", "Warning");
+		//wxMessageBox("No active run to collect from!", "Warning");
 		return;
 	}
 
@@ -254,7 +258,7 @@ void ProjectPanel::collectCurrentValues()
 void ProjectPanel::resetSessionData()
 {
 	if(!m_currentRun){
-                wxMessageBox("No active run to reset!", "Error", wxOK | wxICON_ERROR);
+                //wxMessageBox("No active run to reset!", "Error", wxOK | wxICON_ERROR);
                 return;
         }
 
@@ -281,7 +285,7 @@ void ProjectPanel::resetTableWindow()
 }
 
 // ============================= UI =================================
-
+/*
 //resreshes the sensor list in the ui, called whenever sensors are added or removed
 void ProjectPanel::refreshSensorList()
 {
@@ -292,14 +296,14 @@ void ProjectPanel::refreshSensorList()
 		long index = m_sensorList -> InsertItem(i, s -> getName());
 		m_sensorList -> SetItem(index, 1, std::to_string(s -> getPin()));
 	}
-}
+}*/
 
 
 // ============================= GRAPH ===========================
 void ProjectPanel::graphSelectedSensor(wxCommandEvent& evt)
 {
 	if(!m_currentRun){
-                wxMessageBox("No active run to graph!", "Error", wxOK | wxICON_ERROR);
+                //wxMessageBox("No active run to graph!", "Error", wxOK | wxICON_ERROR);
                 return;
         }
 
@@ -390,6 +394,7 @@ void ProjectPanel::graphRun(std::shared_ptr<Run> run)
 	auto& frames = run -> getFrames(); // (vector<vector<double>>: rows = time, columns = sensors)
 
 	size_t sensorCount = frames[0].size();
+	size_t runNumber = run -> getRunNumber();
 
 	// ================== LOOP OVER SENSORS ===============
 	//each sensor gets its own curve
@@ -408,7 +413,7 @@ void ProjectPanel::graphRun(std::shared_ptr<Run> run)
 		std::string id = "run" + std::to_string(run -> getRunNumber()) + "_sensor" + std::to_string(sensor);
 
 		//add the curve to the graph window
-		m_graphWindow -> addCurve(times, y, name, id);
+		m_graphWindow -> addCurve(times, y, name, runNumber, id);
 	}
 }
 
@@ -429,6 +434,21 @@ std::shared_ptr<Run> ProjectPanel::getCurrentRun()
 	return m_currentRun;
 }
 
+bool ProjectPanel::isRunning() const
+{
+	return m_isRunning;
+}
+
+bool ProjectPanel::isConnected() const
+{
+	return handshakeComplete;
+}
+
+const std::vector<std::unique_ptr<Sensor>>& ProjectPanel::getSensors() const
+{
+	return m_sensors;
+}
+
 
 // ======================== EXPORT ==========================
 void ProjectPanel::exportSessions(wxCommandEvent& evt)
@@ -437,7 +457,7 @@ void ProjectPanel::exportSessions(wxCommandEvent& evt)
 
 	// =========== Error handling ============
 	if(!m_currentRun){
-		wxMessageBox("No active run to export!", "Error", wxOK | wxICON_ERROR);
+		//wxMessageBox("No active run to export!", "Error", wxOK | wxICON_ERROR);
 		return;
 	}
 
@@ -709,6 +729,9 @@ void ProjectPanel::applyTheme(Theme theme)
 
 	//propogate the theme change to the data table window (if it exists)
 	//this insures that the table matches the main UI theme
+	/*if(m_liveWindow)
+		m_liveWindow -> applyTheme(theme);*/
+
 	if(m_tableWindow)
 		m_tableWindow -> applyTheme(theme);
 

@@ -9,7 +9,7 @@
 
 
 //Constructor for MainFrame - sets up the application shell
-MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxSize(1000, 600))
+MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxSize(1100, 700))
 {
 	//set up wxAuiManager to manage this frame
 	m_mgr.SetManagedWindow(this);
@@ -22,340 +22,147 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title, w
         //      CREATE TOOLBAR:
         //--------------------------------------------------------------
 
-	/* The toolbar will appear at the top of the window.
-	   It has buttons like start, stop...
-	   wxTB_HORIZONTAL -> makes the toolbar horizontal
-	   wxNO_BORDER -> removes the 3D border aound it
-	   wxTB_FLAT -> gives a modern flat look
-	   wxTB_TEXT -> displays buttons labels under their icons
-	*/
-	toolbar = CreateToolBar(wxTB_HORIZONTAL | wxNO_BORDER | wxTB_FLAT | wxTB_TEXT | wxTB_NODIVIDER);
+	// The toolbar will appear at the top of the window.
+	toolbar = new Toolbar(this);
 
-	/* Now i will add a start, stop, sensor.. buttons with a default system icon
-	   Addtool (any ID, text shown under the icon, default "new file" icon, tooltip 
-	   when hovered (when u put the mouse over the icon u should see create new project);
-	*/
+	// Start/Stop experiment
+	toolbar -> onStartStop = [this]() {
+		auto* project = getCurrentProjectPanel();
+		if(!project){
+			wxMessageBox("Open a project first");
+			return;
+		}
 
-	toolbar -> AddTool(ID_StartToggle,
-		  	"Start",
-		       	wxArtProvider::GetBitmap(wxART_EXECUTABLE_FILE, wxART_TOOLBAR),
-		       	"Start/Stop experiment");
+		project -> toggleStartStop();
+		toolbar -> setRunning(project -> isRunning());
+	};
 
-	toolbar -> AddTool(ID_Reset,
-		       	"Reset",
-		       	wxArtProvider::GetBitmap(wxART_DELETE, wxART_TOOLBAR),
-		       	"Reset sessions");
+	//reset session
+	toolbar -> onReset = [this]() {
+                auto* project = getCurrentProjectPanel();
+                if(!project){
+                        wxMessageBox("Open a project first");
+                        return;
+                }
 
-	toolbar -> AddTool(ID_Collect_Current,
-                        "CollectNow",
-                        wxArtProvider::GetBitmap(wxART_NEW, wxART_TOOLBAR),
-                        "Collect last values");
+                project -> resetSessionData();
+                toolbar -> setRunning(false);
+        };
 
-	toolbar -> AddTool(ID_Graph,
-		       	"Graph",
-		       	wxArtProvider::GetBitmap(wxART_NEW_DIR, wxART_TOOLBAR),
-		       	"Graph collected data");
-	
-	toolbar -> AddTool(ID_Sensor,
-		       	"Sensors",
-		       	wxArtProvider::GetBitmap(wxART_TIP, wxART_TOOLBAR),
-		       	"Manage sensors");
+	//collect now
+	toolbar -> onCollectNow = [this]() {
+                auto* project = getCurrentProjectPanel();
+                if(!project){
+                        wxMessageBox("Open a project first");
+                        return;
+                }
 
-	toolbar -> AddTool(ID_Export,
-                        "Export",
-                        wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR),
-                        "Export sessions");
+                project -> collectCurrentValues();
+        };
 
-	toolbar -> AddTool(ID_Theme,
-			"Theme",
-			wxArtProvider::GetBitmap(wxART_HELP_SETTINGS, wxART_TOOLBAR),
-			"Toggle light/dark theme");
+	//graph
+	toolbar -> onGraph = [this]() {
+                auto* project = getCurrentProjectPanel();
+                if(!project){
+                        wxMessageBox("Open a project first");
+                        return;
+                }
 
+		wxCommandEvent evt;
+                project -> graphSelectedSensor(evt);
+      	};
 
-	//Finalize and display our toolbar YAAAYYYY!!!!
-	//Realize() a method that takes no parameters and should be called in 
-	//each time something is modififed in the toolbar
-	toolbar->Realize();
+	//export
+	toolbar -> onExport = [this]() {
+                auto* project = getCurrentProjectPanel();
+                if(!project){
+                        wxMessageBox("Open a project first");
+                        return;
+                }
 
+		wxCommandEvent evt;
+                project -> exportSessions(evt);
+        };
 
-	//--------------------------------------------------------------
-	//	INSTANTIATING OBJECTS:
-	//--------------------------------------------------------------
-	
-	//SIDEBAR on the left with buttons like "New Project, "Load Project"...
+	//theme toggle switches between light and dark themes
+	toolbar -> onToggleTheme = [this](){
+				m_theme = (m_theme == Theme::Light)? Theme::Dark : Theme::Light;
+				applyThemeToAll(m_theme);
+				};
+
+	//sidebar
 	sidebar = new Sidebar(this);
 
-	//PROJECT SPACE - Notebook (tab control) in the center to hold multiple ProjectPanels
-	m_notebook = new wxAuiNotebook(this, wxID_ANY,
-			wxDefaultPosition, wxDefaultSize,
-			wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_TAB_MOVE | wxAUI_NB_TAB_SPLIT);
-	
+	//noteBook
+	m_notebook = new wxAuiNotebook(this, wxID_ANY);
 
-	//--------------------------------------------------------------
-	//       ADDING OBJECTS TO WINDOW MANAGER
-	//--------------------------------------------------------------
-	
-	//SIDEBAR - sidebar goes to the left
-	m_mgr.AddPane(sidebar,
-			wxAuiPaneInfo()
-			.Name("sidebar")
-			.Left()
-			.Caption("Sidebar")
-			.BestSize(200, -1)); //width 200 while height is flexible
-	
-	//PROJECT SPACE = notebook (project panels) goes to the center
-	m_mgr.AddPane(m_notebook,
-			wxAuiPaneInfo()
-			.Center()
-			.Caption("Projects")
-			.CloseButton(false)); //no close button for notebook itself
+	//dock sidebar to the left
+	m_mgr.AddPane(sidebar, wxAuiPaneInfo().Left().BestSize(200, -1));
 
+	//main workspace in the center
+	m_mgr.AddPane(m_notebook, wxAuiPaneInfo().Center());
 
-	//commit the items to the manager:
+	//apply aui layout
 	m_mgr.Update();
 
-
-        //--------------------------------------------------------------
-        //       BINDING EVENTS
-        //--------------------------------------------------------------
-        
-	Bind(wxEVT_TOOL, &MainFrame::onStartToggle, this, ID_StartToggle);
-	Bind(wxEVT_TOOL, &MainFrame::onReset, this, ID_Reset);
-	Bind(wxEVT_TOOL, &MainFrame::onCollectCurrent, this, ID_Collect_Current);
-        Bind(wxEVT_TOOL, &MainFrame::onGraph, this, ID_Graph);
-	Bind(wxEVT_TOOL, &MainFrame::onSensor, this, ID_Sensor);
-        Bind(wxEVT_TOOL, &MainFrame::onExport, this, ID_Export);
-	Bind(wxEVT_TOOL, &MainFrame::onToggleTheme, this, ID_Theme);
-
-
-	//Bind custom project events
-        Bind(wxEVT_PROJECT_NEW, &MainFrame::onNewProject, this);
+	//listen for "new project" events from sidebar/menu
+	Bind(wxEVT_PROJECT_NEW, &MainFrame::onNewProject, this);
 }
 
-//--------------------------------------------------------------
-//       HELPERS
-//--------------------------------------------------------------
-
-// Returns a pointer to the currently selected ProjectPanel - nullptr if none
+//getCurrentProjectPanel that returns the currently selected projectPanel or nullptr if no project is open
 ProjectPanel* MainFrame::getCurrentProjectPanel()
 {
-	//returns the index of the currently selected project tab 
 	int selected = m_notebook -> GetSelection();
-
-	//immediately return null pointer if there is no selection open
-	if (selected == wxNOT_FOUND)
+	if(selected == wxNOT_FOUND)
 		return nullptr;
 
-	/* this line returns the currently selected project panel.
-	   dynamic_cast<ProjectPanel*> tries to safely cast the wxwindow* pointer to a ProjectPanel*.
-	   if the page is a projectPanel, the cast succeeds, else it returns nullptr.
-	   WHY? this avoids runtime errors when working with multiple panels in the notebook.
-	*/
 	return dynamic_cast<ProjectPanel*>(m_notebook -> GetPage(selected));
 }
 
-//--------------------------------------------------------------
-//       EVENT HANDLERS 
-//--------------------------------------------------------------
-
-void MainFrame::onNewProject(wxCommandEvent& evt)
+//onNewProject which creates a new project tab after prompting the user for a project name
+void MainFrame::onNewProject(wxCommandEvent&)
 {
-	//Display an informative message to users in status bar
-	wxLogStatus("Creating new project");
+	wxString name = wxGetTextFromUser("Project name", "New Project");
 
-
-	//give a name for the new project:
-	wxString projectName = wxGetTextFromUser(
-			"Enter a name for the new project:",
-			"New Project",
-			"",
-			this);
-
-	//do not create a project if the user enters an empty string
-	if (projectName.IsEmpty())
-	{
+	if(name.IsEmpty())
 		return;
-	}
 
-	//create a new ProjectPanel and add it to the notebook
-	ProjectPanel* panel = new ProjectPanel(m_notebook, projectName);
-
+	//create new project panel
+	auto* panel = new ProjectPanel(m_notebook, name);
 	panel -> setMainFrame(this);
 
-        m_notebook->AddPage(panel, projectName, true);
+	//add it as a new notebook tab
+	m_notebook -> AddPage(panel, name, true);
 
-	//Disply an info message to users in the status bar
-	wxLogStatus("New Project created: %s", projectName);
+	wxLogStatus("Project created: %s", name);
 }
-
 
 void MainFrame::onOpenProject(wxCommandEvent& evt)
 {
-	//TODO implement this with sqlite
+        //TODO implement this with sqlite
 
         //Display an informative message to users in status bar
         wxLogStatus("TODO - Opening an existing project...");
 }
 
-void MainFrame::onStartToggle(wxCommandEvent&)
-{
-    	ProjectPanel* p = getCurrentProjectPanel();
-    	if (!p) { wxMessageBox("Please open or load a project first!", "Warning"); return; }
-    	p->toggleStartStop(); // implemented in ProjectPanel
-}
 
-void MainFrame::onReset(wxCommandEvent&)
-{
-    	ProjectPanel* p = getCurrentProjectPanel();
-    	if (!p) { wxMessageBox("Please open or load a project first!", "Warning"); return; }
-    	p->resetSessionData();
-}
-
-void MainFrame::onCollectCurrent(wxCommandEvent&)
-{
-    	ProjectPanel* p = getCurrentProjectPanel();
-    	if (!p) { wxMessageBox("Please open or load a project first!", "Warning"); return; }
-    	p->collectCurrentValues();
-}
-
-void MainFrame::onGraph(wxCommandEvent& evt)
-{
-         ProjectPanel* p = getCurrentProjectPanel();
-         if (!p) { wxMessageBox("Please open or load a project first!", "Warning"); return; }
-	 p -> graphSelectedSensor(evt);
-
-/*        //open selection dialog
-        std::vector<std::string> names;
-        for(auto& s : p -> m_sensors)
-                names.push_back(s -> getName());
-        SensorSelectionDialog dlg(this, names);
-        if(dlg.ShowModal() != wxID_OK)
-                return;
-        auto selected = dlg.getSelectedIndexes();
-
-        if(selected.empty()){
-                wxMessageBox("No sensor selected");
-        	return;
-	}
-
-        //only graph first selected
-        wxCommandEvent ev(wxEVT_NULL);
-        ev.SetInt(selected[0]);
-
-         p->graphSelectedSensor(ev);
-*/
-}
-
-void MainFrame::onExport(wxCommandEvent& evt)
-{
-	ProjectPanel* p = getCurrentProjectPanel();
-    	if (!p) { wxMessageBox("Please open or load a project first!", "Warning"); return; }
-    	p->exportSessions(evt);
-} 
-
-void MainFrame::onSensor(wxCommandEvent& evt)
-{
-        ProjectPanel* project = getCurrentProjectPanel();
-        if(!project){
-                wxMessageBox("Please open or load a project first!", "Warning", wxICON_WARNING);
-                return;
-        }
-        project ->onSensors();
-}
-
-
-void MainFrame::setStartToggleToStop()
-{
-	if(!toolbar){
-		return;
-	}
-
-	//find the position of the tool before deleting it
-	int position = toolbar -> GetToolPos(ID_StartToggle);
-
-	//remove old tool
-	toolbar -> DeleteTool(ID_StartToggle);
-
-	//insert the new tool at the same index
-	toolbar -> InsertTool(position, ID_StartToggle, "Stop", wxArtProvider::GetBitmap(wxART_STOP, wxART_TOOLBAR), 
-                              wxNullBitmap, wxITEM_NORMAL, "Stop experiment", "");
-
-	toolbar -> Realize();
-}
-
-void MainFrame::setStartToggleToStart()
-{
-	if(!toolbar){
-		return;
-	}
-
-	int position = toolbar -> GetToolPos(ID_StartToggle);
-
-	toolbar -> DeleteTool(ID_StartToggle);
-
-	toolbar -> InsertTool(position, ID_StartToggle,  "Start", wxArtProvider::GetBitmap(wxART_EXECUTABLE_FILE, wxART_TOOLBAR), 
-                              wxNullBitmap, wxITEM_NORMAL, "Start experiment", "");
-
-	toolbar -> Realize();
-
-}
-
-void MainFrame::onToggleTheme(wxCommandEvent& evt)
-{
-	if(m_theme == Theme::Light)
-		m_theme = Theme::Dark;
-	else
-		m_theme = Theme::Light;
-
-	//tell projectPanel/mainFrame to apply it
-	applyThemeToAll(m_theme);
-}
-
-//helper function that applies theme to mainFRame/toolbar/projectPanel...
+//applyThemeToAll which applies it to mainFrame, sidebar and all open projet panels
 void MainFrame::applyThemeToAll(Theme theme)
 {
-	//update Mainframe itself
-	wxColour bg, fg;
-	if(theme == Theme::Dark){
-		bg = wxColour(30, 30, 30);
-		fg = wxColour(220, 220, 220);
-	} else {
-		bg = *wxWHITE;
-		fg = *wxBLACK;
-	}
+	wxColour bg = (theme == Theme::Dark)? wxColour(30, 30, 30) : *wxWHITE;
+	wxColour fg = (theme == Theme::Dark)? wxColour(220, 220, 220) : *wxBLACK;
 
 	SetBackgroundColour(bg);
 	SetForegroundColour(fg);
 
-	//update toolbar
-	//I DONT KNOW WHY ITS NOT WORKINGGGGG!!!!
-	if(toolbar) {
-		wxColour bg, fg;
+	toolbar -> applyTheme(theme);
+	sidebar -> applyTheme(theme);
 
-		if(theme == Theme::Dark){
-			bg = wxColour(30, 30, 30);
-			fg = wxColour(220, 220, 220);
-		} else {
-			bg = *wxWHITE;
-			fg = *wxBLACK;
-		}
-		toolbar -> SetBackgroundColour(bg);
-		toolbar -> SetForegroundColour(fg);
-		toolbar -> Realize();
-		toolbar -> Refresh();
-		toolbar -> Update();
-	}
-
-	//update sidebar
-	if(sidebar)
-		sidebar -> applyTheme(theme);
-
-	//update all projectpanels
-	if(m_notebook){
-		for(size_t i = 0; i < m_notebook -> GetPageCount(); ++i){
-			auto panel = dynamic_cast<ProjectPanel*>(m_notebook -> GetPage(i));
-			if(panel)
-				panel -> applyTheme(theme);
+	//propagate theme to all open projects
+	for(size_t i = 0; i < m_notebook -> GetPageCount(); ++i) {
+		auto* panel = dynamic_cast<ProjectPanel*>(m_notebook -> GetPage(i));
+		if(panel){
+			panel -> applyTheme(theme);
 		}
 	}
 

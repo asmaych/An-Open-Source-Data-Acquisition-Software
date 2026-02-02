@@ -40,6 +40,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/daq_capstone.dir/src/ui/SensorSelectionDialog.cpp.o.d"
   "CMakeFiles/daq_capstone.dir/src/ui/Sidebar.cpp.o"
   "CMakeFiles/daq_capstone.dir/src/ui/Sidebar.cpp.o.d"
+  "CMakeFiles/daq_capstone.dir/src/ui/Toolbar.cpp.o"
+  "CMakeFiles/daq_capstone.dir/src/ui/Toolbar.cpp.o.d"
   "daq_capstone"
   "daq_capstone.pdb"
 )

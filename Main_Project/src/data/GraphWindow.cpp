@@ -1,34 +1,43 @@
 #include "data/GraphWindow.h"
 #include <algorithm>
-
-// These marcos declare that this class has an event table (a wxwidget system that maps events like paint to functionsà
-
-wxBEGIN_EVENT_TABLE(GraphWindow, wxFrame)
-
-wxEND_EVENT_TABLE()
+#include <map>
+#include <wx/checklst.h>
+#include <wx/sizer.h>
 
 /* This constructor creates a window that will diplay a graph :
 	parent: the window that owns this graph (projectX)
-	timestamps: X-axis values (time)
-	values: Y-axis values (sensor data)
-	sensorName: used as the window title
 */
 
 static wxColour COLORS[] = { *wxRED, *wxBLUE, *wxGREEN, *wxCYAN, *wxYELLOW, *wxLIGHT_GREY,  *wxWHITE};
 
 GraphWindow::GraphWindow(wxWindow* parent)
-	: wxFrame(parent, wxID_ANY, "Graph", wxDefaultPosition, wxSize(700, 500))
+	: wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize)
 {
-	m_panel = new wxPanel(this);
+	wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
+
+	// ========== Graph panel ==========
+	m_panel = new wxPanel(this, wxID_ANY);
+	m_panel -> SetMinSize(wxSize(200,150));
 	m_panel -> Bind(wxEVT_PAINT, &GraphWindow::OnPaint, this);
-	Bind(wxEVT_CLOSE_WINDOW, &GraphWindow::OnClose, this);
+
+	sizer -> Add(m_panel, 1, wxEXPAND | wxALL, 5);
+
+	// ========== SELECTOR BUTTON =======
+	m_selectedButton = new wxButton(this, wxID_ANY, "Runs");
+	sizer -> Add(m_selectedButton, 0, wxALIGN_RIGHT | wxALL, 5);
+
+	m_selectedButton -> Bind(wxEVT_BUTTON, [this](wxCommandEvent&){
+		openCurveSelector();
+	});
+
+	SetSizer(sizer);
 }
 
 
 // ===================== ADD CURVE ======================
 //adds a new curve to the graph
-void GraphWindow::addCurve(const std::vector<double>& x, const std::vector<double>& y,
-			   const std::string& label, const std::string& id)
+void GraphWindow::addCurve(const std::vector<double>& x, const std::vector<double>& y, const std::string& label,
+				size_t runNumber, const std::string& id)
 {
 	//check if the curve already exists
 	for(auto& c : m_curves){
@@ -48,6 +57,8 @@ void GraphWindow::addCurve(const std::vector<double>& x, const std::vector<doubl
 	c.y = y;  //y values of the curve
 	c.label = label;  //label for legend
 	c.color = COLORS[m_curves.size() % (sizeof(COLORS)/sizeof(COLORS[0]))];  //pick color cyclically from palette
+	c.visible = true; //should the curve get displayed or not
+	c.runNumber = runNumber; //to which run does it belong
 
 	m_curves.push_back(c);  //store the curve
 	m_panel -> Refresh();  //trigger repaint of panel
@@ -99,7 +110,8 @@ void GraphWindow::draw(wxDC& dc)
 
     	for (auto& c : m_curves)
     	{
-        	if (c.x.empty())
+		//if nothing is selected or no data is collected skip
+        	if(!c.visible || c.x.empty())
 			continue;
 
 		//x range uses time values
@@ -166,6 +178,9 @@ void GraphWindow::draw(wxDC& dc)
     	// ======== Draw curves ========
     	for (auto& c : m_curves)
     	{
+		if(!c.visible)
+			continue;
+
 		//each curve gets its own color
         	dc.SetPen(wxPen(c.color, 2));
 
@@ -188,6 +203,8 @@ void GraphWindow::draw(wxDC& dc)
     	int ly = top;
     	for (auto& c : m_curves)
     	{
+		if(!c.visible)
+			continue;
         	dc.SetTextForeground(c.color);
         	dc.DrawText(c.label, right - 120, ly);
         	ly += 15;
@@ -235,8 +252,104 @@ void GraphWindow::exportImage(const wxString& path)
 }
 
 
-void GraphWindow::OnClose(wxCloseEvent& evt)
+// =============== CURVE SELECTOR DIALOG ===============
+//on click, shows a checklist of all the runs & their sensors that exist with a select/deselect all buttons
+void GraphWindow::openCurveSelector()
 {
-	//hide the window instead of destroying it
-	Hide();
+	// no curve? nothing to select
+    	if (m_curves.empty())
+        	return;
+
+    	//modal dialog (blocks entire app until the user closes it)
+    	wxDialog dialog(this, wxID_ANY, "Select Runs / Sensors", wxDefaultPosition, wxSize(350, 400), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+
+	//main vertical sizer for the dialog layout
+    	wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
+
+	//temporary map to group curves by run number
+	std::map<size_t, std::vector<Curve*>> runByNumber;
+	for(auto& curve : m_curves)
+		runByNumber [curve.runNumber].push_back(&curve);
+
+	//keep track of all checkboxes and corresponding curves for select/Deselect all buttons
+	//storing every checkbox and its corresponding curve makes it easy for select/deselect all to toggle both the checkbox & visibility
+	std::vector<std::pair<wxCheckBox*, Curve*>> bindings;
+
+	//build the UI: a label for each run and checkboxes for its sensors
+    	for (auto& [runNumber, curves] : runByNumber)
+	{
+		//bold label showing the run number to improve readability, especially with multiple runs
+    		wxStaticText* runLabel = new wxStaticText(&dialog, wxID_ANY, wxString::Format("Run %zu", runNumber));
+		wxFont font = runLabel->GetFont();
+    		font.SetWeight(wxFONTWEIGHT_BOLD);
+    		runLabel->SetFont(font);
+
+    		mainSizer->Add(runLabel, 0, wxTOP | wxLEFT, 10);
+
+        	//add checkboxes for each sensor(curve) under the run
+        	for (auto* curve : curves)
+        	{
+            		wxCheckBox* cb = new wxCheckBox(&dialog, wxID_ANY, curve->label);
+
+			//initialize checkbox to the current visibility state of the curve
+            		cb->SetValue(curve->visible);
+
+			//bind checkbox event: when checked/unchecked, update curve visibility and refresh the panel
+            		cb->Bind(wxEVT_CHECKBOX, [this, curve](wxCommandEvent& evt){
+				curve->visible = evt.IsChecked();
+                    		m_panel -> Refresh();
+                	});
+
+			//store checkbox and curve pointer for later use (select/deselect all)
+    	        	bindings.emplace_back(cb, curve);
+
+			//indent sensors under the run label
+        	    	mainSizer->Add(cb, 0, wxLEFT, 30);
+        	}
+    	}
+
+    	//horizontal sizer for the buttons
+    	wxBoxSizer* btnSizer = new wxBoxSizer(wxHORIZONTAL);
+
+	//buttons for select/deselect all & OK
+    	wxButton* selectAll = new wxButton(&dialog, wxID_ANY, "Select All");
+    	wxButton* deselectAll = new wxButton(&dialog, wxID_ANY, "Deselect All");
+    	wxButton* ok = new wxButton(&dialog, wxID_OK, "OK");
+
+	//bind select all button: set all checkboxes and curves to visible
+    	selectAll->Bind(wxEVT_BUTTON,[this, &bindings](wxCommandEvent&){
+            	for (auto& [cb, curve] : bindings)
+            	{
+                	cb->SetValue(true);
+                	curve->visible = true;
+            	}
+            	Refresh();
+        	});
+
+	//do the same for deselect all but vice versa
+    	deselectAll->Bind(wxEVT_BUTTON,[this, &bindings](wxCommandEvent&){
+            	for (auto& [cb, curve] : bindings)
+            	{
+                	cb->SetValue(false);
+                	curve->visible = false;
+            	}
+            	Refresh();
+        	});
+
+	//add buttons to the horizontal sizer with spacing
+    	btnSizer->Add(selectAll, 0, wxRIGHT, 5);
+    	btnSizer->Add(deselectAll, 0, wxRIGHT, 5);
+    	btnSizer->AddStretchSpacer();
+    	btnSizer->Add(ok, 0);
+
+	//add spacing and the button row to the main sizer
+    	mainSizer->AddSpacer(10);
+    	mainSizer->Add(btnSizer, 0, wxEXPAND | wxALL, 10);
+
+	//apply the sizer to the dialog and fit it to content
+    	dialog.SetSizerAndFit(mainSizer);
+    	dialog.Centre();
+
+	//show the dialog modally, the user must close it before returning to main window
+    	dialog.ShowModal();
 }

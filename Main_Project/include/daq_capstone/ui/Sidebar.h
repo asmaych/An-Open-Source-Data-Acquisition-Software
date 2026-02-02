@@ -16,15 +16,21 @@ class Sidebar : public wxPanel
 		//a pointer to the parent window (MainFrame)
 		Sidebar(MainFrame* parent);
 
+		void refreshConnection(); //connection state only
 		void applyTheme(Theme theme);
 	private:
 		//Buttons for the sidebar actions: NewProject, LoadProject
 		wxButton* new_project_button;
 		wxButton* load_project_button;
+		wxButton* m_connect_button;
+
+		wxButton* m_sensor_button;
 
 		//Event handlers for the buttons
 		void OnNewProject(wxCommandEvent& evt);
 		void OnLoadProject(wxCommandEvent& evt);
+		void OnConnect(wxCommandEvent& evt);
+		void OnAddRemoveSensor(wxCommandEvent& evt);
 
 		MainFrame* m_parent; //pointer to the main frame for calling project functions
 
