@@ -34,6 +34,7 @@ add_executable(daq_capstone
         src/controllers/ExportManager.cpp
 	src/ui/MainFrame.cpp
 	src/ui/ProjectPanel.cpp
+	src/ui/Toolbar.cpp
 	src/serial/SerialComm.cpp
 	src/ui/HandshakeDialog.cpp
 	src/ui/Sidebar.cpp

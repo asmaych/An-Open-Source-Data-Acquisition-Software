@@ -1,12 +1,11 @@
 #pragma once
 #include <wx/wx.h>
 #include <wx/notebook.h>
+#include <wx/grid.h>
 #include <memory>
-#include "data/DataSession.h"
-#include "data/Run.h"
-#include "ui/Events.h"
-#include "sensor/Sensor.h"
 #include <vector>
+#include "data/Run.h"
+#include "sensor/Sensor.h"
 
 class Run;
 /* LiveDataWIndow class displays live data during acquisition.
@@ -15,7 +14,7 @@ class Run;
    wxTextCntrl is used to display values in a multi-line form.
 */
 
-class LiveDataWindow : public wxFrame
+class LiveDataWindow : public wxPanel
 {
 	public:
 		/*Constructor
@@ -26,7 +25,7 @@ class LiveDataWindow : public wxFrame
 		LiveDataWindow(wxWindow* parent);
 		
 		//called when Start pressed
-		void startNewRun(std::shared_ptr<Run> run);
+		void startNewRun(std::shared_ptr<Run> run, const std::vector<std::unique_ptr<Sensor>>& sensors);
 
 		//called when Stop is pressed
 		void stopRun();
@@ -37,11 +36,9 @@ class LiveDataWindow : public wxFrame
 		//clear all liveWIndow
 		void clearAll();
 
-		//close the window (hide it)
-		void OnClose(wxCloseEvent& evt);
-
 	private:
 		wxNotebook* m_notebook = nullptr;; //notebook to create tabs
-		wxTextCtrl* m_activeTextCtrl = nullptr; //Multi-line text box to display real-time values
+		wxGrid* m_activeGrid = nullptr; //grid in current tab to display real-time values
 		std::shared_ptr<Run> m_activeRun; //currently active/open run
+		std::vector<std::string> m_sensorNames; //Store sensor names for grid header
 };
