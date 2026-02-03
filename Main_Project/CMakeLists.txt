@@ -1,3 +1,10 @@
+# Adding a guard to enforce that the project is built out-of-source
+if (CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
+    message(FATAL_ERROR
+        "In-source builds are not allowed.
+         Please create a build directory and run cmake from there.")
+endif()
+
 cmake_minimum_required(VERSION 3.10)
 project(daq_capstone)
 
