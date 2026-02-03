@@ -395,7 +395,9 @@ void SerialComm::reset()
 	//first make sure the port is open
 	if (port_status == PORT_CLOSED)
 	{
-		throw std::runtime_error("Error: Attempt to send command over closed port");
+		std::cout << "port is already closed, so the reset cannot be conducted\n";
+		
+		throw std::runtime_error("Error: Attempt to reset device through a closed port");
 	}
 
 	//generate the command to send

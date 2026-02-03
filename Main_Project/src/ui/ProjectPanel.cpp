@@ -38,9 +38,10 @@ ProjectPanel::ProjectPanel(wxWindow* parent, const wxString& title)
 	//Create SerialComm instance for this project (not connected yet)
 	m_serial = std::make_unique<SerialComm>();
 
-	//create a SensorManager class and point sensorManager to it
+	//create a SensorManager class and point m_sensorManager to it
 	//Note that the sensorManager is given the address of the class
-	//member m_sensors vector in order to modify it
+	//member m_sensors vector in order to modify it, along with the
+	//project-specific instance of SerialComm to get readings.
 	m_sensorManager = std::make_unique<SensorManager>(m_sensors, m_serial.get());
 
 	//set a callback so ui updates automatically when sensors change
@@ -58,8 +59,28 @@ ProjectPanel::ProjectPanel(wxWindow* parent, const wxString& title)
 
 ProjectPanel::~ProjectPanel()
 {
+	/* \brief	This destructor is explicitly implemented so that:
+	 *
+	 * 		- Threads created during runtime get shut down properly
+	 *
+	 * 		- m_serial SerialComm object can reset the connected
+	 * 		microcontroller configuration so that it can be used
+	 * 		again without problems.
+	 */
+
+
 	//make sure no run is left active when panel is destroyed
 	stopRun();
+
+	//reset the connected arduino if it exists using the SerialComm instance
+	try
+	{
+		m_serial->reset();
+	}
+	catch (const std::exception& e)
+	{
+		wxLogStatus("No microcontroller was reset, because none was connected.");
+	}
 }
 
 
