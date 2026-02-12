@@ -1,6 +1,7 @@
 #include <vector>
 #include "SensorConfigDialog.h"
 #include "AddSensorDialog.h"
+#include "CalibrateSensorDialog.h"
 #include "SerialComm.h"
 #include "SensorManager.h"
 #include <wx/listctrl.h>
@@ -51,6 +52,11 @@ SensorConfigDialog::SensorConfigDialog(wxWindow* parent,
 	//add the button to the buttonsizer:
 	buttonSizer->Add(remove_sensor, 0, wxALL | wxALL, 10);
 
+	//create the button for calibrate Sensor:
+	wxButton* calibrate_sensor = new wxButton(this, wxID_ANY, "Calibrate Sensor");
+	//add the button to the buttonsizer:
+	buttonSizer->Add(calibrate_sensor, 0, wxALL | wxALL, 10);
+
 	//create a button for selecting the sensors that will be used in a  project x
 	//wxButton* addToProject = new wxButton(this, wxID_ANY, "Add Selected to Project");
 	//add the button to the buttonsizer:
@@ -81,8 +87,10 @@ SensorConfigDialog::SensorConfigDialog(wxWindow* parent,
 	
 	add_sensor->Bind(wxEVT_BUTTON, &SensorConfigDialog::onAddSensorPressed, this);
 	remove_sensor->Bind(wxEVT_BUTTON, &SensorConfigDialog::onRemoveSensorPressed, this);
+	calibrate_sensor->Bind(wxEVT_BUTTON, &SensorConfigDialog::onCalibratePressed, this);
 	//addToProject -> Bind(wxEVT_BUTTON, &SensorConfigDialog::onAddToProject, this);
 	m_list -> Bind(wxEVT_LEFT_DCLICK, &SensorConfigDialog::onRowDblClick, this);
+
 	//now populate the list using helper function
 	populateTable();
 }
@@ -109,12 +117,12 @@ void SensorConfigDialog::onAddSensorPressed(wxCommandEvent& evt)
 
 	//simply launch the AddSensorDialog and pass along the
 	//SensorManager pointer to the new dialog
-	AddSensorDialog sensor_adder(this, "Configure New Sensor", m_sensorManager);
+	AddSensorDialog sensor_add_dialog(this, "Configure New Sensor", m_sensorManager);
 
 	//implicitly set the dialog to modal, and see
 	//if it returns wxID_OK to indicate a successful 
 	//operation. If so, we refresh the table of sensors
-	if (sensor_adder.ShowModal() == wxID_OK)
+	if (sensor_add_dialog.ShowModal() == wxID_OK)
 	{
 		//refresh the table of sensors
 		populateTable();
@@ -139,12 +147,12 @@ void SensorConfigDialog::onRemoveSensorPressed(wxCommandEvent& evt)
 	 *
 	 */
 	//find the sensor we want to remove
-	long item = m_list->GetNextItem(-1, wxLIST_NEXT_ALL , wxLIST_STATE_SELECTED);
+	long selected_sensor = m_list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
 
 	//if the user has not selected a sensor from the list
 	//then item will reflect that in its index, so we 
 	//prompt the user to select one and return the function
-	if (item == -1)
+	if (selected_sensor == -1)
 	{
 		wxMessageBox("No sensor selected.", "Error");
 		return;
@@ -153,7 +161,7 @@ void SensorConfigDialog::onRemoveSensorPressed(wxCommandEvent& evt)
 	//otherwise, we proceed to remove the coresponding sensor
 	
 	//get the sensors name corresponding to the selection
-	wxString sensorName = m_list->GetItemText(item);
+	wxString sensor_name = m_list->GetItemText(selected_sensor);
 
 	//now use sensorManager to remove it after confirming
 	if (wxMessageBox(
@@ -162,12 +170,53 @@ void SensorConfigDialog::onRemoveSensorPressed(wxCommandEvent& evt)
 			wxYES_NO | wxICON_QUESTION) ==wxYES)
 	{
 		//remove it
-		m_sensorManager->removeSensor(sensorName.ToStdString());
+		m_sensorManager->removeSensor(sensor_name.ToStdString());
 
 	}
 
 	//finally, repopulate the table after removing the sensor
 	populateTable();
+}
+
+void SensorConfigDialog::onCalibratePressed(wxCommandEvent& evt)
+{
+	/* \brief	This function handles the event that the button for
+	 * 		calibrating a sensor is pressed.
+	 *
+	 * 		The list of sensors allows the user to make a selection,
+	 * 		and the function of the calibrate button is to open up
+	 * 		another dialog in which the user can enter datapoints to
+	 * 		configure the sensor calibration via table interpolation.
+	 *
+	 * 		If the button is pressed without a valid selection, this
+	 * 		function will not do anything.
+	 */
+
+	//find the sensor entry corresponding to the user selection:
+	long selected_sensor = m_list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+
+	//check to see if the user actually has made a selection.
+	//If they have not, prompt them to do so, and do nothing
+	if (selected_sensor == -1)
+	{
+		wxMessageBox("No sensor selected.", "Error");
+		return;
+	}
+
+	//otherwise, we proceed to open a calibration dialog for the selected sensor
+	
+	//get the name of the sensor that corresponds to the selection
+	wxString sensor_name = m_list->GetItemText(selected_sensor);
+
+
+	//now call the calibration dialog for further steps
+	CalibrateSensorDialog sensor_calibrator(this, "Sensor Calibration", m_sensorManager, selected_sensor);
+	//make the dialog visible and modal:
+	sensor_calibrator.ShowModal();
+
+	//nothing should visibly change for our list of sensors upon
+	//successful calibration, so we don't need to do anything else
+	
 }
 
 

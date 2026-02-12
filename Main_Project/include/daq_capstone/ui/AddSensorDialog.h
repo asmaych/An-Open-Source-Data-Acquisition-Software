@@ -8,7 +8,8 @@
 class AddSensorDialog : public wxDialog
 {
 	public:
-		AddSensorDialog(wxWindow* parent,
+		AddSensorDialog(
+				wxWindow* parent,
 				const wxString& title,
 				SensorManager* sensorManager);
 	private:

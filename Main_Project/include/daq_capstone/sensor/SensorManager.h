@@ -6,6 +6,8 @@
 #include "SerialComm.h"
 #include <memory>
 #include <functional>
+#include "Calibrator.h"
+#include "Interpolator.h"
 
 class SensorManager
 {
@@ -26,6 +28,8 @@ class SensorManager
 		//checker function to make sure we don't have two sensors using
 		//the same arduino pin number
 		bool pinExists(int pin) const;
+
+		void setCalibration(long sensor_index, std::unique_ptr<Calibrator> calibrator);
 		
 		//helper to get all selected sensors
 		std::vector<Sensor*> getSelectedSensors() const;

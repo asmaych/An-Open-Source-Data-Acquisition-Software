@@ -31,6 +31,7 @@ add_executable(daq_capstone
 	src/App.cpp
 	src/sensor/Sensor.cpp
 	src/sensor/SensorManager.cpp
+	src/sensor/Interpolator.cpp
 	src/data/DataTableWindow.cpp
 	src/data/LiveDataWindow.cpp
 	src/data/GraphWindow.cpp
@@ -49,6 +50,8 @@ add_executable(daq_capstone
 	src/ui/SensorConfigDialog.cpp
 	src/ui/AddSensorDialog.cpp
 	src/ui/SensorSelectionDialog.cpp
+	src/ui/CalibrateSensorDialog.cpp
+	src/ui/CalibrationTableDialog.cpp
 
 )
 

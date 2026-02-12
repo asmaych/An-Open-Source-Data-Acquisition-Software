@@ -72,7 +72,6 @@ ProjectPanel::~ProjectPanel()
 	 * 		again without problems.
 	 */
 
-
 	//make sure no run is left active when panel is destroyed
 	stopRun();
 
@@ -99,6 +98,7 @@ void ProjectPanel::openConnectDialog()
 //called when the handshake dialog finishes, to check whether the connection succeeded or not
 void ProjectPanel::onHandshakeSuccess(wxThreadEvent& evt)
 {
+	
 	bool success = evt.GetPayload<bool>();
 	if(!success){
  		wxLogStatus("Handshake failed!");
@@ -692,7 +692,7 @@ void ProjectPanel::onNewDataFrame(const std::string& frame)
 	values.reserve(m_sensors.size());
 
 	for(auto& s : m_sensors)
-		values.push_back(s -> getReading());
+		values.push_back(s -> getVoltage());
 
 
 	//compute time relative to the run start

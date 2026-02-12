@@ -25,6 +25,8 @@ class SessionController {
 		SessionController(SerialComm* serial, std::vector<std::shared_ptr<Run>>* runs,
 					ProjectPanel* panel, std::vector<std::unique_ptr<Sensor>>* sensors);
 
+		~SessionController();
+
 		//Start the experiment (set running as true). returns true if started.
 		bool start();
 

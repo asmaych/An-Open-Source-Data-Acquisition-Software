@@ -37,6 +37,7 @@ SerialComm::SerialComm()
 
 SerialComm::~SerialComm()
 {
+	std::cout << "we get to the destructor of the serialcomm class\n";
         //we can run these first commands, because they run automatically on constructor
         sp_free_port_list(port_list);
         sp_free_config(default_config);
@@ -199,7 +200,7 @@ bool SerialComm::handshake(std::string portname)
 
 	if (strcmp("pong", buffer) == 0)
 	{
-		printf("Success, expected: \"pong\", received: %s", buffer);
+		printf("Success, expected: \"pong\", received: %n\n", buffer);
 		this->handshakeresult = true;
 	}
 	else

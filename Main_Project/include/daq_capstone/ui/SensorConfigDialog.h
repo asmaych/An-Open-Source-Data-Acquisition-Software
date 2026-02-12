@@ -37,6 +37,9 @@ class SensorConfigDialog : public wxDialog
 		//button for removing a selected sensor
 		wxButton* remove_sensor;
 
+		//button for calibrating a selected sensor
+		wxButton* calibrate_sensor;
+
 		//table for displaying added sensors
 		wxListCtrl* m_list;
 
@@ -64,4 +67,7 @@ class SensorConfigDialog : public wxDialog
 		//void onAddToProject(wxCommandEvent& evt);
 
 		void onRowDblClick(wxMouseEvent& evt);
+
+		//this is used to hand the event that a user selects a sensor to calibrate
+		void onCalibratePressed(wxCommandEvent& evt);
 };

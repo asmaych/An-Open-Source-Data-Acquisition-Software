@@ -118,6 +118,11 @@ bool SensorManager::pinExists(int pin) const
 			[&](const std::unique_ptr<Sensor>& s){return s->getPin() == pin; });
 }
 
+void SensorManager::setCalibration(long sensor_index, std::unique_ptr<Calibrator> calibrator)
+{
+	m_sensors[sensor_index]->setCalibrator(std::move(calibrator));
+}
+
 std::vector<Sensor*> SensorManager::getSelectedSensors() const {
 	std::vector<Sensor*> selected;
 	for (auto& s : m_sensors) {
