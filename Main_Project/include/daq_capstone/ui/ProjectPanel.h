@@ -8,10 +8,12 @@
 #include <wx/splitter.h>
 #include"controllers/SessionController.h"
 #include "controllers/DataCollector.h"
-#include "controllers/ExportManager.h"
 #include "Theme.h"
 #include "data/DataTableWindow.h"
 #include "data/Run.h"
+#include "data/GraphWindow.h"
+#include "data/LiveDataWindow.h"
+#include "sensor/SensorDatabase.h"
 
 /* ProjectPanel class represents one project tab, it contains:
    All sensors in a project, SerialComm instance for readings, Runs (continuous acquisition buffers)
@@ -21,6 +23,7 @@
 class SerialComm;
 class Sensor;
 class SensorManager;
+class SensorDatabase;
 class Run;
 class DataSession;
 class LiveDataWindow;
@@ -38,11 +41,15 @@ class ProjectPanel : public wxPanel
 
 		//Toolbar actions from Mainframe
 		void toggleStartStop(); //start or stop a Run
+		//Run lifecycle
+                void startRun(); //creates a new run and starts collecting
+                void stopRun(); //stops the current run
 		void resetSessionData(); //clears all runs and reset live window
 		void collectCurrentValues(); //collects on demand from the current run
-		void resetTableWindow(); //resets the table of collect now on closure
 		void graphSelectedSensor(wxCommandEvent& evt); //open graph window for selected sensor
+		void resetTableWindow();
 		void exportSessions(wxCommandEvent& evt); //export collected runs
+		void updateLayout(); //to handle the new ui logic
 		void onSensors(); //open sensor selection/management dialog
 		void applyTheme(Theme theme); //black/light theme
 
@@ -59,6 +66,7 @@ class ProjectPanel : public wxPanel
                 void openConnectDialog();
 
 		//getter
+		LiveDataWindow* getLiveWindow();
 		DataTableWindow* getTableWindow();
 		GraphWindow* getGraphWindow();
 		std::shared_ptr<Run> getCurrentRun();
@@ -69,21 +77,19 @@ class ProjectPanel : public wxPanel
 		//parse csv string into vector<double>
                 std::vector<double> parseSerialFrame(const std::string& frame);
 
+		//used to update layout when buttons pressed
+		void setGraphVisible(bool visible) {graphVisible = visible; }
+		void setLiveVisible(bool visible) {liveVisible = visible; }
+		void setCollectNowVisible(bool visible) {collectNowVisible = visible; }
+
 		//Mainframe needs access to sensors for selection dialogs
 		std::vector<std::unique_ptr<Sensor>> m_sensors;
 
 	private:
 		//splitter for live graph (top) live table (bottom)
-		wxSplitterWindow* m_splitter = nullptr;
+		std::unique_ptr<wxSplitterWindow> m_splitter;
+		std::unique_ptr<wxSplitterWindow> m_bottom_splitter; //for splitting the buttom space when collect now is used
 
-		//Run lifecycle
-		void startRun(); //creates a new run and starts collecting
-		void stopRun(); //stops the current run
-
-/*		//ui helpers
-		void openConnectDialog();
-		void refreshSensorList();
-*/
 		//graph helpers
 		void graphTable(DataTableWindow*); //graph collect on demand table
 		void graphRun(std::shared_ptr<Run> run); //graph a full run
@@ -107,6 +113,11 @@ class ProjectPanel : public wxPanel
 		std::unique_ptr<DataTableWindow> m_continuousTableWindow; //table for run
 		std::unique_ptr<GraphWindow> m_graphWindow; //current graph window
 
+		//state flags
+		bool graphVisible = false; //assigned to true cause when pressing start both graph and collect continuous are displayed
+		bool liveVisible = false;
+		bool collectNowVisible = false; //depends on the user
+
 		//all recorded runs for this project
 		std::vector<std::shared_ptr<Run>> m_runs;
 
@@ -129,4 +140,7 @@ class ProjectPanel : public wxPanel
 		//State flags
 		bool m_isRunning = false;
 		bool handshakeComplete = false;
+
+		//database lives as long as the project
+		SensorDatabase m_sensorDB;
 };

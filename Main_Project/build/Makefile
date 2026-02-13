@@ -177,30 +177,6 @@ src/controllers/DataCollector.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/controllers/DataCollector.cpp.s
 .PHONY : src/controllers/DataCollector.cpp.s
 
-src/controllers/ExportManager.o: src/controllers/ExportManager.cpp.o
-.PHONY : src/controllers/ExportManager.o
-
-# target to build an object file
-src/controllers/ExportManager.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.o
-.PHONY : src/controllers/ExportManager.cpp.o
-
-src/controllers/ExportManager.i: src/controllers/ExportManager.cpp.i
-.PHONY : src/controllers/ExportManager.i
-
-# target to preprocess a source file
-src/controllers/ExportManager.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.i
-.PHONY : src/controllers/ExportManager.cpp.i
-
-src/controllers/ExportManager.s: src/controllers/ExportManager.cpp.s
-.PHONY : src/controllers/ExportManager.s
-
-# target to generate assembly for a file
-src/controllers/ExportManager.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.s
-.PHONY : src/controllers/ExportManager.cpp.s
-
 src/controllers/SessionController.o: src/controllers/SessionController.cpp.o
 .PHONY : src/controllers/SessionController.o
 
@@ -368,6 +344,30 @@ src/sensor/Sensor.s: src/sensor/Sensor.cpp.s
 src/sensor/Sensor.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/sensor/Sensor.cpp.s
 .PHONY : src/sensor/Sensor.cpp.s
+
+src/sensor/SensorDatabase.o: src/sensor/SensorDatabase.cpp.o
+.PHONY : src/sensor/SensorDatabase.o
+
+# target to build an object file
+src/sensor/SensorDatabase.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/sensor/SensorDatabase.cpp.o
+.PHONY : src/sensor/SensorDatabase.cpp.o
+
+src/sensor/SensorDatabase.i: src/sensor/SensorDatabase.cpp.i
+.PHONY : src/sensor/SensorDatabase.i
+
+# target to preprocess a source file
+src/sensor/SensorDatabase.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/sensor/SensorDatabase.cpp.i
+.PHONY : src/sensor/SensorDatabase.cpp.i
+
+src/sensor/SensorDatabase.s: src/sensor/SensorDatabase.cpp.s
+.PHONY : src/sensor/SensorDatabase.s
+
+# target to generate assembly for a file
+src/sensor/SensorDatabase.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/daq_capstone.dir/build.make CMakeFiles/daq_capstone.dir/src/sensor/SensorDatabase.cpp.s
+.PHONY : src/sensor/SensorDatabase.cpp.s
 
 src/sensor/SensorManager.o: src/sensor/SensorManager.cpp.o
 .PHONY : src/sensor/SensorManager.o
@@ -648,9 +648,6 @@ help:
 	@echo "... src/controllers/DataCollector.o"
 	@echo "... src/controllers/DataCollector.i"
 	@echo "... src/controllers/DataCollector.s"
-	@echo "... src/controllers/ExportManager.o"
-	@echo "... src/controllers/ExportManager.i"
-	@echo "... src/controllers/ExportManager.s"
 	@echo "... src/controllers/SessionController.o"
 	@echo "... src/controllers/SessionController.i"
 	@echo "... src/controllers/SessionController.s"
@@ -672,6 +669,9 @@ help:
 	@echo "... src/sensor/Sensor.o"
 	@echo "... src/sensor/Sensor.i"
 	@echo "... src/sensor/Sensor.s"
+	@echo "... src/sensor/SensorDatabase.o"
+	@echo "... src/sensor/SensorDatabase.i"
+	@echo "... src/sensor/SensorDatabase.s"
 	@echo "... src/sensor/SensorManager.o"
 	@echo "... src/sensor/SensorManager.i"
 	@echo "... src/sensor/SensorManager.s"

@@ -10,7 +10,6 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/App.cpp" "CMakeFiles/daq_capstone.dir/src/App.cpp.o" "gcc" "CMakeFiles/daq_capstone.dir/src/App.cpp.o.d"
   "/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/controllers/DataCollector.cpp" "CMakeFiles/daq_capstone.dir/src/controllers/DataCollector.cpp.o" "gcc" "CMakeFiles/daq_capstone.dir/src/controllers/DataCollector.cpp.o.d"
-  "/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/controllers/ExportManager.cpp" "CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.o" "gcc" "CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.o.d"
   "/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/controllers/SessionController.cpp" "CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o" "gcc" "CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o.d"
   "/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/data/DataSession.cpp" "CMakeFiles/daq_capstone.dir/src/data/DataSession.cpp.o" "gcc" "CMakeFiles/daq_capstone.dir/src/data/DataSession.cpp.o.d"
   "/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/data/DataTableWindow.cpp" "CMakeFiles/daq_capstone.dir/src/data/DataTableWindow.cpp.o" "gcc" "CMakeFiles/daq_capstone.dir/src/data/DataTableWindow.cpp.o.d"
@@ -18,6 +17,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/data/LiveDataWindow.cpp" "CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o" "gcc" "CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o.d"
   "/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/data/Run.cpp" "CMakeFiles/daq_capstone.dir/src/data/Run.cpp.o" "gcc" "CMakeFiles/daq_capstone.dir/src/data/Run.cpp.o.d"
   "/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/sensor/Sensor.cpp" "CMakeFiles/daq_capstone.dir/src/sensor/Sensor.cpp.o" "gcc" "CMakeFiles/daq_capstone.dir/src/sensor/Sensor.cpp.o.d"
+  "/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/sensor/SensorDatabase.cpp" "CMakeFiles/daq_capstone.dir/src/sensor/SensorDatabase.cpp.o" "gcc" "CMakeFiles/daq_capstone.dir/src/sensor/SensorDatabase.cpp.o.d"
   "/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/sensor/SensorManager.cpp" "CMakeFiles/daq_capstone.dir/src/sensor/SensorManager.cpp.o" "gcc" "CMakeFiles/daq_capstone.dir/src/sensor/SensorManager.cpp.o.d"
   "/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/serial/SerialComm.cpp" "CMakeFiles/daq_capstone.dir/src/serial/SerialComm.cpp.o" "gcc" "CMakeFiles/daq_capstone.dir/src/serial/SerialComm.cpp.o.d"
   "/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/ui/AddSensorDialog.cpp" "CMakeFiles/daq_capstone.dir/src/ui/AddSensorDialog.cpp.o" "gcc" "CMakeFiles/daq_capstone.dir/src/ui/AddSensorDialog.cpp.o.d"

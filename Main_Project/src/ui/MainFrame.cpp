@@ -60,18 +60,6 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title, w
                 project -> collectCurrentValues();
         };
 
-	//graph
-	toolbar -> onGraph = [this]() {
-                auto* project = getCurrentProjectPanel();
-                if(!project){
-                        wxMessageBox("Open a project first");
-                        return;
-                }
-
-		wxCommandEvent evt;
-                project -> graphSelectedSensor(evt);
-      	};
-
 	//export
 	toolbar -> onExport = [this]() {
                 auto* project = getCurrentProjectPanel();
@@ -134,6 +122,8 @@ void MainFrame::onNewProject(wxCommandEvent&)
 	//add it as a new notebook tab
 	m_notebook -> AddPage(panel, name, true);
 
+	toolbar -> setCurrentProject(panel);
+
 	wxLogStatus("Project created: %s", name);
 }
 
@@ -169,6 +159,3 @@ void MainFrame::applyThemeToAll(Theme theme)
 	//force to repaint
 	Refresh();
 }
-
-
-

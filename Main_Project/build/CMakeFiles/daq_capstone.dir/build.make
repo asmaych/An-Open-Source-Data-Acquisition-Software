@@ -114,10 +114,24 @@ CMakeFiles/daq_capstone.dir/src/sensor/SensorManager.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/daq_capstone.dir/src/sensor/SensorManager.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/sensor/SensorManager.cpp -o CMakeFiles/daq_capstone.dir/src/sensor/SensorManager.cpp.s
 
+CMakeFiles/daq_capstone.dir/src/sensor/SensorDatabase.cpp.o: CMakeFiles/daq_capstone.dir/flags.make
+CMakeFiles/daq_capstone.dir/src/sensor/SensorDatabase.cpp.o: /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/sensor/SensorDatabase.cpp
+CMakeFiles/daq_capstone.dir/src/sensor/SensorDatabase.cpp.o: CMakeFiles/daq_capstone.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/daq_capstone.dir/src/sensor/SensorDatabase.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/daq_capstone.dir/src/sensor/SensorDatabase.cpp.o -MF CMakeFiles/daq_capstone.dir/src/sensor/SensorDatabase.cpp.o.d -o CMakeFiles/daq_capstone.dir/src/sensor/SensorDatabase.cpp.o -c /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/sensor/SensorDatabase.cpp
+
+CMakeFiles/daq_capstone.dir/src/sensor/SensorDatabase.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/daq_capstone.dir/src/sensor/SensorDatabase.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/sensor/SensorDatabase.cpp > CMakeFiles/daq_capstone.dir/src/sensor/SensorDatabase.cpp.i
+
+CMakeFiles/daq_capstone.dir/src/sensor/SensorDatabase.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/daq_capstone.dir/src/sensor/SensorDatabase.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/sensor/SensorDatabase.cpp -o CMakeFiles/daq_capstone.dir/src/sensor/SensorDatabase.cpp.s
+
 CMakeFiles/daq_capstone.dir/src/data/DataTableWindow.cpp.o: CMakeFiles/daq_capstone.dir/flags.make
 CMakeFiles/daq_capstone.dir/src/data/DataTableWindow.cpp.o: /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/data/DataTableWindow.cpp
 CMakeFiles/daq_capstone.dir/src/data/DataTableWindow.cpp.o: CMakeFiles/daq_capstone.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/daq_capstone.dir/src/data/DataTableWindow.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/daq_capstone.dir/src/data/DataTableWindow.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/daq_capstone.dir/src/data/DataTableWindow.cpp.o -MF CMakeFiles/daq_capstone.dir/src/data/DataTableWindow.cpp.o.d -o CMakeFiles/daq_capstone.dir/src/data/DataTableWindow.cpp.o -c /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/data/DataTableWindow.cpp
 
 CMakeFiles/daq_capstone.dir/src/data/DataTableWindow.cpp.i: cmake_force
@@ -131,7 +145,7 @@ CMakeFiles/daq_capstone.dir/src/data/DataTableWindow.cpp.s: cmake_force
 CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: CMakeFiles/daq_capstone.dir/flags.make
 CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/data/LiveDataWindow.cpp
 CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o: CMakeFiles/daq_capstone.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o -MF CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o.d -o CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o -c /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/data/LiveDataWindow.cpp
 
 CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.i: cmake_force
@@ -145,7 +159,7 @@ CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.s: cmake_force
 CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o: CMakeFiles/daq_capstone.dir/flags.make
 CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o: /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/data/GraphWindow.cpp
 CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o: CMakeFiles/daq_capstone.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o -MF CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o.d -o CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o -c /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/data/GraphWindow.cpp
 
 CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.i: cmake_force
@@ -159,7 +173,7 @@ CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.s: cmake_force
 CMakeFiles/daq_capstone.dir/src/data/DataSession.cpp.o: CMakeFiles/daq_capstone.dir/flags.make
 CMakeFiles/daq_capstone.dir/src/data/DataSession.cpp.o: /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/data/DataSession.cpp
 CMakeFiles/daq_capstone.dir/src/data/DataSession.cpp.o: CMakeFiles/daq_capstone.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/daq_capstone.dir/src/data/DataSession.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/daq_capstone.dir/src/data/DataSession.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/daq_capstone.dir/src/data/DataSession.cpp.o -MF CMakeFiles/daq_capstone.dir/src/data/DataSession.cpp.o.d -o CMakeFiles/daq_capstone.dir/src/data/DataSession.cpp.o -c /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/data/DataSession.cpp
 
 CMakeFiles/daq_capstone.dir/src/data/DataSession.cpp.i: cmake_force
@@ -173,7 +187,7 @@ CMakeFiles/daq_capstone.dir/src/data/DataSession.cpp.s: cmake_force
 CMakeFiles/daq_capstone.dir/src/data/Run.cpp.o: CMakeFiles/daq_capstone.dir/flags.make
 CMakeFiles/daq_capstone.dir/src/data/Run.cpp.o: /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/data/Run.cpp
 CMakeFiles/daq_capstone.dir/src/data/Run.cpp.o: CMakeFiles/daq_capstone.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/daq_capstone.dir/src/data/Run.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/daq_capstone.dir/src/data/Run.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/daq_capstone.dir/src/data/Run.cpp.o -MF CMakeFiles/daq_capstone.dir/src/data/Run.cpp.o.d -o CMakeFiles/daq_capstone.dir/src/data/Run.cpp.o -c /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/data/Run.cpp
 
 CMakeFiles/daq_capstone.dir/src/data/Run.cpp.i: cmake_force
@@ -187,7 +201,7 @@ CMakeFiles/daq_capstone.dir/src/data/Run.cpp.s: cmake_force
 CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o: CMakeFiles/daq_capstone.dir/flags.make
 CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o: /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/controllers/SessionController.cpp
 CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o: CMakeFiles/daq_capstone.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o -MF CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o.d -o CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o -c /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/controllers/SessionController.cpp
 
 CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.i: cmake_force
@@ -201,7 +215,7 @@ CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.s: cmake_force
 CMakeFiles/daq_capstone.dir/src/controllers/DataCollector.cpp.o: CMakeFiles/daq_capstone.dir/flags.make
 CMakeFiles/daq_capstone.dir/src/controllers/DataCollector.cpp.o: /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/controllers/DataCollector.cpp
 CMakeFiles/daq_capstone.dir/src/controllers/DataCollector.cpp.o: CMakeFiles/daq_capstone.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/daq_capstone.dir/src/controllers/DataCollector.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/daq_capstone.dir/src/controllers/DataCollector.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/daq_capstone.dir/src/controllers/DataCollector.cpp.o -MF CMakeFiles/daq_capstone.dir/src/controllers/DataCollector.cpp.o.d -o CMakeFiles/daq_capstone.dir/src/controllers/DataCollector.cpp.o -c /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/controllers/DataCollector.cpp
 
 CMakeFiles/daq_capstone.dir/src/controllers/DataCollector.cpp.i: cmake_force
@@ -211,20 +225,6 @@ CMakeFiles/daq_capstone.dir/src/controllers/DataCollector.cpp.i: cmake_force
 CMakeFiles/daq_capstone.dir/src/controllers/DataCollector.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/daq_capstone.dir/src/controllers/DataCollector.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/controllers/DataCollector.cpp -o CMakeFiles/daq_capstone.dir/src/controllers/DataCollector.cpp.s
-
-CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.o: CMakeFiles/daq_capstone.dir/flags.make
-CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.o: /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/controllers/ExportManager.cpp
-CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.o: CMakeFiles/daq_capstone.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.o -MF CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.o.d -o CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.o -c /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/controllers/ExportManager.cpp
-
-CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/controllers/ExportManager.cpp > CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.i
-
-CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/controllers/ExportManager.cpp -o CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.s
 
 CMakeFiles/daq_capstone.dir/src/ui/MainFrame.cpp.o: CMakeFiles/daq_capstone.dir/flags.make
 CMakeFiles/daq_capstone.dir/src/ui/MainFrame.cpp.o: /home/asmaych/An-Open-Source-Data-Acquisition-Software/Main_Project/src/ui/MainFrame.cpp
@@ -371,6 +371,7 @@ daq_capstone_OBJECTS = \
 "CMakeFiles/daq_capstone.dir/src/App.cpp.o" \
 "CMakeFiles/daq_capstone.dir/src/sensor/Sensor.cpp.o" \
 "CMakeFiles/daq_capstone.dir/src/sensor/SensorManager.cpp.o" \
+"CMakeFiles/daq_capstone.dir/src/sensor/SensorDatabase.cpp.o" \
 "CMakeFiles/daq_capstone.dir/src/data/DataTableWindow.cpp.o" \
 "CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o" \
 "CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o" \
@@ -378,7 +379,6 @@ daq_capstone_OBJECTS = \
 "CMakeFiles/daq_capstone.dir/src/data/Run.cpp.o" \
 "CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o" \
 "CMakeFiles/daq_capstone.dir/src/controllers/DataCollector.cpp.o" \
-"CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.o" \
 "CMakeFiles/daq_capstone.dir/src/ui/MainFrame.cpp.o" \
 "CMakeFiles/daq_capstone.dir/src/ui/ProjectPanel.cpp.o" \
 "CMakeFiles/daq_capstone.dir/src/ui/Toolbar.cpp.o" \
@@ -396,6 +396,7 @@ daq_capstone_EXTERNAL_OBJECTS =
 daq_capstone: CMakeFiles/daq_capstone.dir/src/App.cpp.o
 daq_capstone: CMakeFiles/daq_capstone.dir/src/sensor/Sensor.cpp.o
 daq_capstone: CMakeFiles/daq_capstone.dir/src/sensor/SensorManager.cpp.o
+daq_capstone: CMakeFiles/daq_capstone.dir/src/sensor/SensorDatabase.cpp.o
 daq_capstone: CMakeFiles/daq_capstone.dir/src/data/DataTableWindow.cpp.o
 daq_capstone: CMakeFiles/daq_capstone.dir/src/data/LiveDataWindow.cpp.o
 daq_capstone: CMakeFiles/daq_capstone.dir/src/data/GraphWindow.cpp.o
@@ -403,7 +404,6 @@ daq_capstone: CMakeFiles/daq_capstone.dir/src/data/DataSession.cpp.o
 daq_capstone: CMakeFiles/daq_capstone.dir/src/data/Run.cpp.o
 daq_capstone: CMakeFiles/daq_capstone.dir/src/controllers/SessionController.cpp.o
 daq_capstone: CMakeFiles/daq_capstone.dir/src/controllers/DataCollector.cpp.o
-daq_capstone: CMakeFiles/daq_capstone.dir/src/controllers/ExportManager.cpp.o
 daq_capstone: CMakeFiles/daq_capstone.dir/src/ui/MainFrame.cpp.o
 daq_capstone: CMakeFiles/daq_capstone.dir/src/ui/ProjectPanel.cpp.o
 daq_capstone: CMakeFiles/daq_capstone.dir/src/ui/Toolbar.cpp.o

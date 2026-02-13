@@ -58,6 +58,8 @@ void LiveDataWindow::startNewRun(std::shared_ptr<Run> run, const std::vector<std
 	m_activeGrid = grid;
 
 	//autosize only after GTK realizes the tab
+	//call after is a method that lets you schedule a function or lambda to run later in the main GUI thread
+	//here for instance: after adding new rows/data do not forget to autosizeColumns which makes sure that everything is visible
 	CallAfter([this](){
 		if(m_activeGrid)
 			m_activeGrid -> AutoSizeColumns();
@@ -91,7 +93,8 @@ void LiveDataWindow::addFrame(double time, const std::vector<double>& values)
 		m_activeGrid -> SetCellValue(newRow, i + 1, wxString::Format("%.2f", values[i]));
 	}
 
-	//m_activeGrid -> AutoSizeColumns();
+	//Auto scroll to the new row
+	m_activeGrid -> MakeCellVisible(newRow, 0);
 }
 
 void LiveDataWindow::clearAll()
@@ -99,4 +102,41 @@ void LiveDataWindow::clearAll()
 	m_notebook -> DeleteAllPages();
 	m_activeRun.reset();
 	m_activeGrid = nullptr;
+}
+
+
+void LiveDataWindow::applyTheme(Theme theme)
+{
+    	wxColour bg, fg;
+
+    	if (theme == Theme::Dark) {
+        	bg = wxColour(30, 30, 30);
+        	fg = wxColour(220, 220, 220);
+    	} else if(theme == Theme::Light) {
+        	bg = *wxWHITE;
+        	fg = *wxBLACK;
+    	}
+
+    	//set background for the notebook itself
+    	m_notebook->SetBackgroundColour(bg);
+    	m_notebook->SetForegroundColour(fg);
+
+    	//iterate through all pages (grids) and apply theme
+    	for (size_t i = 0; i < m_notebook->GetPageCount(); ++i) {
+        	wxWindow* page = m_notebook->GetPage(i);
+        	if (wxGrid* grid = dynamic_cast<wxGrid*>(page)) {
+            		grid->SetBackgroundColour(bg);
+            		grid->SetForegroundColour(fg);
+            		grid->SetDefaultCellBackgroundColour(bg);
+            		grid->SetDefaultCellTextColour(fg);
+            		grid->SetLabelBackgroundColour(bg);
+            		grid->SetLabelTextColour(fg);
+
+            		grid->ClearSelection();
+            		grid->ForceRefresh();
+        	}
+    	}
+
+    	Layout();
+    	Refresh();
 }
