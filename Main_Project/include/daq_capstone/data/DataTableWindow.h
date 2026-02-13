@@ -17,7 +17,7 @@ enum class Theme;
    It supports dynamic update (append/remove columns as needed)
 */
 
-class DataTableWindow : public wxFrame
+class DataTableWindow : public wxPanel
 {
 	public:
 		DataTableWindow(wxWindow* parent, const std::vector<std::shared_ptr<DataSession>>& sessions,
@@ -36,7 +36,7 @@ class DataTableWindow : public wxFrame
 		void applyTheme(Theme theme);
 
 		//close event
-		void OnClose(wxCloseEvent& evt);
+		//void OnClose(wxCloseEvent& evt);
 
 		std::shared_ptr<Run> getAssociatedRun() const;
 
@@ -50,4 +50,5 @@ class DataTableWindow : public wxFrame
 		std::vector<double> m_times;
                 std::vector<std::vector<double>> m_values;
 		wxGrid* m_grid; //Grid widget to display the table
+		wxButton* m_collect_button;
 };

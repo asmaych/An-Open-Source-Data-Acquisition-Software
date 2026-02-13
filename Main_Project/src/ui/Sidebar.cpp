@@ -136,5 +136,15 @@ void Sidebar::applyTheme(Theme theme)
 		load_project_button -> SetForegroundColour(fg);
 	}
 
+	if(m_connect_button){
+                m_connect_button -> SetBackgroundColour(btnBg);
+                m_connect_button -> SetForegroundColour(fg);
+        }
+
+        if(m_sensor_button){
+                m_sensor_button -> SetBackgroundColour(btnBg);
+                m_sensor_button -> SetForegroundColour(fg);
+        }
+
 	Refresh();
 }

@@ -32,6 +32,7 @@ add_executable(daq_capstone
 	src/sensor/Sensor.cpp
 	src/sensor/SensorManager.cpp
 	src/sensor/Interpolator.cpp
+	src/sensor/SensorDatabase.cpp
 	src/data/DataTableWindow.cpp
 	src/data/LiveDataWindow.cpp
 	src/data/GraphWindow.cpp
@@ -39,7 +40,6 @@ add_executable(daq_capstone
 	src/data/Run.cpp
 	src/controllers/SessionController.cpp
         src/controllers/DataCollector.cpp
-        src/controllers/ExportManager.cpp
 	src/ui/MainFrame.cpp
 	src/ui/ProjectPanel.cpp
 	src/ui/Toolbar.cpp
@@ -74,4 +74,7 @@ endif()
 
 # Link wxwidgets
 target_link_libraries(daq_capstone PRIVATE ${wxWidgets_LIBRARIES} ${LIBUSB_LIBRARIES})
+
+# Link sqlite3
+target_link_libraries(daq_capstone PRIVATE sqlite3)
 

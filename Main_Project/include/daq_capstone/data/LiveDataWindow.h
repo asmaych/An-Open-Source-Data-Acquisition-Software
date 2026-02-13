@@ -6,6 +6,7 @@
 #include <vector>
 #include "data/Run.h"
 #include "sensor/Sensor.h"
+#include "ui/Theme.h"
 
 class Run;
 /* LiveDataWIndow class displays live data during acquisition.
@@ -36,6 +37,8 @@ class LiveDataWindow : public wxPanel
 		//clear all liveWIndow
 		void clearAll();
 
+		//theme
+		void applyTheme(Theme theme);
 	private:
 		wxNotebook* m_notebook = nullptr;; //notebook to create tabs
 		wxGrid* m_activeGrid = nullptr; //grid in current tab to display real-time values

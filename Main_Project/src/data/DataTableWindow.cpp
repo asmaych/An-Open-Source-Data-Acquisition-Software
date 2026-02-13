@@ -4,13 +4,16 @@
 //constructor to set up the window and grid
 DataTableWindow::DataTableWindow(wxWindow* parent, const std::vector<std::shared_ptr<DataSession>>& sessions,
 				 std::shared_ptr<Run> run)
-	: wxFrame(parent, wxID_ANY, "Collected Data", wxDefaultPosition, wxSize(600,400)),
+	: wxPanel(parent),
           m_sessions(sessions),
 	  m_associatedRun(run)
 {
+	wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
+
 	//create a wxGrid for table display
 	m_grid = new wxGrid(this, wxID_ANY);
 	m_grid -> CreateGrid(0, sessions.size()); //O row and size column initially
+	//m_grid -> DeleteRows(0);
 
 	//set column headers to the sensor names
 	for(size_t i = 0; i < sessions.size(); ++i){
@@ -20,11 +23,38 @@ DataTableWindow::DataTableWindow(wxWindow* parent, const std::vector<std::shared
 	//disable editing of cells by the user (read-only)
 	m_grid -> EnableEditing(false);
 
-	//automatically size columns to fit the contents
-	m_grid -> AutoSizeColumns();
+        //automatically size columns to fit the contents
+        m_grid -> AutoSizeColumns();
 
-	//catch the close event
-        Bind(wxEVT_CLOSE_WINDOW, &DataTableWindow::OnClose, this);
+	sizer -> Add(m_grid, 1, wxEXPAND | wxALL, 5);
+
+	m_collect_button = new wxButton(this, wxID_ANY, "Collect");
+	m_collect_button -> Bind(wxEVT_BUTTON, [this](wxCommandEvent&){
+		if (!m_associatedRun)
+        		return;
+
+    		const auto& frames = m_associatedRun->getFrames();
+    		const auto& times  = m_associatedRun->getTimes();
+
+    		if (frames.empty() || times.empty())
+        		return;
+
+    		size_t lastIndex = times.size() - 1;
+
+    		double timestamp = times[lastIndex];
+    		const std::vector<double>& sensorValues = frames[lastIndex];
+
+    		std::vector<double> row;
+    		row.push_back(timestamp);
+    		row.insert(row.end(), sensorValues.begin(), sensorValues.end());
+
+    		appendRow(row);
+
+	});
+
+	sizer -> Add(m_collect_button, 0, wxALIGN_RIGHT | wxALL, 5);
+
+	SetSizer(sizer);
 }
 
 
@@ -149,8 +179,9 @@ void DataTableWindow::appendRow(const std::vector<double>& rowValues)
 		}
 	}
 
-    	m_grid->AutoSizeColumns();
-    	m_grid->ForceRefresh();
+    	m_grid -> AutoSizeColumns();
+	m_grid -> MakeCellVisible(newRow, 0);
+    	m_grid -> ForceRefresh();
 }
 
 std::shared_ptr<Run> DataTableWindow::getAssociatedRun() const
@@ -162,42 +193,39 @@ std::shared_ptr<Run> DataTableWindow::getAssociatedRun() const
 void DataTableWindow::applyTheme(Theme theme)
 {
 	//determine background and foreground colors based on theme
-	wxColour bg, fg;
+	wxColour bg, fg, gridLine;
 
 	if(theme == Theme::Dark){
 		bg = wxColour(30, 30, 30);
 		fg = wxColour(220, 220, 220);
-	} else{
-		bg = *wxWHITE;
-		fg = *wxBLACK;
+	} else if (theme == Theme::Light){
+    		bg = *wxWHITE;
+   		fg = *wxBLACK;
+	}
+	else {
+		bg = GetParent() -> GetBackgroundColour();
+		fg = GetParent() -> GetForegroundColour();
 	}
 
 	//apply the colors to the wxGrid widget that displays the tabe
-	m_grid -> SetBackgroundColour(bg); //sets the overall grid background
-	m_grid -> SetForegroundColour(fg); //sets the text color for all cells
-	m_grid->SetDefaultCellBackgroundColour(bg);
-    	m_grid->SetDefaultCellTextColour(fg);
-    	m_grid->SetLabelBackgroundColour(bg);
-    	m_grid->SetLabelTextColour(fg);
-
-    	m_grid->ClearSelection();
-
-    	Layout();
-    	Refresh();
-    	m_grid->Refresh();
-    	m_grid->Update();
-	//m_grid -> ForceRefresh(); //force the grid to refresh immediately
-}
-
-
-//catch the close event
-void DataTableWindow::OnClose(wxCloseEvent& evt)
-{
-	//tell projectPanel the table is gone
-	if(auto panel = dynamic_cast<ProjectPanel*>(GetParent())) {
-		panel -> resetTableWindow(); //clear unique ptr
+	SetBackgroundColour(bg); // grid background
+	SetForegroundColour(fg); //text color
+	if(m_grid){
+		m_grid -> SetBackgroundColour(bg); //sets the overall grid background
+		m_grid -> SetForegroundColour(fg); //sets the text color for all cells
+		m_grid -> SetDefaultCellBackgroundColour(bg);
+    		m_grid -> SetDefaultCellTextColour(fg);
+   		m_grid -> SetLabelBackgroundColour(bg);
+    		m_grid -> SetLabelTextColour(fg);
+		m_grid -> ClearSelection();
+		m_grid -> ForceRefresh();
 	}
 
+	if(m_collect_button) {
+	    	m_collect_button -> SetBackgroundColour(bg);
+		m_collect_button -> SetForegroundColour(fg);
+	}
+
+	Layout();
+	Refresh();
 }
-
-

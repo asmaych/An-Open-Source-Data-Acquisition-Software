@@ -22,27 +22,13 @@
 ProjectPanel::ProjectPanel(wxWindow* parent, const wxString& title)
 	: wxPanel(parent, wxID_ANY)
 {
-	// ================== UI splitter =================
-	//vertical splitter where top has live graphing while bottom has live table
-	m_splitter = new wxSplitterWindow(this, wxID_ANY);
-	m_splitter -> SetSashGravity(0.6);
-	m_splitter -> SetMinimumPaneSize(120);
-
-	//create live graph and live table
-	m_graphWindow = std::make_unique<GraphWindow>(m_splitter);
-	m_liveWindow = std::make_unique<LiveDataWindow>(m_splitter);
-
-	//split vertically
-	m_splitter -> SplitHorizontally(m_graphWindow.get(), m_liveWindow.get());
-
-	//use sizer to fill the panel
+	//one sizer for the entire panel
 	wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
-	sizer -> Add(m_splitter, 1, wxEXPAND);
 	SetSizer(sizer);
 
 	// ================ serial + sensor ===========
-	//Create SerialComm instance for this project (not connected yet)
-	m_serial = std::make_unique<SerialComm>();
+        //Create SerialComm instance for this project (not connected yet)
+        m_serial = std::make_unique<SerialComm>();
 
 	//create a SensorManager class and point m_sensorManager to it
 	//Note that the sensorManager is given the address of the class
@@ -50,14 +36,56 @@ ProjectPanel::ProjectPanel(wxWindow* parent, const wxString& title)
 	//project-specific instance of SerialComm to get readings.
 	m_sensorManager = std::make_unique<SensorManager>(m_sensors, m_serial.get());
 
-	//set a callback so ui updates automatically when sensors change
-	m_sensorManager -> setOnChangeCallback([this](){
-		//refreshSensorList();
-	});
+	// =============== sensor database ============
+        //open or create the sensor db
+        if(!m_sensorDB.open("sensors.db")){
+                wxMessageBox("Failed to open sensor db!", "Database Error");
+        }
+
+        //load sensors from db into m_sensors vector
+        m_sensorDB.loadSensors(m_sensors);
+
+        //create a SensorManager class and point sensorManager to it
+        //Note that the sensorManager is given the address of the class
+        //member m_sensors vector in order to modify it
+        m_sensorManager = std::make_unique<SensorManager>(m_sensors, m_serial.get());
+
+        //set a callback so ui updates automatically when sensors change
+        m_sensorManager -> setOnChangeCallback([this](){
+                //wxLogMessage("Sensors changed -> saving to database");
+		m_sensorDB.saveSensors(m_sensors);
+        });
 
 	//Bind events
-	Bind(wxEVT_SERIAL_UPDATE, &ProjectPanel::onSerialUpdate, this);
-	Bind(wxEVT_HANDSHAKE, &ProjectPanel::onHandshakeSuccess, this);
+        Bind(wxEVT_SERIAL_UPDATE, &ProjectPanel::onSerialUpdate, this);
+        Bind(wxEVT_HANDSHAKE, &ProjectPanel::onHandshakeSuccess, this);
+
+	//create splitter (graph on top, bottom area below)
+	m_splitter = std::make_unique<wxSplitterWindow>(this, wxID_ANY);
+	m_splitter -> SetSashGravity(0.6);
+	m_splitter -> SetMinimumPaneSize(120);
+
+	//bottom splitter (live/table)
+	m_bottom_splitter = std::make_unique<wxSplitterWindow>(m_splitter.get(), wxID_ANY);
+	m_bottom_splitter -> SetSashGravity(0.5);
+	m_bottom_splitter -> SetMinimumPaneSize(120);
+
+	//child windows
+	m_graphWindow = std::make_unique<GraphWindow>(m_splitter.get());
+	m_liveWindow = std::make_unique<LiveDataWindow>(m_bottom_splitter.get());
+	m_tableWindow = nullptr;
+
+	//start hidden
+	m_splitter -> Hide();
+	m_bottom_splitter -> Hide();
+	m_graphWindow -> Hide();
+	m_liveWindow -> Hide();
+
+	//put main splitter in sizer
+	sizer -> Add(m_splitter.get(), 1, wxEXPAND);
+
+	Layout(); //enforce initial layout
+
 }
 
 
@@ -73,6 +101,7 @@ ProjectPanel::~ProjectPanel()
 	 */
 
 	//make sure no run is left active when panel is destroyed
+	m_sensorDB.close();
 	stopRun();
 
 	//reset the connected arduino if it exists using the SerialComm instance
@@ -137,11 +166,6 @@ void ProjectPanel::toggleStartStop()
 		//start the run
 		startRun();
 
-		/*//update toolbar button
-		if(m_mainFrame){
-			m_mainFrame -> setStartToggleToStop();
-		}*/
-
 		wxLogStatus("Run Started");
 	}
 
@@ -155,11 +179,6 @@ void ProjectPanel::toggleStartStop()
 		//stop the run
 		stopRun();
 
-		//update toolbar button
-		/*if(m_mainFrame){
-			m_mainFrame -> setStartToggleToStart();
-		}*/
-
 		wxLogStatus("Run stopped");
 	}
 }
@@ -168,18 +187,38 @@ void ProjectPanel::toggleStartStop()
 //starts a new continuous acquisition run taht stores timestamps and frmaes (vector of sensor values)
 void ProjectPanel::startRun()
 {
+	graphVisible = true;
+	liveVisible = true;
+	collectNowVisible = false;
+
+	//reset the table for collect now if it does exist
+	//destroy table completely
+        if(m_tableWindow){
+                //if bottom splitter is using the table, unsplit first
+                if(m_bottom_splitter && m_bottom_splitter -> IsSplit())
+                        m_bottom_splitter -> Unsplit();
+
+                //if bottom splitter was intialized with table only
+                if(m_bottom_splitter)
+                        m_bottom_splitter -> Initialize(nullptr);
+
+                m_tableWindow.reset();
+        }
+
+	updateLayout();
+
 	//create a new run with an incrementing run number
 	m_currentRun = std::make_shared<Run>(m_runs.size() + 1);
 	m_runs.push_back(m_currentRun);
 
 	//store absolute OS time so we can convert to "run time"
 	m_runStartTime = wxGetUTCTimeMillis().ToDouble() / 1000.0;
-
-	//tell the live window to create a new tab for this run
-	m_liveWindow -> startNewRun(m_currentRun, m_sensors);
-	m_liveWindow -> Show();
-
 	m_isRunning = true;
+
+	//start live display for this run
+	m_liveWindow -> startNewRun(m_currentRun, m_sensors);
+
+	Layout(); //force layout update
 }
 
 
@@ -219,12 +258,125 @@ void ProjectPanel::onSerialUpdate(wxThreadEvent& evt)
 	m_liveWindow -> addFrame(t, values);
 }
 
+// ===================<==== LAYOUT =====================
+void ProjectPanel::updateLayout()
+{
+   	if (!m_splitter)
+        	return;
+
+	if(m_splitter -> IsSplit())
+		m_splitter -> Unsplit();
+
+	if(m_bottom_splitter -> IsSplit())
+		m_bottom_splitter -> Unsplit();
+
+    	// reset everything
+    	m_splitter -> Hide();
+    	m_graphWindow -> Hide();
+    	m_liveWindow -> Hide();
+
+    	if (m_tableWindow)
+        	m_tableWindow -> Hide();
+
+    	// ========= NOTHING =========
+    	if (!graphVisible && !liveVisible && !collectNowVisible){
+		Layout();
+		return;
+    	}
+
+    	m_splitter -> Show();
+
+        // ========= GRAPH + LIVE (default run view) =========
+	if (graphVisible && liveVisible && !collectNowVisible){
+	   	if(m_bottom_splitter -> IsSplit())
+			m_bottom_splitter -> Unsplit();
+		m_graphWindow -> Show();
+        	m_liveWindow -> Show();
+
+		m_bottom_splitter -> Initialize(m_liveWindow.get());
+		m_splitter -> Initialize(m_graphWindow.get());
+        	m_splitter -> SplitHorizontally(m_graphWindow.get(), m_bottom_splitter.get(), GetSize().GetHeight() * 0.6);
+       }
+
+    	// ========= GRAPH ONLY =========
+    	else if (graphVisible && !liveVisible && !collectNowVisible){
+		m_graphWindow -> Show();
+
+		m_splitter -> Initialize(m_graphWindow.get());
+  	}
+
+    	// ========= LIVE ONLY =========
+    	else if (liveVisible && !graphVisible && !collectNowVisible){
+        	m_liveWindow -> Show();
+
+		m_bottom_splitter -> Initialize(m_liveWindow.get());
+		m_splitter -> Initialize(m_bottom_splitter.get());
+	}
+
+    	// ========= COLLECT NOW ONLY =========
+    	else if (!graphVisible && !liveVisible && collectNowVisible){
+		if(m_bottom_splitter -> IsSplit())
+			m_bottom_splitter -> Unsplit();
+		m_tableWindow -> Show();
+		m_bottom_splitter -> Initialize(m_tableWindow.get());
+		m_splitter -> Initialize(m_bottom_splitter.get());
+  	}
+
+	 // ========= GRAPH + COLLECT =========
+    	else if (graphVisible && !liveVisible && collectNowVisible){
+ 		if(m_bottom_splitter -> IsSplit())
+                        m_bottom_splitter -> Unsplit();
+
+		m_tableWindow -> Show();
+		m_graphWindow -> Show();
+
+		m_bottom_splitter -> Initialize(m_tableWindow.get());
+		m_splitter -> Initialize(m_graphWindow.get());
+		m_splitter->SplitHorizontally(m_graphWindow.get(), m_bottom_splitter.get(),GetSize().GetHeight() * 0.6);
+        }
+
+    	// ========= LIVE + COLLECT =========
+    	else if (!graphVisible && liveVisible && collectNowVisible){
+        	if(m_bottom_splitter -> IsSplit())
+                        m_bottom_splitter -> Unsplit();
+
+		m_liveWindow -> Show();
+	   	m_tableWindow -> Show();
+
+		m_bottom_splitter -> Initialize(m_liveWindow.get());
+	        m_bottom_splitter -> SplitVertically(m_liveWindow.get(), m_tableWindow.get());
+
+		m_splitter -> Initialize(m_bottom_splitter.get());
+	}
+
+    	// ========= ALL THREE =========
+    	else if (graphVisible && liveVisible && collectNowVisible){
+        	if(m_bottom_splitter -> IsSplit())
+                        m_bottom_splitter -> Unsplit();
+
+		m_graphWindow -> Show();
+        	m_liveWindow -> Show();
+        	m_tableWindow -> Show();
+
+		//graph on top while table and collectNow are sidebyside
+		m_bottom_splitter -> Initialize(m_liveWindow.get());
+     		m_bottom_splitter -> SplitVertically(m_liveWindow.get(), m_tableWindow.get());
+
+		m_splitter -> Initialize(m_graphWindow.get());
+		m_splitter -> SplitHorizontally(m_graphWindow.get(), m_bottom_splitter.get(), GetSize().GetHeight() * 0.6);
+	}
+
+	//recalculate layout after all visibility/split changes
+	Layout();
+}
 
 // ======================= COLLECT ON DEMAND =====================
 
 //takes the most recent frame from the active run and plug it into a table 
 void ProjectPanel::collectCurrentValues()
 {
+	collectNowVisible = true;
+
 	//check if there is an active run
 	if(!m_currentRun){
 		//wxMessageBox("No active run to collect from!", "Warning");
@@ -252,25 +404,11 @@ void ProjectPanel::collectCurrentValues()
                 for(auto& s : m_sensors)
                         sessions.push_back(std::make_shared<DataSession>(s -> getName()));
 
-                m_tableWindow = std::make_unique<DataTableWindow>(this, sessions, m_currentRun);
+                m_tableWindow = std::make_unique<DataTableWindow>(m_bottom_splitter.get(), sessions, m_currentRun);
                 m_tableWindow -> applyTheme(m_currentTheme); //inherit theme
-                m_tableWindow -> Show();
 	}
 
-	//get latest frame
-	auto& times = m_currentRun -> getTimes();
-	// already declared above auto& frames = m_currentRun -> getFrames();
-
-	size_t lastIndex = times.size() - 1;
-	double timestamp = times[lastIndex];
-      	const std::vector<double>& sensorValues = frames[lastIndex];
-
-	//append row: timestamp + sensor values
-	std::vector<double> row;
-	row.push_back(timestamp);
-	row.insert(row.end(), sensorValues.begin(), sensorValues.end());
-
-	m_tableWindow -> appendRow(row);
+	updateLayout();
 }
 
 // ============================ RESET ============================
@@ -283,19 +421,46 @@ void ProjectPanel::resetSessionData()
                 return;
         }
 
-	m_runs.clear();
-	m_currentRun.reset();
-
-	//clear all tabs in the display
+	//clear live and graph
 	if(m_liveWindow)
 		m_liveWindow -> clearAll();
 
-	//clear the snapshot table
-	if(m_tableWindow)
-	{
-		m_tableWindow -> Destroy();
-		m_tableWindow = nullptr;
-	}
+    	if(m_graphWindow)
+		m_graphWindow -> clear();
+
+	//destroy table completely
+	if(m_tableWindow){
+		//if bottom splitter is using the table, unsplit first
+		if(m_bottom_splitter && m_bottom_splitter -> IsSplit())
+			m_bottom_splitter -> Unsplit();
+
+		//if bottom splitter was intialized with table only
+		if(m_bottom_splitter)
+			m_bottom_splitter -> Initialize(nullptr);
+
+                m_tableWindow.reset();
+        }
+
+	//reset splitters
+	if(m_bottom_splitter && m_bottom_splitter -> IsSplit())
+		m_bottom_splitter -> Unsplit();
+
+	if (m_splitter && m_splitter -> IsSplit())
+        	m_splitter -> Unsplit();
+
+	// Reset state flags
+    	graphVisible = false;
+    	liveVisible = false;
+    	collectNowVisible = false;
+
+    	//reset runs
+	m_runs.clear();
+    	m_currentRun.reset();
+    	m_isRunning = false;
+
+	updateLayout();
+
+    	Layout();
 
 	wxLogStatus("all data cleared");
 }
@@ -304,21 +469,6 @@ void ProjectPanel::resetTableWindow()
 {
 	m_tableWindow.reset();
 }
-
-// ============================= UI =================================
-/*
-//resreshes the sensor list in the ui, called whenever sensors are added or removed
-void ProjectPanel::refreshSensorList()
-{
-	m_sensorList -> DeleteAllItems();
-
-	for(size_t i = 0; i < m_sensors.size(); ++i){
-		auto* s = m_sensors[i].get();
-		long index = m_sensorList -> InsertItem(i, s -> getName());
-		m_sensorList -> SetItem(index, 1, std::to_string(s -> getPin()));
-	}
-}*/
-
 
 // ============================= GRAPH ===========================
 void ProjectPanel::graphSelectedSensor(wxCommandEvent& evt)
@@ -440,6 +590,11 @@ void ProjectPanel::graphRun(const std::shared_ptr<Run>& run)
 
 
 // ======================= GETTERS =========================
+LiveDataWindow* ProjectPanel::getLiveWindow()
+{
+	return m_liveWindow.get();
+}
+
 DataTableWindow* ProjectPanel::getTableWindow()
 {
 	return m_tableWindow.get();
@@ -482,6 +637,7 @@ void ProjectPanel::exportSessions(wxCommandEvent& evt)
 		return;
 	}
 
+	//check if the current run actually contains any data
 	bool hasData = false;
 	const auto& frames = m_currentRun -> getFrames();
 	for (const auto& frame : frames){
@@ -491,8 +647,48 @@ void ProjectPanel::exportSessions(wxCommandEvent& evt)
 		}
 	}
 
+	//abort export if run has no data
 	if(!hasData){
 		wxMessageBox("No data available to export!", "Error", wxOK | wxICON_ERROR);
+		return;
+	}
+
+	// ============= export options dialog =============
+	//dialog allowing the user to choose what to export
+	wxDialog dlg(this, wxID_ANY, "Export options", wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+
+	wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
+
+	//export option checkboxes
+	wxCheckBox* cbContinuous = new wxCheckBox(&dlg, wxID_ANY, "Collect Continuous");
+	wxCheckBox* cbCollectNow = new wxCheckBox(&dlg, wxID_ANY, "Collect Now");
+	wxCheckBox* cbGraph = new wxCheckBox(&dlg, wxID_ANY, "Graph");
+
+	//sensible defaults
+        cbContinuous -> SetValue(m_currentRun != nullptr);
+        cbCollectNow -> SetValue(m_tableWindow != nullptr);
+        cbGraph -> SetValue(m_graphWindow != nullptr);
+
+        sizer -> Add(cbContinuous, 0, wxALL, 5);
+        sizer -> Add(cbCollectNow, 0, wxALL, 5);
+        sizer -> Add(cbGraph, 0, wxALL, 5);
+
+        // Buttons
+        wxStdDialogButtonSizer* btnSizer = new wxStdDialogButtonSizer();
+        btnSizer -> AddButton(new wxButton(&dlg, wxID_OK));
+        btnSizer -> AddButton(new wxButton(&dlg, wxID_CANCEL));
+        btnSizer -> Realize();
+
+        sizer -> Add(btnSizer, 0, wxEXPAND | wxALL, 10);
+
+        dlg.SetSizerAndFit(sizer);
+
+        if (dlg.ShowModal() != wxID_OK)
+                return;
+
+	//handle whether collect now table wasn't created
+	if(cbCollectNow -> IsChecked() && !m_tableWindow){
+		wxMessageBox("Collect now table wasn't created!", "Export Error", wxOK | wxICON_WARNING);
 		return;
 	}
 
@@ -501,26 +697,39 @@ void ProjectPanel::exportSessions(wxCommandEvent& evt)
 	if(path.IsEmpty())
 		return;
 
-	//if a graph exists, export it with its table
-	if(panel -> getGraphWindow()) {
-		exportGraph(panel -> getGraphWindow(), path);
-		m_graphWindow -> exportImage(path + "_graph.png");
+	//remove extension so we can reuse base name
+	path = path.BeforeLast('.');
+
+	// =============== perform exports ===============
+	bool didExport = false;
+
+	//continuous run export to csv
+	if(cbContinuous -> IsChecked() && m_currentRun)
+	{
+		exportRun(m_currentRun, path + "_collect_continuous.csv");
+		didExport = true;
 	}
 
-	//else if only table exists, export it
-	else if(panel -> getTableWindow()) {
-		exportTable(panel -> getTableWindow(), path);
+	//collect now table export
+	if (cbCollectNow->IsChecked() && m_tableWindow)
+	{
+	       //I did not handle check if collect now has data or only time cause it shouldn't already work without data 
+	        exportTable(m_tableWindow.get(), path + "_collect_now.csv");
+               	didExport = true;
 	}
 
-	//else export the current run
-	else if(panel -> getCurrentRun()) {
-		exportRun(panel -> getCurrentRun(), path);
-	}
+	//graph export to png
+	if (cbGraph->IsChecked() && m_graphWindow)
+        {
+                m_graphWindow->exportImage(path + "_graph.png");
+                didExport = true;
+        }
 
-	else {
-		wxMessageBox("No data available to export!", "Error", wxOK | wxICON_ERROR);
-		return;
-	}
+	if (!didExport)
+        {
+                wxMessageBox("Nothing was selected to export.", "Export", wxOK | wxICON_WARNING);
+                return;
+        }
 
 	wxMessageBox("Export Complete!", "Info", wxOK | wxICON_INFORMATION);
 }
@@ -552,7 +761,7 @@ wxString ProjectPanel::askSaveFile(wxWindow* parent)
 
 void ProjectPanel::exportTable(DataTableWindow* table, const wxString& path)
 {
-	if(!table | m_sensors.empty())
+	if(!table || m_sensors.empty())
 		return;
 
 	std::ofstream file(path.ToStdString());
@@ -726,7 +935,7 @@ void ProjectPanel::onSensors()
 // ======================= THEME ==========================
 void ProjectPanel::applyTheme(Theme theme)
 {
-	m_currentTheme = theme; 
+	m_currentTheme = theme;
 
 	//colors that will be applied to this panel and all child UI elements
 	wxColour bg, fg;
@@ -737,7 +946,7 @@ void ProjectPanel::applyTheme(Theme theme)
 		bg = wxColour(30, 30, 30);
 		fg = wxColour(220, 220, 220);
 	}
-	else{
+	else if(theme == Theme::Light){
 		//light mode: white backgound with black text
 		bg = *wxWHITE;
 		fg = *wxBLACK;
@@ -749,8 +958,8 @@ void ProjectPanel::applyTheme(Theme theme)
 
 	//propogate the theme change to the data table window (if it exists)
 	//this insures that the table matches the main UI theme
-	/*if(m_liveWindow)
-		m_liveWindow -> applyTheme(theme);*/
+	if(m_liveWindow)
+		m_liveWindow -> applyTheme(theme);
 
 	if(m_tableWindow)
 		m_tableWindow -> applyTheme(theme);

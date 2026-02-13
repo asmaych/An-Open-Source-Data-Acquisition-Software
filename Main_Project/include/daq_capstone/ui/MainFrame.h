@@ -6,6 +6,7 @@
 #include "HandshakeDialog.h"
 #include "Theme.h"
 #include "Toolbar.h"
+#include "MainFrame.h"
 
 /* MainFrame class is the main application window, it contains:
    A toolbar with features like Start, Stop, Collect, Sensor and Graph, 
