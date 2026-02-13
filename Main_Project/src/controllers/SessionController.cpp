@@ -48,7 +48,11 @@ bool SessionController::start()
 
 					//send raw frame to a project panel's live window and run storage
 					if(!rawFrame.empty() && m_panel){
-						m_panel -> onNewDataFrame(rawFrame);
+						auto frameCopy = rawFrame;  // important: copy data
+
+						m_panel->CallAfter([this, frameCopy]() {
+							m_panel->onNewDataFrame(frameCopy);
+						});
 					}
 				}
 				//read sensor data

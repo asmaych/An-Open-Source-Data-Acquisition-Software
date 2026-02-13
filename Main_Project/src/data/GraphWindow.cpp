@@ -39,6 +39,8 @@ GraphWindow::GraphWindow(wxWindow* parent)
 void GraphWindow::addCurve(const std::vector<double>& x, const std::vector<double>& y, const std::string& label,
 				size_t runNumber, const std::string& id)
 {
+	std::lock_guard<std::mutex> lock(m_graphMutex);
+
 	//check if the curve already exists
 	for(auto& c : m_curves){
 		if(c.id == id){
@@ -88,6 +90,7 @@ void GraphWindow::OnPaint(wxPaintEvent& evt)
 //draws all curves
 void GraphWindow::draw(wxDC& dc)
 {
+	std::lock_guard<std::mutex> lock(m_graphMutex);
 	//if there is no data
 	if (m_curves.empty())
         	return;
@@ -185,7 +188,7 @@ void GraphWindow::draw(wxDC& dc)
         	dc.SetPen(wxPen(c.color, 2));
 
 		//draw line segmnents between consecutive points
-        	for (size_t i = 1; i < c.x.size(); ++i)
+    		for (size_t i = 1; i < c.x.size(); ++i)
         	{
 			//we convert data coordinates to screen coordinates
             		int x1 = left + (c.x[i - 1] - minX) / (maxX - minX) * (right - left);

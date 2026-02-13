@@ -409,7 +409,7 @@ void ProjectPanel::graphTable(DataTableWindow* table)
 
 
 // ========================== GRAPH RUN ============================
-void ProjectPanel::graphRun(std::shared_ptr<Run> run)
+void ProjectPanel::graphRun(const std::shared_ptr<Run>& run)
 {
 	auto& times = run -> getTimes();  //vector<double> of times
 	auto& frames = run -> getFrames(); // (vector<vector<double>>: rows = time, columns = sensors)
@@ -419,7 +419,7 @@ void ProjectPanel::graphRun(std::shared_ptr<Run> run)
 
 	// ================== LOOP OVER SENSORS ===============
 	//each sensor gets its own curve
-	for(size_t sensor = 0; sensor < sensorCount; ++sensor){
+	for(size_t sensor = 0; sensor < sensorCount; ++sensor) {
 		std::vector<double> y;
 
 		//extract this sensor's values from each frame
@@ -681,8 +681,7 @@ std::vector<double> ProjectPanel::parseSerialFrame(const std::string& frame)
 }
 
 //only needed if sessionController wants to push raw string frames
-void ProjectPanel::onNewDataFrame(const std::string& frame)
-{
+void ProjectPanel::onNewDataFrame(const std::string& frame) {
 	//ignore if run hasn't started
 	if(!m_isRunning || !m_currentRun)
 		return;

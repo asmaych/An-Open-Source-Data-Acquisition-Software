@@ -43,6 +43,7 @@ class GraphWindow : public wxPanel
 		std::vector<Curve> m_curves;
 		Theme m_currentTheme = Theme::Light;
 		wxButton* m_selectedButton; //Selector button for showing/hiding curves
+		std::mutex m_graphMutex;
 
 		void OnPaint(wxPaintEvent& evt);
 		void draw(wxDC& dc);

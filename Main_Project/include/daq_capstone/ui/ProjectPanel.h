@@ -34,7 +34,7 @@ class ProjectPanel : public wxPanel
 {
 	public:
 		ProjectPanel(wxWindow* parent, const wxString& title);
-		~ProjectPanel();
+		~ProjectPanel() override;
 
 		//Toolbar actions from Mainframe
 		void toggleStartStop(); //start or stop a Run
@@ -86,7 +86,7 @@ class ProjectPanel : public wxPanel
 */
 		//graph helpers
 		void graphTable(DataTableWindow*); //graph collect on demand table
-		void graphRun(std::shared_ptr<Run> run); //graph a full run
+		void graphRun(const std::shared_ptr<Run>& run); //graph a full run
 
 		//export helpers
 		void exportRun(const std::shared_ptr<Run>& run, const wxString& path);
