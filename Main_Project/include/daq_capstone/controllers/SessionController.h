@@ -33,6 +33,8 @@ class SessionController {
 		//Stop the experiment (set running false), returns true if stopped.
 		bool stop();
 
+		void setInterval(float rate);
+
 		//toggle start/stop 
 		bool toggle();
 
@@ -50,4 +52,5 @@ class SessionController {
 		std::atomic<bool> m_running;
 		std::thread m_thread;
 		std::mutex m_mutex; //protects complex transitions if needed
+		std::atomic<float> m_sampleRate{50};	//set default to 50ms delay
 };

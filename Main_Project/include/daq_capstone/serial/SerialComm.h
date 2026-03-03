@@ -49,7 +49,7 @@ class SerialComm
 
 		void addSensor(const std::string& sensorName, int pin);
 		void removeSensor(const std::string& sensorName);
-		void adjustPollingRate(int rate);
+		void adjustPollingRate(float rate) const;
 		void reset();
 		bool writeString(const std::string& str);
 

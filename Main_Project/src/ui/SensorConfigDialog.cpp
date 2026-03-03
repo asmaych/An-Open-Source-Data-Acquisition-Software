@@ -4,14 +4,16 @@
 #include "CalibrateSensorDialog.h"
 #include "SerialComm.h"
 #include "SensorManager.h"
+#include "controllers/SessionController.h"
 #include <wx/listctrl.h>
 #include <wx/wx.h>
 
 SensorConfigDialog::SensorConfigDialog(wxWindow* parent,
-					const wxString& title,
-					SerialComm* serialComm,
-					SensorManager* sensorManager,
-					std::vector<std::unique_ptr<Sensor>>& sensors)
+                                       const wxString& title,
+                                       SerialComm* serialComm,
+                                       SensorManager* sensorManager,
+                                       std::vector<std::unique_ptr<Sensor>>& sensors,
+                                       SessionController* m_controller)
 	: wxDialog(
 			parent,
 			wxID_ANY,
@@ -21,7 +23,8 @@ SensorConfigDialog::SensorConfigDialog(wxWindow* parent,
 			wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER),
 	m_serialComm(serialComm),
 	m_sensorManager(sensorManager),
-	m_sensors(sensors)
+	m_sensors(sensors),
+	m_sessionController(m_controller)
 		
 {
 
@@ -39,23 +42,23 @@ SensorConfigDialog::SensorConfigDialog(wxWindow* parent,
 	//sizer for the button grouping
 	wxBoxSizer* buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 
-	//main sizer for the button group and the sensor list
+	//main sizer for the button group, sensor list, and sample rate config
 	wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
 
 	//create the button for add sensor:
 	wxButton* add_sensor = new wxButton(this, wxID_ANY, "Add Sensor");
 	//add the button to the buttonSizer:
-	buttonSizer->Add(add_sensor,0, wxALL | wxALL, 10);
+	buttonSizer->Add(add_sensor,0, wxALL, 10);
 
 	//create the button for remove sensor:
 	wxButton* remove_sensor = new wxButton(this, wxID_ANY, "Remove Selected");
 	//add the button to the buttonsizer:
-	buttonSizer->Add(remove_sensor, 0, wxALL | wxALL, 10);
+	buttonSizer->Add(remove_sensor, 0, wxALL, 10);
 
 	//create the button for calibrate Sensor:
 	wxButton* calibrate_sensor = new wxButton(this, wxID_ANY, "Calibrate Sensor");
 	//add the button to the buttonsizer:
-	buttonSizer->Add(calibrate_sensor, 0, wxALL | wxALL, 10);
+	buttonSizer->Add(calibrate_sensor, 0, wxALL, 10);
 
 	//create a button for selecting the sensors that will be used in a  project x
 	//wxButton* addToProject = new wxButton(this, wxID_ANY, "Add Selected to Project");
@@ -82,7 +85,7 @@ SensorConfigDialog::SensorConfigDialog(wxWindow* parent,
 	SetSizerAndFit(mainSizer);
 
 	//---------------------------------------------------------------------------------------------------
-	//BINDING THE CONTROLS TO EVENT HANDLERS
+	//BINDING THE CONTROLS TO EVENT HANDLER
 	//---------------------------------------------------------------------------------------------------
 	
 	add_sensor->Bind(wxEVT_BUTTON, &SensorConfigDialog::onAddSensorPressed, this);
@@ -218,6 +221,7 @@ void SensorConfigDialog::onCalibratePressed(wxCommandEvent& evt)
 	//successful calibration, so we don't need to do anything else
 	
 }
+
 
 
 void SensorConfigDialog::onRowDblClick(wxMouseEvent& evt)

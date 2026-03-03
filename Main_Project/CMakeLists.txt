@@ -39,7 +39,7 @@ add_executable(daq_capstone
 	src/data/DataSession.cpp
 	src/data/Run.cpp
 	src/controllers/SessionController.cpp
-        src/controllers/DataCollector.cpp
+	src/controllers/DataCollector.cpp
 	src/ui/MainFrame.cpp
 	src/ui/ProjectPanel.cpp
 	src/ui/Toolbar.cpp
@@ -52,6 +52,7 @@ add_executable(daq_capstone
 	src/ui/SensorSelectionDialog.cpp
 	src/ui/CalibrateSensorDialog.cpp
 	src/ui/CalibrationTableDialog.cpp
+	src/ui/ProjectConfigDialog.cpp
 
 )
 

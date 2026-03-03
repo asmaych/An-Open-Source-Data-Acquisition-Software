@@ -52,6 +52,7 @@ class ProjectPanel : public wxPanel
 		void updateLayout(); //to handle the new ui logic
 		void onSensors(); //open sensor selection/management dialog
 		void applyTheme(Theme theme); //black/light theme
+		void adjustSampleRate(float rate) const;
 
 		//MainFrame needs this to change toolbar state
 		void setMainFrame(MainFrame* frame) {m_mainFrame = frame;}
@@ -84,6 +85,9 @@ class ProjectPanel : public wxPanel
 
 		//Mainframe needs access to sensors for selection dialogs
 		std::vector<std::unique_ptr<Sensor>> m_sensors;
+
+		//putting this in public so that objects can see if it has a connected controller
+		bool handshakeComplete = false;
 
 	private:
 		//splitter for live graph (top) live table (bottom)
@@ -139,7 +143,6 @@ class ProjectPanel : public wxPanel
 
 		//State flags
 		bool m_isRunning = false;
-		bool handshakeComplete = false;
 
 		//database lives as long as the project
 		SensorDatabase m_sensorDB;

@@ -22,7 +22,11 @@ class Toolbar : public wxEvtHandler
 				ID_Reset,
 				ID_CollectNow,
 				ID_Export,
-				ID_Theme
+				//ID_Theme,
+				ID_Config,
+
+			// menu-only IDs (not toolbar tools)
+			ID_Config_ToggleTheme,
 		};
 
 		Toolbar(wxFrame* parent);
@@ -32,6 +36,7 @@ class Toolbar : public wxEvtHandler
 		std::function<void()> onReset;
 		std::function<void()> onCollectNow;
 		std::function<void()> onExport;
+		std::function<void()> onConfig;
 		std::function<void()> onToggleTheme;
 
 		//visual state

@@ -56,7 +56,7 @@ bool SessionController::start()
 					}
 				}
 				//read sensor data
-				std::this_thread::sleep_for(std::chrono::milliseconds(50));
+				std::this_thread::sleep_for(std::chrono::duration<float, std::milli>(m_sampleRate.load()));
 			}
 		});
 		return true; // we transitioned to running
@@ -73,6 +73,12 @@ bool SessionController::stop()
 		return true;
 	}
 	return false; //already stopped
+}
+
+void SessionController::setInterval(const float rate)
+{
+	m_sampleRate.store(rate);
+	std::cout << "Setting rate to " << rate << std::endl;
 }
 
 bool SessionController::toggle()

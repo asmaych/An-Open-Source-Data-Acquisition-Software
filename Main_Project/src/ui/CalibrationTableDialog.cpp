@@ -16,7 +16,7 @@ CalibrationTableDialog::CalibrationTableDialog(
 	m_sensor_index(sensor_index)
 {
 	//first, make the main sizer
-	wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
+	auto* mainSizer = new wxBoxSizer(wxVERTICAL);
 
 	//now define the grid bounds
 	m_grid = new wxGrid(this, wxID_ANY);

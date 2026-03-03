@@ -5,6 +5,7 @@
 #include "SensorManager.h"
 #include <wx/listctrl.h>
 #include <wx/wx.h>
+#include "controllers/SessionController.h"
 
 class SensorConfigDialog : public wxDialog
 {
@@ -13,7 +14,8 @@ class SensorConfigDialog : public wxDialog
 				const wxString& title,
 			       	SerialComm* serialComm,
 			       	SensorManager* sensorManager,
-				std::vector<std::unique_ptr<Sensor>>& sensors);
+				std::vector<std::unique_ptr<Sensor>>& sensors,
+				SessionController* m_controller);
 
 
 	private:
@@ -30,6 +32,9 @@ class SensorConfigDialog : public wxDialog
 		//dialog, so that this dialog can add or remove sensors from
 		//the vector
 		SensorManager* m_sensorManager;
+
+		//raw pointer to the sessioncontroller that is owned by the project
+		SessionController* m_sessionController;
 
 		//button for adding new sensors
 		wxButton* add_sensor;
@@ -70,4 +75,6 @@ class SensorConfigDialog : public wxDialog
 
 		//this is used to hand the event that a user selects a sensor to calibrate
 		void onCalibratePressed(wxCommandEvent& evt);
+
+		void onNewSampleRate(wxCommandEvent &evt);
 };

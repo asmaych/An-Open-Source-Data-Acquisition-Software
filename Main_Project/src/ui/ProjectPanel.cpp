@@ -927,7 +927,7 @@ void ProjectPanel::onNewDataFrame(const std::string& frame) {
 void ProjectPanel::onSensors()
 {
 	//launch the SensorConfigDialog chain
-	SensorConfigDialog dlg(this, "Sensor Configuration", m_serial.get(), m_sensorManager.get(), m_sensors);
+	SensorConfigDialog dlg(this, "Sensor Configuration", m_serial.get(), m_sensorManager.get(), m_sensors, m_controller.get());
 	dlg.ShowModal();
 }
 
@@ -970,4 +970,32 @@ void ProjectPanel::applyTheme(Theme theme)
 
     	//force the panel to redraw itself using the new colors
     	Refresh();
+}
+
+void ProjectPanel::adjustSampleRate(const float rate) const {
+	/* \brief	This function handles the event that the button for
+* 		adding a new sensor is pressed in the dialog interface.
+*
+* 		The only thing necessary is to stack allocate an instance
+* 		of the AddSensorDialog, passing along the pointer to the
+* 		sensorManager owned by the parent Project. Any modification
+* 		to the vector of sensors is made by SensorManager, and not
+* 		this or any other dialog.
+*/
+
+	//add a check to see if we have connected with a device yet
+	if (!m_serial->handshakeresult)
+	{
+		wxMessageBox("Please connect with a microcontroller first!");
+		return;
+	}
+
+	//convert the desired hz into a millisecond delay value
+	const float ms_delay = 1000/rate;
+
+	//set the arduino sampling rate to the required value
+	m_serial->adjustPollingRate(ms_delay);
+
+	//now update the value being used in the background thread.
+	m_controller->setInterval(ms_delay);
 }
