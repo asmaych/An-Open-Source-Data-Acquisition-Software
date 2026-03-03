@@ -3,6 +3,7 @@
 #include <wx/wx.h>
 #include "Sensor.h"
 #include "SensorManager.h"
+#include "sensor/SensorDatabase.h"
 #include <string>
 
 class AddSensorDialog : public wxDialog
@@ -11,7 +12,8 @@ class AddSensorDialog : public wxDialog
 		AddSensorDialog(
 				wxWindow* parent,
 				const wxString& title,
-				SensorManager* sensorManager);
+				SensorManager* sensorManager,
+				SensorDatabase* sensorDatabase);
 	private:
 		//------------------------------------------------------
 		//CLASS MEMBERS
@@ -28,6 +30,12 @@ class AddSensorDialog : public wxDialog
 
 		//text box to input an integer for the sensor pin
 		wxTextCtrl* pin_field;
+
+		//checkbox for saving a sensor in the db
+		wxCheckBox* m_saveToDB;
+
+		//pointer to db
+		SensorDatabase* m_sensorDatabase;
 
 		//------------------------------------------------------
 		//EVENT HANDLERS

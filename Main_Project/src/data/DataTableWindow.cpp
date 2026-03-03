@@ -13,7 +13,6 @@ DataTableWindow::DataTableWindow(wxWindow* parent, const std::vector<std::shared
 	//create a wxGrid for table display
 	m_grid = new wxGrid(this, wxID_ANY);
 	m_grid -> CreateGrid(0, sessions.size()); //O row and size column initially
-	//m_grid -> DeleteRows(0);
 
 	//set column headers to the sensor names
 	for(size_t i = 0; i < sessions.size(); ++i){
@@ -48,8 +47,14 @@ DataTableWindow::DataTableWindow(wxWindow* parent, const std::vector<std::shared
     		row.push_back(timestamp);
     		row.insert(row.end(), sensorValues.begin(), sensorValues.end());
 
+		//update table
     		appendRow(row);
 
+		//send event to project panel
+		wxCommandEvent evt(wxEVT_COLLECT_NOW_POINT);
+		evt.SetClientData(new std::vector<double>(row)); //allocate on heap because event copies the pointer
+
+		wxPostEvent(GetParent(), evt);
 	});
 
 	sizer -> Add(m_collect_button, 0, wxALIGN_RIGHT | wxALL, 5);

@@ -14,6 +14,7 @@
 #include "data/GraphWindow.h"
 #include "data/LiveDataWindow.h"
 #include "sensor/SensorDatabase.h"
+#include "Events.h"
 
 /* ProjectPanel class represents one project tab, it contains:
    All sensors in a project, SerialComm instance for readings, Runs (continuous acquisition buffers)
@@ -47,6 +48,7 @@ class ProjectPanel : public wxPanel
 		void resetSessionData(); //clears all runs and reset live window
 		void collectCurrentValues(); //collects on demand from the current run
 		void graphSelectedSensor(wxCommandEvent& evt); //open graph window for selected sensor
+		void onCollectNowGraphPoint(wxCommandEvent& evt); //graph the collected on demand point
 		void resetTableWindow();
 		void exportSessions(wxCommandEvent& evt); //export collected runs
 		void updateLayout(); //to handle the new ui logic

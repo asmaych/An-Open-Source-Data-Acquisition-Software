@@ -39,6 +39,7 @@ bool SensorManager::addSensor(std::unique_ptr<Sensor> s)
 	if (nameExists(s->getName()) || pinExists(s->getPin()))
 	{
 		//do not modify the vector, return false
+		std::cout << "Pin already used!\n";
 		return false;
 	}
 

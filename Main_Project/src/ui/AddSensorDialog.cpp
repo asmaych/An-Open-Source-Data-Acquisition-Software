@@ -8,7 +8,8 @@
 AddSensorDialog::AddSensorDialog(
 				wxWindow* parent,
 				const wxString& title,
-				SensorManager* sensorManager)
+				SensorManager* sensorManager,
+				SensorDatabase* sensorDatabase)
 	: wxDialog(
 			parent,
 			wxID_ANY,
@@ -17,7 +18,8 @@ AddSensorDialog::AddSensorDialog(
 			wxSize(400,300),
 			wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER
 			),
-	m_sensorManager(sensorManager)
+	m_sensorManager(sensorManager),
+	m_sensorDatabase(sensorDatabase)
 {
 
 	//-----------------------------------------------------------------
@@ -35,6 +37,10 @@ AddSensorDialog::AddSensorDialog(
 	mainSizer->Add(new wxStaticText(this, wxID_ANY, "Sensor pin:"), 0, wxALL, 5);
 	pin_field = new wxTextCtrl(this, wxID_ANY);
 	mainSizer->Add(pin_field, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 5);
+
+	// Create the checkbox
+	m_saveToDB = new wxCheckBox(this, wxID_ANY, "Save this sensor to database");
+	mainSizer -> Add(m_saveToDB, 0, wxALL, 5);
 
 	//ADD BUTTON:
 	wxButton* add_button = new wxButton(this, wxID_ANY, "Add", wxDefaultPosition, wxDefaultSize);
@@ -70,7 +76,13 @@ void AddSensorDialog::onAddPressed(wxCommandEvent& evt)
 	//now validate
 	if (m_sensorManager->addSensor(std::move(sensor)))
 	{
-		std::cout << "we exit the dialog\n";
+		std::cout << "Sensor added to project successfully\n";
+
+		//save to db if user wants
+		if(m_saveToDB && m_saveToDB -> IsChecked()){
+			m_sensorDatabase -> saveSensors(name);
+			std::cout << "Sensor saved to db: " << name << "\n";
+		}
 		//exit the dialog
 		EndModal(wxID_OK);
 	}

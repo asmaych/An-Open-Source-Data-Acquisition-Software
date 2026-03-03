@@ -3,6 +3,8 @@
 #include <vector>
 #include "SerialComm.h"
 #include "SensorManager.h"
+#include "SensorSelectionDialog.h"
+#include "sensor/SensorDatabase.h"
 #include <wx/listctrl.h>
 #include <wx/wx.h>
 
@@ -13,6 +15,7 @@ class SensorConfigDialog : public wxDialog
 				const wxString& title,
 			       	SerialComm* serialComm,
 			       	SensorManager* sensorManager,
+				SensorDatabase* sensorDatabase,
 				std::vector<std::unique_ptr<Sensor>>& sensors);
 
 
@@ -30,6 +33,8 @@ class SensorConfigDialog : public wxDialog
 		//dialog, so that this dialog can add or remove sensors from
 		//the vector
 		SensorManager* m_sensorManager;
+
+		SensorDatabase* m_sensorDatabase;
 
 		//button for adding new sensors
 		wxButton* add_sensor;
@@ -66,8 +71,12 @@ class SensorConfigDialog : public wxDialog
 		//this is used to add the selected sensor to the project when a user clicks addToProject button
 		//void onAddToProject(wxCommandEvent& evt);
 
-		void onRowDblClick(wxMouseEvent& evt);
-
 		//this is used to hand the event that a user selects a sensor to calibrate
 		void onCalibratePressed(wxCommandEvent& evt);
+
+		//this is used when the user wants to upload sensors from the database
+		void onLoadFromDatabasePressed(wxCommandEvent& evt);
+
+		//this is used to ask the user for the pin
+		int askUserForPin(const std::string& name);
 };

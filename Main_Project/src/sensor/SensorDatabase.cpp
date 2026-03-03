@@ -24,6 +24,8 @@ bool SensorDatabase::open(const std::string& path)
 		return false;
 	}
 
+	std::cout << "Database opened successfully.\n";
+
 	//create tables if they do not exist
 	createTables();
 
@@ -43,13 +45,16 @@ void SensorDatabase::createTables(){
 		columns:
 			id -> unique db ID
 			name -> sensor name as str
-			enabled -> whether sensor is enabled (0 or 1(true))
+			no pin because pin numbers depend on the user's hardware & how they wired the sensor
+		therefore:
+			database -> catalog of available sensor types
+			project -> actual sensors with assigned pins
 	*/
+
+	std::cout << "Creating sensors table...\n";
 	const char* sql = "CREATE TABLE IF NOT EXISTS sensors ("
                 	   "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-                	   "name TEXT NOT NULL,"
-                	   "pin INTEGER NOT NULL,"
-                	   "selected INTEGER NOT NULL"
+                	   "name TEXT NOT NULL UNIQUE"
                 	   ");";
 
 	char* errMsg = nullptr;
@@ -60,64 +65,99 @@ void SensorDatabase::createTables(){
     	}
 }
 
-void SensorDatabase::saveSensors(const std::vector<std::unique_ptr<Sensor>>& sensors){
-	//do nothing if db isn't open
+bool SensorDatabase::saveSensors(const std::string& name){
+	/* saves a sensor template into the db
+		a template that contains only the name for now, calibration after.
+		in other words, a table called sensors with a columns where one of them is called name just as an Excel file.
+	*/
+
+	//do nothing if db isn't open (m_db is a pointer to the db connection)
 	if(!m_db)
-		return;
+		return false;
 
-	    char* errMsg = nullptr;
+	/*sql statement:
+		this command means:
+			INSERT INTO sensors -> put data inside the "sensors" table
+			(name) -> we are inserting into the "name" column
+			VALUES (?) -> ? is a placeholder which will be replaced by the real data later
+	*/
+    	const char* sql = "INSERT INTO sensors (name) VALUES (?);";
 
-    // Remove all existing sensor records
-    sqlite3_exec(m_db, "DELETE FROM sensors;", nullptr, nullptr, &errMsg);
+	/*prepare the sql statement:
+		sqlite3_prepare_v2 takes our SQL text and compiles it into something SQLite can execute, in other words convert
+		english words into machine instructions.
+	*/
+    	sqlite3_stmt* stmt = nullptr;
 
-    const char* sql =
-        "INSERT INTO sensors (name, enabled) VALUES (?, ?);";
+	if (sqlite3_prepare_v2(m_db, sql, -1, &stmt, nullptr) != SQLITE_OK){
+		//if something goes wrong, print the error message
+        	std::cerr << "Failed to prepare insert statement: " << sqlite3_errmsg(m_db) << std::endl;
+        	return false;
+    	}
 
-    sqlite3_stmt* stmt = nullptr;
-    sqlite3_prepare_v2(m_db, sql, -1, &stmt, nullptr);
+	/*bind the real value to the ?
+		parameter indexes start at 1 and not 0
+		SQLITE_TRANSIENT means SQLite will make its own copy of the string, so we don't have to worry about memory
+	*/
+	sqlite3_bind_text(stmt, 1, name.c_str(), -1, SQLITE_TRANSIENT);
 
-    // Bind each sensor's name and enabled state and insert
-    for (const auto& sensor : sensors)
-    {
-        sqlite3_bind_text(stmt, 1, sensor->getName().c_str(), -1, SQLITE_TRANSIENT);
-        sqlite3_bind_int(stmt, 2, sensor->isSelected() ? 1 : 0);
+	/*execute the command:
+		sqlite3_step runs the prepared statement, if it returns SQLITE_DONE means the insert worked
+	*/
+	if (sqlite3_step(stmt) != SQLITE_DONE){
+        	std::cerr << "Insert failed: " << sqlite3_errmsg(m_db) << std::endl;
+	     	//clean up memory
+		sqlite3_finalize(stmt);
+		return false;
+	}
 
-        sqlite3_step(stmt);  // execute insert
-        sqlite3_reset(stmt); // reset for next row
-    }
+	/*clean up resources:
+		sqlite3_finalize frees memory used by the statement
+	*/
+    	sqlite3_finalize(stmt); // clean up statement
 
-    sqlite3_finalize(stmt); // clean up statement
+	return true; //success
 }
 
-void SensorDatabase::loadSensors(std::vector<std::unique_ptr<Sensor>>& sensors){
+
+void SensorDatabase::loadSensors(std::vector<std::string>& names){
+	/*reads data from the db, specifically:
+		it looks inside the sensors table, it reads the name column and put all sensor names into a vector.
+	*/
+
 	//do nothing if db not opened
 	if(!m_db)
 		return;
 
-	//clear existing sensors in memory
-	sensors.clear();
+	//clear the output vector so we don't mix old data with new data from the db
+	names.clear();
 
-	const char* sql =
-        "SELECT name, enabled FROM sensors;";
+	//write the SQL SELECT command that means, go to sensors table and give me (read) the values in the name column
+	const char* sql = "SELECT name FROM sensors;";
 
-    sqlite3_stmt* stmt = nullptr;
-    sqlite3_prepare_v2(m_db, sql, -1, &stmt, nullptr);
+	//prepare the sql statement, just like insert we need to prepare the stmt before running it
+    	sqlite3_stmt* stmt = nullptr;
 
-    // Loop through each row and create a Sensor object
-    while (sqlite3_step(stmt) == SQLITE_ROW)
-    {
-        // Read sensor name
-        std::string name =
-            reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
+	//sqlit3_prepare_v2 converts the SQL text into executable form and it creates an sqlite3_stmt object(stmt)
+	if (sqlite3_prepare_v2(m_db, sql, -1, &stmt, nullptr) != SQLITE_OK){
+        	std::cerr << "Failed to prepare select statement: "<< sqlite3_errmsg(m_db) << std::endl;
+        	return;
+    	}
 
-        // Read enabled flag (1 = true, 0 = false)
-        bool enabled = sqlite3_column_int(stmt, 1);
+    	//loop through each row and create a Sensor object
+    	while (sqlite3_step(stmt) == SQLITE_ROW){
+        	/* sqlite3_column_text(stmt, 0) is a command that returns a const unsigned char* so we need to convert it into std::string
+			stmt = current result row
+			0 = first column (name)
+		*/
+        	std::string name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
 
-        // Add sensor to the vector
-        sensors.push_back(std::make_unique<Sensor>(name, enabled));
-    }
+        	//add the name into our vector
+        	names.push_back(name);
+    	}
 
-    sqlite3_finalize(stmt); // clean up statement
+	//clean up memory
+    	sqlite3_finalize(stmt);
 }
 
 

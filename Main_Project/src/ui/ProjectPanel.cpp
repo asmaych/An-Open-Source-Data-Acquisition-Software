@@ -42,23 +42,11 @@ ProjectPanel::ProjectPanel(wxWindow* parent, const wxString& title)
                 wxMessageBox("Failed to open sensor db!", "Database Error");
         }
 
-        //load sensors from db into m_sensors vector
-        m_sensorDB.loadSensors(m_sensors);
-
-        //create a SensorManager class and point sensorManager to it
-        //Note that the sensorManager is given the address of the class
-        //member m_sensors vector in order to modify it
-        m_sensorManager = std::make_unique<SensorManager>(m_sensors, m_serial.get());
-
-        //set a callback so ui updates automatically when sensors change
-        m_sensorManager -> setOnChangeCallback([this](){
-                //wxLogMessage("Sensors changed -> saving to database");
-		m_sensorDB.saveSensors(m_sensors);
-        });
-
 	//Bind events
         Bind(wxEVT_SERIAL_UPDATE, &ProjectPanel::onSerialUpdate, this);
         Bind(wxEVT_HANDSHAKE, &ProjectPanel::onHandshakeSuccess, this);
+	Bind(wxEVT_COLLECT_NOW_POINT, &ProjectPanel::onCollectNowGraphPoint, this);
+	std::cout << "333333PP event bound\n";
 
 	//create splitter (graph on top, bottom area below)
 	m_splitter = std::make_unique<wxSplitterWindow>(this, wxID_ANY);
@@ -405,10 +393,46 @@ void ProjectPanel::collectCurrentValues()
                         sessions.push_back(std::make_shared<DataSession>(s -> getName()));
 
                 m_tableWindow = std::make_unique<DataTableWindow>(m_bottom_splitter.get(), sessions, m_currentRun);
-                m_tableWindow -> applyTheme(m_currentTheme); //inherit theme
+//                m_tableWindow -> applyTheme(m_currentTheme); //inherit theme
 	}
 
 	updateLayout();
+}
+
+
+// =============== Graph Collected on demand Points ==============
+
+//draws a point (highlighted circle) in each time we collect on demand a value
+void ProjectPanel::onCollectNowGraphPoint(wxCommandEvent& evt)
+{
+	//if no graph/curve
+	if(!m_graphWindow)
+		return;
+
+	//get the row of data sent by DataTableWindow (time § sensor values)
+	//evt.GetClientData stores a pointer to std::vector<double>
+	auto row = static_cast<std::vector<double>*>(evt.GetClientData());
+
+	//if times & frames are empty
+	if(!row || row -> empty())
+		return;
+
+	double time = (*row)[0];
+
+	//for each sensor value
+	for(size_t i = 1; i < row -> size(); ++i){
+		double value = (*row)[i];
+
+		if(i - 1 < m_sensors.size()){
+			//generate the curve id exactly as used in addCurve()
+			size_t sensorIndex = i - 1;
+			size_t runNumber = m_currentRun -> getRunNumber();
+			std::string curveId = "run" + std::to_string(runNumber) + "_sensor" + std::to_string(sensorIndex);
+			//add the point to the graph
+			m_graphWindow -> addDemandPoint(curveId, time, value);
+		}
+	}
+	delete row;
 }
 
 // ============================ RESET ============================
@@ -529,31 +553,6 @@ void ProjectPanel::graphTable(DataTableWindow* table)
 	//a collect on demand table is just a view of a run here
 	//so we grave the run that was used to produce the table
 	graphRun(run);
-
-// FOR NOW I AM GRAPHING ONLY THE RUNS (TO BE DISCUSSED WITH THE CLIENT)
-/*
-	// =============== GET SESSIONS AND TIMESTAMPS ==============
-	//each column in the table is a sensor in collect on demand
-	auto sessions = table -> getSelectedSessions();
-	auto timestamps = table -> getTimestamps();
-
-	//loop over sensors
-	for(size_t col = 0; col < sessions.size(); ++col){
-		std::vector<double> values;
-
-		//collect the sensor values from each row
-		for(size_t row = 0; row < timestamps.size(); ++row){
-			values.push_back(sessions[col] -> getValueAt(row));
-		}
-
-		//create a new graph window for each sensor
-		auto graphWin = new GraphWindow(this, timestamps, values, sessions[col] -> getSensorName());
-		graphWin -> Show();
-
-		//keep track of graph windows
-		m_graphWindows.push_back(graphWin);
-	}
-*/
 }
 
 
@@ -927,7 +926,7 @@ void ProjectPanel::onNewDataFrame(const std::string& frame) {
 void ProjectPanel::onSensors()
 {
 	//launch the SensorConfigDialog chain
-	SensorConfigDialog dlg(this, "Sensor Configuration", m_serial.get(), m_sensorManager.get(), m_sensors);
+	SensorConfigDialog dlg(this, "Sensor Configuration", m_serial.get(), m_sensorManager.get(), &m_sensorDB, m_sensors);
 	dlg.ShowModal();
 }
 

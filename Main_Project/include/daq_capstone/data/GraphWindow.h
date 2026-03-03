@@ -17,7 +17,8 @@ class GraphWindow : public wxPanel
 {
 	public:
                 struct Curve{ std::vector<double> x; std::vector<double> y; std::string label;
-                                wxColour color; std::string id; bool visible = true; size_t runNumber; }; //id is a unique key: runID
+                                wxColour color; std::string id; bool visible = true; size_t runNumber;
+				std::vector<std::pair<double,double>> demandPoints; }; //id is a unique key: runID
 
 		//constructor with a parent with is the mainFrame and a pointer to DataSession
 		GraphWindow(wxWindow* parent);
@@ -25,6 +26,9 @@ class GraphWindow : public wxPanel
 		//Add one curve (one sensor from one run)
 		void addCurve(const std::vector<double>& x, const std::vector<double>& y, const std::string& label,
 				size_t runNumber, const std::string& id);
+
+		//draw the collect on demand points
+		void addDemandPoint(const std::string& curveId, double x, double y);
 
 		//remove all curves
 		void clear();
