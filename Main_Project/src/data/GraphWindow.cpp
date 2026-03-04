@@ -71,6 +71,7 @@ void GraphWindow::addCurve(const std::vector<double>& x, const std::vector<doubl
 //clears all curves from the graph
 void GraphWindow::clear()
 {
+	std::lock_guard<std::mutex> lock(m_graphMutex);
 	m_curves.clear();  //remove all curves
 	m_panel -> Refresh();  //refresh panel to erase drawing
 }
@@ -80,7 +81,8 @@ void GraphWindow::clear()
 //called whenever the panel needs to be repainted
 void GraphWindow::OnPaint(wxPaintEvent& evt)
 {
-	wxPaintDC dc(m_panel); //for drawing
+	//for drawing
+	wxPaintDC dc(m_panel);
 	dc.Clear(); //clear panel background
 	draw(dc);
 }
@@ -129,9 +131,15 @@ void GraphWindow::draw(wxDC& dc)
         	}
     	}
 
-	//if there is no variation, we cannot scale or draw
-    	if (minX == maxX || minY == maxY)
-        	return;
+	//if flat line, do not skip it and artificially expand range
+	if (minY == maxY){
+		minY -= 1;
+		maxY += 1;
+        }
+	if(minX == maxX){
+		minX -= 1;
+		maxX += 1;
+	}
 
 	// ====== Theme colors ======
 	wxColour axisColor, labelColor;
@@ -200,7 +208,23 @@ void GraphWindow::draw(wxDC& dc)
 			//draw the line segment
             		dc.DrawLine(x1, y1, x2, y2);
         	}
-    	}
+
+		//draw collect now points
+		for(auto& point : c.demandPoints)
+		{
+			int px = left + (point.first - minX) / (maxX - minX) * (right - left);
+			int py = bottom - (point.second - minY) / (maxY - minY) * (bottom - top);
+
+			//using a strong visible color
+			wxColour highlight(255, 80, 80);
+
+			dc.SetPen(wxPen(highlight, 2));
+			dc.SetBrush(wxBrush(highlight));
+
+			//draw the highlighted point
+			dc.DrawCircle(px, py, 4);
+		}
+   	}
 
     	// ======== Draw legend ========
     	int ly = top;
@@ -213,6 +237,27 @@ void GraphWindow::draw(wxDC& dc)
         	ly += 15;
     	}
 }
+
+//draw & add the on demand pointss to the curve
+void GraphWindow::addDemandPoint(const std::string& curveId, double x, double y)
+{
+	std::lock_guard<std::mutex> lock(m_graphMutex);
+
+	bool found = false;
+	for(auto& curve : m_curves){
+		if(curve.id == curveId){
+			curve.demandPoints.emplace_back(x,y);
+			found = true;
+			std::cout << "added demand point to curve " << curveId << "at(" << x <<"," << y <<")\n";
+			break;
+		}
+	}
+	if(!found)
+		std::cout << "Curve ID not found: " << curveId << "\n";
+
+	m_panel -> Refresh();
+}
+
 
 //store the current theme (all the updates will be made in draw)
 void GraphWindow::setTheme(Theme theme)

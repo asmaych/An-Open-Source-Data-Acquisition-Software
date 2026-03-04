@@ -35,9 +35,6 @@ class DataTableWindow : public wxPanel
 		//change the table theme
 		void applyTheme(Theme theme);
 
-		//close event
-		//void OnClose(wxCloseEvent& evt);
-
 		std::shared_ptr<Run> getAssociatedRun() const;
 
 		const std::vector<double>& getTimes() const { return m_times; }

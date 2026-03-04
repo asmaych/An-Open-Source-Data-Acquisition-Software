@@ -29,11 +29,11 @@ class SensorDatabase
 		void close();
 
 		// ====== save/load sensors ======
-		//saves all sensors to the database, existing sensor rows will be deleted first
-		void saveSensors(const std::vector<std::unique_ptr<Sensor>>& sensors);
+		//save sensor templates with name only, no pin (for NOW)
+		bool saveSensors(const std::string& name);
 
 		//loads sensors from the db into the given vector, the vector is cleared before loading
-		void loadSensors(std::vector<std::unique_ptr<Sensor>>& sensors);
+		void loadSensors(std::vector<std::string>& names);
 
 	private:
 		//creates database tables if they do not exist
