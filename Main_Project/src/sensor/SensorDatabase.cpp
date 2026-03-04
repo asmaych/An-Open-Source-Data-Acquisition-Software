@@ -1,5 +1,6 @@
 #include "SensorDatabase.h"
 #include <iostream>
+#define PROJECT_ROOT "../"
 
 SensorDatabase::SensorDatabase()
 {
@@ -19,7 +20,7 @@ SensorDatabase::~SensorDatabase()
 */
 bool SensorDatabase::open(const std::string& path)
 {
-	if(sqlite3_open(path.c_str(), &m_db) != SQLITE_OK){
+	if(sqlite3_open(PROJECT_ROOT "sensors.db", &m_db) != SQLITE_OK){
 		std::cerr << "Failed to open database: " << sqlite3_errmsg(m_db) << std::endl;
 		return false;
 	}
