@@ -927,7 +927,7 @@ void ProjectPanel::onNewDataFrame(const std::string& frame) {
 void ProjectPanel::onSensors()
 {
 	//launch the SensorConfigDialog chain
-	SensorConfigDialog dlg(this, "Sensor Configuration", m_serial.get(), m_sensorManager.get(), m_sensors, m_controller.get());
+	SensorConfigDialog dlg(this, "Sensor Configuration", m_serial.get(), m_sensorManager.get(), m_sensors);
 	dlg.ShowModal();
 }
 

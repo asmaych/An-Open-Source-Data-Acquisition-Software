@@ -352,6 +352,8 @@ void SerialComm::readDataFrame(std::vector<std::unique_ptr<Sensor>>& sensors, st
 		pos++;
 	}
 
+	flush();
+
 	//then strip away any carriage return, if there is one, and null-terminate the array.
 	buffer[strcspn(buffer, "\r\n")] = '\0';
 

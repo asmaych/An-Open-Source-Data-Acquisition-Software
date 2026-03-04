@@ -12,8 +12,7 @@ SensorConfigDialog::SensorConfigDialog(wxWindow* parent,
                                        const wxString& title,
                                        SerialComm* serialComm,
                                        SensorManager* sensorManager,
-                                       std::vector<std::unique_ptr<Sensor>>& sensors,
-                                       SessionController* m_controller)
+                                       std::vector<std::unique_ptr<Sensor>>& sensors)
 	: wxDialog(
 			parent,
 			wxID_ANY,
@@ -23,8 +22,7 @@ SensorConfigDialog::SensorConfigDialog(wxWindow* parent,
 			wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER),
 	m_serialComm(serialComm),
 	m_sensorManager(sensorManager),
-	m_sensors(sensors),
-	m_sessionController(m_controller)
+	m_sensors(sensors)
 		
 {
 
