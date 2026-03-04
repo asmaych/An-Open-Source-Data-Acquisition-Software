@@ -29,6 +29,8 @@ class SensorConfigDialog : public wxDialog
 		//send commands to the connected microcontroller
 		SerialComm* m_serialComm;
 
+		SensorDatabase* m_sensorDatabase;
+
 		//a raw pointer to the vector of sensors is passed into this
 		//dialog, so that this dialog can add or remove sensors from
 		//the vector
