@@ -776,8 +776,8 @@ void ProjectPanel::exportTable(DataTableWindow* table, const wxString& path)
 
 	//header
 	file << "Time";
-	for(auto& sensor : m_sensors)
-		file << "," << sensor -> getName();
+	for(size_t sensor = 0; sensor < values.size(); ++sensor)
+		file << "," << m_sensors[sensor] -> getName();
 	file << "\n";
 
 	//rows
@@ -847,9 +847,9 @@ void ProjectPanel::exportRun(const std::shared_ptr<Run>& run, const wxString& pa
 		return;
 
 	//header
-	file <<"Time,";
+	file <<"Time";
 	for(size_t s = 0; s < frames[0].size(); ++s)
-		file << m_sensors[s] -> getName();
+		file << ", " << m_sensors[s] -> getName();
 	file << "\n";
 
 	//data
