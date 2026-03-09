@@ -1,5 +1,3 @@
-TEST
-
 # An Open-Source Data Acquisition Software
 Across nearly every scientific endeavor, there is a need to design experiments, collect data, and perform analysis on that data in order to test or develop a hypothesis. In modern times, this almost always involves the use of computerized a wide variety of processes, and specialised sensors are used to quantify and collect it. The relevant
 data from a process or experiment is collected via sensors, and is ported (usually) through a USB port, where the sensor data is interpreted in a specialised Data Acquisition Software (DAS) such as LabVIEW. The process itself can be considered a "solved problem", but there is a limitation that exists in the current selection of such software: All of the main software available for practical use is highly proprietary,
