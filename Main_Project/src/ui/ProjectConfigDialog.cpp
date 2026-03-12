@@ -1,24 +1,36 @@
 #include "ProjectConfigDialog.h"
 #include "ProjectPanel.h"
+#include "Theme.h"
 
 ProjectConfigDialog::ProjectConfigDialog(wxWindow* parent,
-                                         ProjectPanel* project)
+                                         ProjectPanel* project,
+                                         MainFrame* mainframe)
     : wxDialog(parent,
                wxID_ANY,
                "Project Configuration",
                wxDefaultPosition,
                wxSize(400, 300),
                wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER),
-      m_project(project)
+      m_project(project),
+    m_mainFrame(mainframe)
 {
+    m_darkmode = (m_mainFrame->getTheme() == Theme::Dark);
+
     wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
 
     //sizer for the sensor sample rate configuration
     wxBoxSizer* sampleSizer = new wxBoxSizer(wxHORIZONTAL);
 
     // Example setting: Theme toggle
-    m_theme_toggle = new wxCheckBox(this, wxID_ANY, "Enable Dark Mode");
-    mainSizer->Add(m_theme_toggle, 0, wxALL, 10);
+    m_theme_button = new wxButton(this, wxID_ANY);
+    if (m_darkmode) {
+        m_theme_button->SetBitmap(wxBitmapBundle::FromSVGFile("../Assets/dark.svg", wxSize(48,48)));
+    }
+    else {
+        m_theme_button->SetBitmap(wxBitmapBundle::FromSVGFile("../Assets/light.svg", wxSize(48,48)));
+    }
+    mainSizer->Add(m_theme_button, 0, wxALL, 10);
+    m_theme_button->Bind(wxEVT_BUTTON, &ProjectConfigDialog::onToggleTheme, this);
 
     //define the editable field for entering the sample rater
     sampleSizer->Add(new wxStaticText(this, wxID_ANY, "Sample Rate:"), 0, wxALL, 5);
@@ -47,21 +59,6 @@ ProjectConfigDialog::ProjectConfigDialog(wxWindow* parent,
     //BIND EVENTS
     //------------------------------------------------------------------------------------------------------------------
     sample_rate_confirm->Bind(wxEVT_BUTTON, &ProjectConfigDialog::onNewSampleRate, this);
-
-    Bind(wxEVT_CLOSE_WINDOW, [this](wxCloseEvent& evt)
-{
-    EndModal(wxID_CANCEL);
-});
-
-    // Handle OK click
-    Bind(wxEVT_BUTTON, [this](wxCommandEvent& evt)
-    {
-        if(evt.GetId() == wxID_OK)
-        {
-            dark = m_theme_toggle->GetValue();
-            EndModal(wxID_OK);
-        }
-    });
 }
 
 void ProjectConfigDialog::onNewSampleRate(wxCommandEvent& evt) {
@@ -105,4 +102,17 @@ void ProjectConfigDialog::onNewSampleRate(wxCommandEvent& evt) {
 
     //now that we've validated the input, we can apply the changes to the project
     m_project->adjustSampleRate(value);
+}
+
+void ProjectConfigDialog::onToggleTheme(wxCommandEvent& evt) {
+    wxCommandEvent event(wxEVT_THEME_TOGGLE);          // custom event
+    wxPostEvent(this, event);    // send to MainFrame
+
+    // Update button icon locally for feedback
+    if (m_darkmode)
+        m_theme_button->SetBitmap(wxBitmapBundle::FromSVGFile("../Assets/light.svg", wxSize(48,48)));
+    else
+        m_theme_button->SetBitmap(wxBitmapBundle::FromSVGFile("../Assets/dark.svg", wxSize(48,48)));
+
+    m_darkmode = !m_darkmode;
 }

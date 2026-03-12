@@ -124,10 +124,6 @@ bool SerialComm::handshake(std::string portname)
 	//if there are no problems and we get to this point, set the port flag to OPEN
 	port_status = PORT_OPEN;
 
-	//add the port name to the global list so no other instances try to use it
-	g_ports_in_use.insert(portname);
-	m_portName = portname;
-
 	//load the default configuration into the port
 	check(sp_set_config(port, default_config));
 
@@ -202,6 +198,9 @@ bool SerialComm::handshake(std::string portname)
 	{
 		printf("Success, expected: \"pong\", received: %n\n", buffer);
 		this->handshakeresult = true;
+		//add the port name to the global list so no other instances try to use it
+		g_ports_in_use.insert(portname);
+		m_portName = portname;
 	}
 	else
 	{

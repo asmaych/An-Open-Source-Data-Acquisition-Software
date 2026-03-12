@@ -8,11 +8,8 @@
 //this will be used to map sensor names to pin numbers
 std::map<String, int> sensorMap;
 
-//set some variables to keep track of elapsed time
-unsigned long lastSampleTime = 0;
-
 //default sample rate set to 50ms -> 20hz
-unsigned long sampleRate = 50;
+float sampleRate = 50;
 
 //vector to store an entire frame of data before sending
 std::vector<String> frameOrder;
@@ -20,13 +17,13 @@ std::vector<String> frameOrder;
 //defining a set size based on maximum expected command size
 #define INPUT_SIZE 30
 
-#define MAX_SENSORS 15
+#define MAX_SENSORS 10
 
 int readSensor(String name)
 {
   /* \brief This function takes a String address as a parameter.
    *        it then uses the hashmap sensorMap to locate the pin
-   *        associated with the name. The pin is read, and the 
+   *        associated with the name. The pin is read, and the
    *        value is returned.
    */
 
@@ -92,16 +89,16 @@ void processCommand()
 
   //replace commas with null characters
   //command will point to the first character of the first
-  //argument: 
+  //argument:
   //"add"
   //"remove"
   //"adjust"
-  //"ping" 
+  //"ping"
   char* command = strtok(input, ",");
 
   //if the first token is null for some reason, return
   if (!command) return;
-  
+
   //---------------
   //CASE: "ping"
   //---------------
@@ -198,7 +195,7 @@ void processCommand()
     if (newsamplerate)
     {
       //set the new sampling rate
-      sampleRate = atoi(newsamplerate);
+      sampleRate = atof(newsamplerate);
     }
     else
     {
@@ -207,18 +204,22 @@ void processCommand()
       return;
     }
   }
+  else if (strcmp(command, "reset") == 0)
+  {
+    ESP.restart();
+  }
   else
   {
     //TODO implement feedback handling later
     //Serial.println("ERROR: no such command");
     return;
   }
-  
+
 }
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
 }
 
 void loop()
@@ -237,20 +238,12 @@ void loop()
   //After checking for interrupts, send a packet of data
   //--------------------------------------------------------
 
-  //store the current elapsed time for comparison
-  unsigned long timeNow = millis();
-  
-  //if the time elapsed between the last sample and now is 
-  //sufficient to require another sample, we get another.
-  if (timeNow - lastSampleTime >= sampleRate)
+  delayMicroseconds(sampleRate*1000);
+
+  //make sure to check if we actually have any sensors to
+  //send readings from.
+  if (!sensorMap.empty())
   {
-    //make sure to check if we actually have any sensors to
-    //send readings from.
-    if (!sensorMap.empty())
-    {
-      sendDataPacket();
-    }
-    //now update the lastSampleTime to reflect the new sample
-    lastSampleTime = timeNow;
+    sendDataPacket();
   }
 }

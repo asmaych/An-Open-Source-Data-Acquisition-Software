@@ -10,6 +10,7 @@ class HandshakeDialog : public wxDialog
 public:
     HandshakeDialog(wxWindow* parent, const wxString& title, SerialComm* serialComm);
 
+    void loadPorts();
 
 private:
 
@@ -17,7 +18,7 @@ private:
     SerialComm* serialComm;
 
     //this will be used to map a port selection with an actual port object
-    std::unordered_map<std::string, std::string> portMap;
+    std::unordered_map<std::string, std::string> m_portMap;
 
     //declaring the dropdown menu so it can be used across the class
     wxComboBox* portChoice;
@@ -27,6 +28,9 @@ private:
     wxStaticText* status;
 
     void onPortChosen(wxCommandEvent& event);
+
+    void onRefreshPorts(wxCommandEvent &event);
+
 
     bool handshakecompleted = false;
 

@@ -95,6 +95,27 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title, w
 
 	//listen for "new project" events from sidebar/menu
 	Bind(wxEVT_PROJECT_NEW, &MainFrame::onNewProject, this);
+
+	//listen for theme toggle events from toolbar -> ProjectConfigDialog
+	Bind(wxEVT_THEME_TOGGLE, &MainFrame::toggleTheme, this);
+
+	//initialize the theme
+	m_theme = Theme::Light;
+	toggleTheme();
+}
+
+void MainFrame::toggleTheme(wxCommandEvent&) {
+	m_theme = (m_theme == Theme::Light)? Theme::Dark : Theme::Light;
+	applyThemeToAll(m_theme);
+}
+
+void MainFrame::toggleTheme() {
+	m_theme = (m_theme == Theme::Light)? Theme::Dark : Theme::Light;
+	applyThemeToAll(m_theme);
+}
+
+Theme MainFrame::getTheme() {
+	return m_theme;
 }
 
 //getCurrentProjectPanel that returns the currently selected projectPanel or nullptr if no project is open

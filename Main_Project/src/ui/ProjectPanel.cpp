@@ -899,7 +899,7 @@ void ProjectPanel::onNewDataFrame(const std::string& frame) {
 	values.reserve(m_sensors.size());
 
 	for(auto& s : m_sensors)
-		values.push_back(s -> getVoltage());
+		values.push_back(s -> getMappedReading());
 
 
 	//compute time relative to the run start
@@ -955,7 +955,7 @@ void ProjectPanel::applyTheme(Theme theme)
 	SetBackgroundColour(bg);
 	SetForegroundColour(fg);
 
-	//propogate the theme change to the data table window (if it exists)
+	//propagate the theme change to the data table window (if it exists)
 	//this insures that the table matches the main UI theme
 	if(m_liveWindow)
 		m_liveWindow -> applyTheme(theme);

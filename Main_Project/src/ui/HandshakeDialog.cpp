@@ -21,35 +21,39 @@ HandshakeDialog::HandshakeDialog(wxWindow* parent, const wxString& title, Serial
 		)
 {
 
-    	//Create the main sizer to display things in:
-    	wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
+	//Create the main sizer to display things in:
+	wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
 
-    	//pass the raw pointer parameter into our local pointer
-    	this->serialComm = serialComm;
+	//this is to hold the drop-down menu of ports, and the button used to refresh it
+	wxBoxSizer* topSizer = new wxBoxSizer(wxHORIZONTAL);
 
-	//get the actual list of ports:
-	struct sp_port ** ports = serialComm->getPortList();
+	//pass the raw pointer parameter into our local pointer
+	this->serialComm = serialComm;
 
-    	//now create a selection and populate it with the ports
-    	portChoice = new wxComboBox(this, wxID_ANY);
-    	for (int i=0; ports[i] != nullptr; i++)
-    	{
-		//store the port description for use in a string
-		std::string port_desc = sp_get_port_description(ports[i]);
+	//now create a selection and populate it with the ports
+	portChoice = new wxComboBox(this, wxID_ANY);
 
-		//add the port description to the drop-down
-    		portChoice->Append(port_desc);
+	//initialize the port list
+	loadPorts();
 
-		//also add an entry to to hashmap that links the
-		//description with the pointer to the port object
-		portMap[port_desc] = sp_get_port_name(ports[i]);
-    	}
+	//add the drop-down menu to the top sizer
+	topSizer->Add(portChoice, 3, wxEXPAND | wxALL, 10);
 
-	mainSizer->Add(portChoice, 0, wxEXPAND | wxALL, 10);
+	//make the button to refresh the ports
+	wxButton* refresh_ports = new wxButton(this, wxID_ANY,"Refresh");
+	//add it to the top sizer
+	topSizer->Add(refresh_ports, 1, wxEXPAND | wxALL, 10);
+	//bind the event handler for the button
+	refresh_ports->Bind(wxEVT_BUTTON, &HandshakeDialog::onRefreshPorts, this);
+
+	//add the top sizer to the main one.
+	mainSizer->Add(topSizer, 0, wxEXPAND | wxALL, 10);
 	
-    	//now make a button to confirm the user's choice, and commence the handshake:
-    	wxButton* execute_handshake = new wxButton(this, wxID_ANY, "Connect");
+	//now make a button to confirm the user's choice, and commence the handshake:
+	wxButton* execute_handshake = new wxButton(this, wxID_ANY, "Connect");
 	mainSizer->Add(execute_handshake, 0, wxALL | wxALIGN_CENTER_HORIZONTAL,10);
+	//bind the event handler for the button
+	execute_handshake->Bind(wxEVT_BUTTON, &HandshakeDialog::onPortChosen, this);
 
 
 	//make a status bar to show the status of the handshake
@@ -57,9 +61,37 @@ HandshakeDialog::HandshakeDialog(wxWindow* parent, const wxString& title, Serial
 	mainSizer->Add(status, 0, wxALL | wxALIGN_CENTER_HORIZONTAL,10);
 
 	//run the macro for the sizer with all added controls
-    	SetSizer(mainSizer);
+	SetSizer(mainSizer);
 
-    	execute_handshake->Bind(wxEVT_BUTTON, &HandshakeDialog::onPortChosen, this);
+}
+
+void HandshakeDialog::loadPorts() {
+	//first, clear out the old contents of the combo box
+	portChoice->Clear();
+
+	//also clear out the map for port descriptions to names
+	m_portMap.clear();
+
+	//next, re-populate the combobox
+	serialComm->scanPorts();
+	struct sp_port** ports = serialComm->getPortList();
+	for (int i=0; ports[i] != nullptr; i++)
+	{
+		//store the port description for use in a string
+		const char* desc = sp_get_port_description(ports[i]);
+		std::string port_desc = desc;
+
+		//add the port description to the drop-down
+		portChoice->Append(port_desc);
+
+		//also add an entry to the hashmap that links the
+		//description with the pointer to the port object
+		m_portMap[port_desc] = sp_get_port_name(ports[i]);
+	}
+}
+
+void HandshakeDialog::onRefreshPorts(wxCommandEvent& event) {
+	loadPorts();
 }
 
 void HandshakeDialog::onPortChosen(wxCommandEvent& event)
@@ -76,7 +108,7 @@ void HandshakeDialog::onPortChosen(wxCommandEvent& event)
 
 	//store the name (not description) of the port selected:
 	std::string desc = portChoice -> GetStringSelection().ToStdString();
-	std::string portname = portMap[desc];
+	std::string portname = m_portMap[desc];
 
 	//This line takes the string selected by the user in the drop-down,
 	//and uses it as the key in the class attribute hashmap 

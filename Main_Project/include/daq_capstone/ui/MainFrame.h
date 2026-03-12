@@ -25,6 +25,10 @@ class MainFrame : public wxFrame
 
 		MainFrame(const wxString& title);
 
+		void toggleTheme(wxCommandEvent& evt);
+
+		void toggleTheme();
+
 		//----------------------------------------------------
                 //      PROJECT ACTIONS
                 //----------------------------------------------------
@@ -37,6 +41,8 @@ class MainFrame : public wxFrame
                 //      HELPER: returns currently selected ProjectPanel
                 //----------------------------------------------------
 		ProjectPanel* getCurrentProjectPanel();
+
+		Theme getTheme();
 
 	private:
 

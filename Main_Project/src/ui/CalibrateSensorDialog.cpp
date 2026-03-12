@@ -63,7 +63,10 @@ void CalibrateSensorDialog::onManualTablePressed(wxCommandEvent& evt)
 	//TODO implement logic
 	//call the table-based calibration dialog
 	CalibrationTableDialog calibration_table(this,m_sensorManager, m_sensor_index);
-	calibration_table.ShowModal();
+	if (calibration_table.ShowModal() == wxID_OK)
+	{
+		EndModal(wxID_OK);
+	}
 	
 }
 

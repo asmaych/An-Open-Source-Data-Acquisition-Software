@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+
+<svg
+   width="800px"
+   height="800px"
+   viewBox="0 0 48 48"
+   version="1.1"
+   id="svg3"
+   sodipodi:docname="dark-mode-solid-svgrepo-com.svg"
+   inkscape:version="1.4.3 (0d15f75042, 2025-12-25)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs3" />
+  <sodipodi:namedview
+     id="namedview3"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="1.1025"
+     inkscape:cx="400"
+     inkscape:cy="400"
+     inkscape:window-width="1920"
+     inkscape:window-height="1128"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg3" />
+  <title
+     id="title1">dark-mode-solid</title>
+  <g
+     id="Layer_2"
+     data-name="Layer 2">
+    <g
+       id="Icons">
+      <g
+         id="g3">
+        <rect
+           width="48"
+           height="48"
+           fill="none"
+           id="rect1" />
+        <g
+           id="g2">
+          <path
+             d="M14,24A10,10,0,0,0,24,34V14A10,10,0,0,0,14,24Z"
+             id="path1" />
+          <path
+             d="M24,2A22,22,0,1,0,46,24,21.9,21.9,0,0,0,24,2ZM6,24A18.1,18.1,0,0,1,24,6v8a10,10,0,0,1,0,20v8A18.1,18.1,0,0,1,6,24Z"
+             id="path2" />
+        </g>
+      </g>
+    </g>
+  </g>
+  <path
+     style="fill:#ffffff;stroke-width:0.907029"
+     d="m 377.32426,698.65859 c -8.82771,-0.65043 -29.56997,-3.84134 -40.11108,-6.17054 -74.97412,-16.56653 -141.53199,-61.59882 -184.2887,-124.6876 -26.32619,-38.84506 -41.96852,-78.71868 -49.10391,-125.17006 -8.707599,-56.68636 0.4068,-116.62351 25.87868,-170.18076 24.35372,-51.20617 63.88049,-95.60885 112.16904,-126.0059 42.57586,-26.80097 95.16043,-43.32364 144.75303,-45.48306 l 12.92517,-0.5628 v 66.35435 66.35436 h -5.69273 c -3.131,0 -9.15141,0.42973 -13.37869,0.95496 -57.68244,7.16697 -106.17091,41.79158 -131.05305,93.58223 -22.313,46.44317 -21.99936,99.88513 0.85846,146.27913 22.86738,46.41343 65.39517,79.34062 115.84503,89.69318 9.21077,1.8901 20.94771,3.27734 27.72825,3.27734 h 5.69273 v 66.21316 66.21315 l -8.84354,-0.16349 c -4.86395,-0.0899 -10.88436,-0.31386 -13.37869,-0.49765 z"
+     id="path3"
+     transform="scale(0.06)" />
+  <path
+     style="fill:#ffffff;stroke-width:0.907029"
+     d="M 400.45351,400 V 234.01361 h 5.86451 c 7.88244,0 24.10531,2.32843 34.32321,4.92633 54.47074,13.84918 99.03726,55.14079 116.66631,108.09326 11.74576,35.28079 11.74576,70.65281 0,105.9336 -19.80606,59.49158 -72.28564,102.86026 -135.06485,111.61645 -5.53309,0.77173 -12.69919,1.40314 -15.92467,1.40314 h -5.86451 z"
+     id="path4"
+     transform="scale(0.06)" />
+</svg>

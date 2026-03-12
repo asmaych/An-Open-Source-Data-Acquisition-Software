@@ -24,7 +24,7 @@ CalibrationTableDialog::CalibrationTableDialog(
 	m_grid->SetColLabelValue(0, "Raw");
 	m_grid->SetColLabelValue(1, "Mapped");
 
-	m_grid->SetDefaultEditor(new wxGridCellNumberEditor());
+	m_grid->SetDefaultEditor(new wxGridCellFloatEditor());
 	m_grid->EnableEditing(true);
 
 	mainSizer->Add(m_grid, 1, wxEXPAND | wxALL, 10);
@@ -39,6 +39,8 @@ CalibrationTableDialog::CalibrationTableDialog(
 
 	//now bind the ok button to an event handler
 	Bind(wxEVT_BUTTON, &CalibrationTableDialog::onOkPressed, this, wxID_OK);
+	m_grid->Bind(wxEVT_GRID_CELL_CHANGED, &CalibrationTableDialog::onCellEdited, this);
+	m_grid->Bind(wxEVT_KEY_DOWN, &CalibrationTableDialog::onEnterPressed, this);
 }
 
 void CalibrationTableDialog::getCalibrationPoints()
@@ -66,6 +68,50 @@ void CalibrationTableDialog::getCalibrationPoints()
 	}
 }
 
+void CalibrationTableDialog::onCellEdited(wxGridEvent& evt) {
+	//get the index of the row that was just edited
+	int row = evt.GetRow();
+
+	//get the index of the last row currently existing
+	int lastrow = m_grid->GetNumberRows()-1;
+
+	//now check to see if this cell has any data. If it does, we expand, otherwise we do nothing
+	bool changed = false;
+
+	for (int col = 0; col <2; col++) {
+		if (!wxIsEmpty(m_grid->GetCellValue(row, col))) {
+			changed = true;
+			break;
+		}
+	}
+
+	if (changed) {
+		m_grid->AppendRows(1);
+	}
+
+	//let any other handlers do their job as well
+	evt.Skip();
+
+
+}
+
+void CalibrationTableDialog::onEnterPressed(wxKeyEvent& evt) {
+	if (evt.GetKeyCode() == WXK_RETURN) {
+		//get the current row in focus by the user
+		int row = m_grid->GetGridCursorRow();
+
+		//get the last row currently in the table
+		int lastrow = m_grid->GetNumberRows()-1;
+
+		//if they are the same, then we append a new row
+		if (row == lastrow) {
+			m_grid->AppendRows(1);
+		}
+	}
+
+	evt.Skip();
+}
+
 void CalibrationTableDialog::onOkPressed(wxCommandEvent& evt)
 {
 	//vectorize the table:
@@ -79,6 +125,7 @@ void CalibrationTableDialog::onOkPressed(wxCommandEvent& evt)
 	else if (m_table->size() < 2)
 	{
 		wxMessageBox("Please enter at least two numerical calibration pairs");
+		return;
 	}
 
 	std::cout << "testing\n";
@@ -89,4 +136,6 @@ void CalibrationTableDialog::onOkPressed(wxCommandEvent& evt)
 	std::cout << "HEY YA\n";
 
 	m_sensorManager->setCalibration(m_sensor_index, std::move(interpolator));
+
+	this->EndModal(wxID_OK);
 }

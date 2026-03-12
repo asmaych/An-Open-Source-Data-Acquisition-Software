@@ -9,3 +9,4 @@ wxDEFINE_EVENT(wxEVT_COLLECT_UPDATED, wxCommandEvent);
 //wxDEFINE_EVENT(wxEVT_GRAPH_DATA, wxCommandEvent);
 wxDEFINE_EVENT(wxEVT_GRAPH_SENSOR, wxCommandEvent);
 wxDEFINE_EVENT(wxEVT_COLLECT_NOW_POINT, wxCommandEvent);
+wxDEFINE_EVENT(wxEVT_THEME_TOGGLE, wxCommandEvent);

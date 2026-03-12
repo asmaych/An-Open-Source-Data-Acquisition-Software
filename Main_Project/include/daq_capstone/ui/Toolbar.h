@@ -72,4 +72,5 @@ class Toolbar : public wxEvtHandler
 
 		ProjectPanel* m_currentProject = nullptr;
 
+		Theme m_theme;
 };

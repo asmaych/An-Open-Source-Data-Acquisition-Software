@@ -52,8 +52,6 @@ Toolbar::Toolbar(wxFrame* parent)
 	m_toolbar -> AddTool(ID_Export, "Export", wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR),
                             "Export data");
 
-	/*m_toolbar -> AddTool(ID_Theme, "Theme", wxArtProvider::GetBitmap(wxART_HELP_SETTINGS, wxART_TOOLBAR),
-                            "Dark/Light theme");*/
 	m_toolbar->AddTool(ID_Config,
 	"Project Config",
 	wxArtProvider::GetBitmap(wxART_HELP_SETTINGS, wxART_TOOLBAR),
@@ -96,41 +94,18 @@ void Toolbar::bindEvents(wxFrame* parent)
                 if(onExport) onExport();
                 }, ID_Export);
 
-	/*parent -> Bind(wxEVT_TOOL, [this](wxCommandEvent&) {
-                if(onToggleTheme) onToggleTheme();
-                }, ID_Theme);
-                */
 	parent->Bind(wxEVT_TOOL, [this, parent](wxCommandEvent&)
-{
-	if(!m_currentProject)
 	{
-		wxMessageBox("Open a project first");
-		return;
-	}
-
-	ProjectConfigDialog dlg(parent, m_currentProject);
-
-	if(dlg.ShowModal() == wxID_OK)
-	{
-		// after the dialog closes, apply any global changes that were made.
-		bool dark_mode_enabled = dlg.dark;
-
-		// Set the global theme in MainFrame
-		if (dark_mode_enabled) {
-			if(onToggleTheme)
-				onToggleTheme();  // toggle to dark
+		if(!m_currentProject)
+		{
+			wxMessageBox("Open a project first");
+			return;
 		}
+		ProjectConfigDialog dlg(parent, m_currentProject, static_cast<MainFrame*>(parent));
+		dlg.SetExtraStyle(dlg.GetExtraStyle() & ~wxWS_EX_BLOCK_EVENTS);
 
-
-
-	}
-
-}, ID_Config);
-
-	parent->Bind(wxEVT_MENU, [this](wxCommandEvent&) {
-	if(onToggleTheme)
-		onToggleTheme();
-}, ID_Config_ToggleTheme);
+		dlg.ShowModal();
+	}, ID_Config);
 }
 
 // setRunning updates the start/stop button based on experiment state.

@@ -19,6 +19,10 @@ class CalibrationTableDialog : public wxDialog
 		//helper function to convert the data from the table into a vector
 		void getCalibrationPoints();
 
+		void onCellEdited(wxGridEvent &evt);
+
+		void onEnterPressed(wxKeyEvent &evt);
+
 	private:
 		wxGrid* m_grid;
 
