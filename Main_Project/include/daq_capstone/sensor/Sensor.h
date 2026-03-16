@@ -2,8 +2,12 @@
 
 #include <string>
 #include <atomic> 
+#include <iosfwd>
 #include <mutex>
 #include <memory>
+#include <bits/stl_vector.h>
+
+#include "CalibrationPoint.h"
 #include "Calibrator.h"
 
 /* #include <atomic>: for thread-safe reading, it ensures that 
@@ -44,6 +48,8 @@ public:
 	 * and then it will send it to this sensor using this method
 	 */
 	void setCalibrator(std::unique_ptr<Calibrator> calibrator);
+
+	std::vector<CalibrationPoint> const *getCalibration();
 
 	/* a similar getter to getMappedReading, but this retrieves the 
 	 * raw sensor value of 0-4096, before any calibration

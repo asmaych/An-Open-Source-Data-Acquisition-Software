@@ -30,7 +30,9 @@ class SensorManager
 		bool pinExists(int pin) const;
 
 		void setCalibration(long sensor_index, std::unique_ptr<Calibrator> calibrator);
-		
+
+		std::vector<CalibrationPoint> const *getSensorCalibration(long sensor_index) const;
+
 		//helper to get all selected sensors
 		std::vector<Sensor*> getSelectedSensors() const;
 		void setOnChangeCallback(std::function<void()> cb);

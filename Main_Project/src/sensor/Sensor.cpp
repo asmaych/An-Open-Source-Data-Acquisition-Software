@@ -1,5 +1,9 @@
 #include "sensor/Sensor.h"
 
+#include <vector>
+
+#include "CalibrationPoint.h"
+
 //Constructor
 Sensor::Sensor(const std::string& name, int pin)
 {
@@ -60,6 +64,12 @@ void Sensor::setCalibrator(std::unique_ptr<Calibrator> calibrator)
 	 * 		and moves ownership of it to this sensor instance
 	 */
 	m_calibrator = std::move(calibrator);
+}
+
+std::vector<CalibrationPoint> const * Sensor::getCalibration() {
+	if (!m_calibrator) {return nullptr;}
+
+	return m_calibrator->getCalibrationTable();
 }
 
 // set new reading

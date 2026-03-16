@@ -86,6 +86,8 @@ bool SensorManager::removeSensor(const std::string& sensorName)
 	//"it" points to it, so we just erase it, remove it from
 	//the registry in the microcontroller, and return true
 	m_sensors.erase(it, m_sensors.end());
+
+	//remove the sensor from the microcontroller as well
 	m_serialComm->removeSensor(sensorName);
 	
 	if(m_onChange) m_onChange();
@@ -122,6 +124,10 @@ bool SensorManager::pinExists(int pin) const
 void SensorManager::setCalibration(long sensor_index, std::unique_ptr<Calibrator> calibrator)
 {
 	m_sensors[sensor_index]->setCalibrator(std::move(calibrator));
+}
+
+std::vector<CalibrationPoint> const * SensorManager::getSensorCalibration(const long sensor_index) const {
+	return m_sensors[sensor_index]->getCalibration();
 }
 
 std::vector<Sensor*> SensorManager::getSelectedSensors() const {

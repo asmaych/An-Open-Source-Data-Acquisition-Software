@@ -4,6 +4,13 @@
 //constructor
 Interpolator::Interpolator(std::unique_ptr<std::vector<CalibrationPoint>> table) : m_table(std::move(table)){}
 
+//getter for a raw pointer to calibration table info
+
+std::vector<CalibrationPoint> const * Interpolator::getCalibrationTable() const
+{
+	return m_table.get();
+}
+
 //main interpolation logic:
 double Interpolator::evaluate(double raw) const
 {
@@ -76,3 +83,5 @@ double Interpolator::evaluate(double raw) const
 	
 	
 }
+
+

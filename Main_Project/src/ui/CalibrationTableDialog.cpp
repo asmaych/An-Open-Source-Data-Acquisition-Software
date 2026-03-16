@@ -25,6 +25,8 @@ CalibrationTableDialog::CalibrationTableDialog(
 	m_grid->SetColLabelValue(1, "Mapped");
 
 	m_grid->SetDefaultEditor(new wxGridCellFloatEditor());
+	m_grid->SetColFormatFloat(0,6,2);
+	m_grid->SetColFormatFloat(1,6,2);
 	m_grid->EnableEditing(true);
 
 	mainSizer->Add(m_grid, 1, wxEXPAND | wxALL, 10);
@@ -41,6 +43,12 @@ CalibrationTableDialog::CalibrationTableDialog(
 	Bind(wxEVT_BUTTON, &CalibrationTableDialog::onOkPressed, this, wxID_OK);
 	m_grid->Bind(wxEVT_GRID_CELL_CHANGED, &CalibrationTableDialog::onCellEdited, this);
 	m_grid->Bind(wxEVT_KEY_DOWN, &CalibrationTableDialog::onEnterPressed, this);
+
+	//lock in the reference to local scope
+	m_calibrationPoints = m_sensorManager->getSensorCalibration(m_sensor_index);
+
+	//call the function that gets the calibration data if it exists:
+	loadCalibrationPoints(*m_calibrationPoints);
 }
 
 void CalibrationTableDialog::getCalibrationPoints()
@@ -64,6 +72,22 @@ void CalibrationTableDialog::getCalibrationPoints()
 		{
 			//push the values to the vector m_table
 			m_table->push_back({x,y});
+		}
+	}
+}
+
+void CalibrationTableDialog::loadCalibrationPoints(const std::vector<CalibrationPoint> & table) {
+
+	if (m_calibrationPoints) {
+
+		int rowcounter{0};
+
+		for (auto [raw, mapped] : table) {
+			std::cout << "raw; " << raw << "mapped: " << mapped << "\n";
+
+			m_grid->SetCellValue(rowcounter,0,std::to_wstring(raw));
+			m_grid->SetCellValue(rowcounter,1,std::to_wstring(mapped));
+			rowcounter++;
 		}
 	}
 }

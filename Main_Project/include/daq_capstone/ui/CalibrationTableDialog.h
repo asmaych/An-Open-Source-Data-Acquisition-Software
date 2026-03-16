@@ -19,6 +19,8 @@ class CalibrationTableDialog : public wxDialog
 		//helper function to convert the data from the table into a vector
 		void getCalibrationPoints();
 
+		void loadCalibrationPoints(const std::vector<CalibrationPoint> &table);
+
 		void onCellEdited(wxGridEvent &evt);
 
 		void onEnterPressed(wxKeyEvent &evt);
@@ -33,4 +35,6 @@ class CalibrationTableDialog : public wxDialog
 		std::unique_ptr<Interpolator> m_interpolator;
 
 		void onOkPressed(wxCommandEvent& evt);
+
+		std::vector<CalibrationPoint> const * m_calibrationPoints = nullptr;
 };
