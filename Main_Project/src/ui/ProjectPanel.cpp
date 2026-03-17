@@ -899,7 +899,7 @@ void ProjectPanel::onNewDataFrame(const std::string& frame) {
 	values.reserve(m_sensors.size());
 
 	for(auto& s : m_sensors)
-		values.push_back(s -> getMappedReading());
+		values.push_back(s -> getReading());
 
 
 	//compute time relative to the run start
@@ -997,4 +997,8 @@ void ProjectPanel::adjustSampleRate(const float rate) const {
 
 	//now update the value being used in the background thread.
 	m_controller->setInterval(ms_delay);
+}
+
+SensorManager * ProjectPanel::getSensorManager() const {
+	return m_sensorManager.get();
 }

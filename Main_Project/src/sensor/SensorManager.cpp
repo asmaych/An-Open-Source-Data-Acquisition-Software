@@ -6,6 +6,10 @@
 #include <memory>
 #include <iostream>
 
+#include "RawReader.h"
+#include "VoltageReader.h"
+#include "MappedReader.h"
+
 SensorManager::SensorManager(std::vector<std::unique_ptr<Sensor>>& sensors, SerialComm* serialComm):
 	m_sensors(sensors),
 	m_serialComm(serialComm)
@@ -120,6 +124,27 @@ bool SensorManager::pinExists(int pin) const
 			m_sensors.end(),
 			[&](const std::unique_ptr<Sensor>& s){return s->getPin() == pin; });
 }
+
+void SensorManager::setAllReadingStrategy(const std::string &reading_strategy) {
+	for (size_t i = 0; i < m_sensors.size(); i++) {
+		setReadingStrategy(i, reading_strategy);
+	}
+}
+
+void SensorManager::setReadingStrategy(const long sensor_index, const std::string &reading_strategy) {
+	if (reading_strategy == "Raw") {
+		auto strategy = std::make_unique<RawReader>();
+		m_sensors[sensor_index]->setReadingStrategy(std::move(strategy));
+	}
+	else if (reading_strategy == "Voltage") {
+		auto strategy = std::make_unique<VoltageReader>();
+		m_sensors[sensor_index]->setReadingStrategy(std::move(strategy));
+	}
+	else if (reading_strategy == "Mapped") {
+		auto strategy = std::make_unique<MappedReader>();
+		m_sensors[sensor_index]->setReadingStrategy(std::move(strategy));
+	}
+	}
 
 void SensorManager::setCalibration(long sensor_index, std::unique_ptr<Calibrator> calibrator)
 {

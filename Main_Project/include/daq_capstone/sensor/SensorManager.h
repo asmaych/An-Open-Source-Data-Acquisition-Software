@@ -29,6 +29,10 @@ class SensorManager
 		//the same arduino pin number
 		bool pinExists(int pin) const;
 
+		void setAllReadingStrategy(const std::string &reading_strategy);
+
+		void setReadingStrategy(long sensor_index, const std::string &reading_strategy);
+
 		void setCalibration(long sensor_index, std::unique_ptr<Calibrator> calibrator);
 
 		std::vector<CalibrationPoint> const *getSensorCalibration(long sensor_index) const;

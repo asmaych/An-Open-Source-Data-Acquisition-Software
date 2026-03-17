@@ -53,7 +53,11 @@ add_executable(daq_capstone
 	src/ui/CalibrateSensorDialog.cpp
 	src/ui/CalibrationTableDialog.cpp
 	src/ui/ProjectConfigDialog.cpp
-
+	src/sensor/RawReader.cpp
+	src/sensor/VoltageReader.cpp
+		include/daq_capstone/sensor/MappedReader.h
+		src/sensor/MappedReader.cpp
+		include/daq_capstone/sensor/RawReader.h
 )
 
 find_package(PkgConfig REQUIRED)

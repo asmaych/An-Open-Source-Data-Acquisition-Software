@@ -43,8 +43,8 @@ class ProjectPanel : public wxPanel
 		//Toolbar actions from Mainframe
 		void toggleStartStop(); //start or stop a Run
 		//Run lifecycle
-                void startRun(); //creates a new run and starts collecting
-                void stopRun(); //stops the current run
+		void startRun(); //creates a new run and starts collecting
+		void stopRun(); //stops the current run
 		void resetSessionData(); //clears all runs and reset live window
 		void collectCurrentValues(); //collects on demand from the current run
 		void graphSelectedSensor(wxCommandEvent& evt); //open graph window for selected sensor
@@ -56,6 +56,8 @@ class ProjectPanel : public wxPanel
 		void applyTheme(Theme theme); //black/light theme
 		void adjustSampleRate(float rate) const;
 
+		SensorManager * getSensorManager() const;
+
 		//MainFrame needs this to change toolbar state
 		void setMainFrame(MainFrame* frame) {m_mainFrame = frame;}
 
@@ -66,7 +68,7 @@ class ProjectPanel : public wxPanel
 		static wxString askSaveFile(wxWindow* parent);
 
 		//ui helpers
-                void openConnectDialog();
+		void openConnectDialog();
 
 		//getter
 		LiveDataWindow* getLiveWindow();
@@ -78,7 +80,7 @@ class ProjectPanel : public wxPanel
 		const std::vector<std::unique_ptr<Sensor>>& getSensors() const;
 
 		//parse csv string into vector<double>
-                std::vector<double> parseSerialFrame(const std::string& frame);
+		std::vector<double> parseSerialFrame(const std::string& frame);
 
 		//used to update layout when buttons pressed
 		void setGraphVisible(bool visible) {graphVisible = visible; }

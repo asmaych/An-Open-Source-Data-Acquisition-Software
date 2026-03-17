@@ -1,5 +1,6 @@
 #include "ProjectConfigDialog.h"
 #include "ProjectPanel.h"
+#include "SensorManager.h"
 #include "Theme.h"
 
 ProjectConfigDialog::ProjectConfigDialog(wxWindow* parent,
@@ -16,12 +17,13 @@ ProjectConfigDialog::ProjectConfigDialog(wxWindow* parent,
 {
     m_darkmode = (m_mainFrame->getTheme() == Theme::Dark);
 
+    //top-level sizer to hold all the controls and sub-sizers
     wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
 
     //sizer for the sensor sample rate configuration
     wxBoxSizer* sampleSizer = new wxBoxSizer(wxHORIZONTAL);
 
-    // Example setting: Theme toggle
+    //create and add the setting for the application theme. Set the button icon to the current value
     m_theme_button = new wxButton(this, wxID_ANY);
     if (m_darkmode) {
         m_theme_button->SetBitmap(wxBitmapBundle::FromSVGFile("../Assets/dark.svg", wxSize(48,48)));
@@ -30,20 +32,44 @@ ProjectConfigDialog::ProjectConfigDialog(wxWindow* parent,
         m_theme_button->SetBitmap(wxBitmapBundle::FromSVGFile("../Assets/light.svg", wxSize(48,48)));
     }
     mainSizer->Add(m_theme_button, 0, wxALL, 10);
+    //add a binding to handle the button being pressed
     m_theme_button->Bind(wxEVT_BUTTON, &ProjectConfigDialog::onToggleTheme, this);
 
-    //define the editable field for entering the sample rater
-    sampleSizer->Add(new wxStaticText(this, wxID_ANY, "Sample Rate:"), 0, wxALL, 5);
+    //define the editable field for entering the sample rate
+    sampleSizer->Add(new wxStaticText(this, wxID_ANY, "Sample Rate:"), 1, wxALL, 10);
     sample_rate_field = new wxTextCtrl(this, wxID_ANY);
-    sampleSizer->Add(sample_rate_field, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 5);
+    sampleSizer->Add(sample_rate_field, 1, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 10);
 
     //create the button for confirming changes to the sample rate
     sample_rate_confirm = new wxButton(this, wxID_ANY, "Confirm");
     //add the button to the sampleSizer
-    sampleSizer->Add(sample_rate_confirm, 0, wxALL, 10);
+    sampleSizer->Add(sample_rate_confirm, 1, wxALL, 10);
+    //bind the event handler to the confirm button
+    sample_rate_confirm->Bind(wxEVT_BUTTON, &ProjectConfigDialog::onNewSampleRate, this);
 
     //finally, add the sensor sample rate config menu
     mainSizer->Add(sampleSizer, 0, wxEXPAND | wxALL, 10);
+
+    //create a sizer for the selection and confirmation of which sensor reading to use
+    wxBoxSizer* getterSizer = new wxBoxSizer(wxHORIZONTAL);
+
+    //create and add the text control for the getter selection
+    getterSizer->Add(new wxStaticText(this, wxID_ANY, "Select Reading:"), 1, wxALL, 10);
+
+    //create and add the selection box:
+    getterSelection = new wxComboBox(this, wxID_ANY);
+    getterSelection->Append("Raw");
+    getterSelection->Append("Voltage");
+    getterSelection->Append("Mapped");
+    getterSizer->Add(getterSelection, 1, wxALL, 10);
+
+    //create and add the button to confirm the getter method selection
+    confirm_getter = new wxButton(this, wxID_ANY, "Confirm");
+    getterSizer->Add(confirm_getter, 1, wxALL, 10);
+    //bind the button to the event handler
+    confirm_getter->Bind(wxEVT_BUTTON, &ProjectConfigDialog::onChangeReadStrategy, this);
+
+    mainSizer->Add(getterSizer, 0, wxALL, 10);
 
     // OK / Cancel buttons
     wxStdDialogButtonSizer* btnSizer = new wxStdDialogButtonSizer();
@@ -54,11 +80,22 @@ ProjectConfigDialog::ProjectConfigDialog(wxWindow* parent,
     mainSizer->Add(btnSizer, 0, wxALIGN_RIGHT | wxALL, 10);
 
     SetSizerAndFit(mainSizer);
+}
 
-    //------------------------------------------------------------------------------------------------------------------
-    //BIND EVENTS
-    //------------------------------------------------------------------------------------------------------------------
-    sample_rate_confirm->Bind(wxEVT_BUTTON, &ProjectConfigDialog::onNewSampleRate, this);
+void ProjectConfigDialog::onChangeReadStrategy(wxCommandEvent& event) {
+
+    //first, make sure that the user actually selected something:
+    int selection = getterSelection->GetSelection();
+    if (selection == wxNOT_FOUND){
+        wxLogMessage("No option selected!\nPlease select a port from the drop-down and try again.");
+        return;
+    }
+
+    //get the pointer to the sensor manager for the current project
+    m_sensorManager = m_project->getSensorManager();
+
+    const std::string string_selection{getterSelection->GetStringSelection()};
+    m_sensorManager->setAllReadingStrategy(string_selection);
 }
 
 void ProjectConfigDialog::onNewSampleRate(wxCommandEvent& evt) {
