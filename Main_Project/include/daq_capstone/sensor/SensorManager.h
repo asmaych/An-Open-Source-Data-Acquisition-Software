@@ -1,5 +1,4 @@
 #pragma once
-
 #include <vector>
 #include <string>
 #include "Sensor.h"
@@ -9,6 +8,20 @@
 #include "Calibrator.h"
 #include "Interpolator.h"
 
+/**
+ * @brief Manages all Sensor related modifications in a single ProjectPanel
+ *
+ * There is exactly one SensorManager per project. Sensor Objects are stored in a vector, owned by ProjectPanel, and
+ * whenever a sensor itself is modified - added, removed, calibrated, etc - the SensorManager is used to handle this.
+ *
+ * SensorManager performs intermediate logical operations, like parameter validation. It will not allow the vector of
+ * Sensor objects to be modified under erroneous parameters.
+ *
+ * @note While modifications to the vector of Sensor Objects is strictly controlled by SensorManager, access to the
+ * individual Sensor objects themselves is allowed from anywhere in the application. Typically, this is accomplished by
+ * passing raw pointers to the vector - which is owned by ProjectPanel via unique_pointer - to anywhere that needs to
+ * actually use a Sensor.
+ */
 class SensorManager
 {
 	public:

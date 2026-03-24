@@ -1,0 +1,43 @@
+\doxysection{Sidebar.\+h}
+\hypertarget{Sidebar_8h_source}{}\label{Sidebar_8h_source}\index{include/daq\_capstone/ui/Sidebar.h@{include/daq\_capstone/ui/Sidebar.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <wx/wx.h>}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <wx/panel.h>}\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <wx/button.h>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}Theme.h"{}}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{comment}{/*\ Forward\ declaration\ of\ MainFrame\ to\ allow\ event\ handling\ callbacks}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ \ \ In\ other\ words,\ I\ am\ telling\ the\ compiler\ that\ a\ class\ called\ MainFRame\ exists\ but\ not\ defined\ here,\ because\ the\ sidebar}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ \ \ always\ needs\ to\ communicate\ with\ MainFrame\ as\ when\ a\ button\ is\ clicked}}
+\DoxyCodeLine{00010\ \textcolor{comment}{*/}}
+\DoxyCodeLine{00011\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classMainFrame}{MainFrame}};}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00022\ \textcolor{keyword}{class\ }Sidebar\ :\ \textcolor{keyword}{public}\ wxPanel}
+\DoxyCodeLine{00023\ \{}
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \textcolor{comment}{//a\ pointer\ to\ the\ parent\ window\ (MainFrame)}}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ Sidebar(\doxymbox{\hyperlink{classMainFrame}{MainFrame}}*\ parent);}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ refreshConnection();\ \textcolor{comment}{//connection\ state\ only}}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ applyTheme(Theme\ theme);}
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \textcolor{comment}{//Buttons\ for\ the\ sidebar\ actions:\ NewProject,\ LoadProject}}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ wxButton*\ new\_project\_button;}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ wxButton*\ load\_project\_button;}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ wxButton*\ m\_connect\_button;}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ wxButton*\ m\_sensor\_button;}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \textcolor{comment}{//Event\ handlers\ for\ the\ buttons}}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ OnNewProject(wxCommandEvent\&\ evt);}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ OnLoadProject(wxCommandEvent\&\ evt);}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ OnConnect(wxCommandEvent\&\ evt);}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ OnAddRemoveSensor(wxCommandEvent\&\ evt);}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classMainFrame}{MainFrame}}*\ m\_parent;\ \textcolor{comment}{//pointer\ to\ the\ main\ frame\ for\ calling\ project\ functions}}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \};}
+
+\end{DoxyCode}

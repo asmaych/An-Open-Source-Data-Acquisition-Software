@@ -6,19 +6,28 @@
 #include "ui/Theme.h"
 #include "ui/ProjectPanel.h"
 
-/* Graphwindow is a class taht displays a graph of the collected data.
-   each GraphWIndow is tied to a DataSession and can display/visualize its values.
-   Currently just a placeholder till i make sure everything works perfectly i will implement it
-*/
-
 enum class Theme;
 
+/**
+ * @brief GUI object that displays a graph based on vectorized datapoints
+ *
+ * Graphwindow is a class that displays a graph of the collected sensor data.
+ * each GraphWindow is tied to a DataSession and can display/visualize its values.
+*/
 class GraphWindow : public wxPanel
 {
 	public:
-                struct Curve{ std::vector<double> x; std::vector<double> y; std::string label;
-                                wxColour color; std::string id; bool visible = true; size_t runNumber;
-				std::vector<std::pair<double,double>> demandPoints; }; //id is a unique key: runID
+		/**
+		 * @brief Collection of data elements used to generate a plot of readings on a GraphWindow
+		 */
+		struct Curve{	std::vector<double> x;
+						std::vector<double> y;
+						std::string label;
+						wxColour color;
+						std::string id;
+						bool visible = true;
+						size_t runNumber;
+						std::vector<std::pair<double,double>> demandPoints; }; //id is a unique key: runID
 
 		//constructor with a parent with is the mainFrame and a pointer to DataSession
 		GraphWindow(wxWindow* parent);

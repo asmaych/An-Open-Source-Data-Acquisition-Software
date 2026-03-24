@@ -1,0 +1,82 @@
+\doxysection{Main\+Frame Class Reference}
+\hypertarget{classMainFrame}{}\label{classMainFrame}\index{MainFrame@{MainFrame}}
+
+
+Main GUI page used to launch into projects.  
+
+
+
+
+{\ttfamily \+\#include $<$Main\+Frame.\+h$>$}
+
+Inheritance diagram for Main\+Frame:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classMainFrame}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classMainFrame_a00c85521dad6b24000967206bcc53688}\label{classMainFrame_a00c85521dad6b24000967206bcc53688} 
+{\bfseries Main\+Frame} (const wx\+String \&title)
+\item 
+\Hypertarget{classMainFrame_a5bf0d23b8213efe6f4f4f344389ba97f}\label{classMainFrame_a5bf0d23b8213efe6f4f4f344389ba97f} 
+void {\bfseries toggle\+Theme} (wx\+Command\+Event \&evt)
+\item 
+\Hypertarget{classMainFrame_a7ad7115fa321d41ab9ab202bdd9f264d}\label{classMainFrame_a7ad7115fa321d41ab9ab202bdd9f264d} 
+void {\bfseries toggle\+Theme} ()
+\item 
+\Hypertarget{classMainFrame_a487ff2220d3f1bf82345e36856dbe9cc}\label{classMainFrame_a487ff2220d3f1bf82345e36856dbe9cc} 
+void {\bfseries on\+New\+Project} (wx\+Command\+Event \&evt)
+\item 
+\Hypertarget{classMainFrame_a26285c41f913b1ff629c3d69213ba854}\label{classMainFrame_a26285c41f913b1ff629c3d69213ba854} 
+void {\bfseries on\+Open\+Project} (wx\+Command\+Event \&evt)
+\item 
+\Hypertarget{classMainFrame_ae6b447600ea7b60dabacccffecfd164c}\label{classMainFrame_ae6b447600ea7b60dabacccffecfd164c} 
+void {\bfseries apply\+Theme\+To\+All} (Theme theme)
+\item 
+\Hypertarget{classMainFrame_a4ad14d1253c8b9847141bee5d610ebcb}\label{classMainFrame_a4ad14d1253c8b9847141bee5d610ebcb} 
+\doxymbox{\hyperlink{classProjectPanel}{Project\+Panel}} \texorpdfstring{$\ast$}{*} {\bfseries get\+Current\+Project\+Panel} ()
+\item 
+\Hypertarget{classMainFrame_aad705d175e415340017c35f6f07b5641}\label{classMainFrame_aad705d175e415340017c35f6f07b5641} 
+Theme {\bfseries get\+Theme} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classMainFrame_ab2a52c69983981963ce1feda558e672d}\label{classMainFrame_ab2a52c69983981963ce1feda558e672d} 
+wx\+Aui\+Manager {\bfseries m\+\_\+mgr}
+\item 
+\Hypertarget{classMainFrame_aece767facef9e6fd0a430a9c992376ee}\label{classMainFrame_aece767facef9e6fd0a430a9c992376ee} 
+wx\+Aui\+Notebook \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+notebook}
+\item 
+\Hypertarget{classMainFrame_a34b324d40b41acf6c40e16b9f3380dc9}\label{classMainFrame_a34b324d40b41acf6c40e16b9f3380dc9} 
+\doxymbox{\hyperlink{classSidebar}{Sidebar}} \texorpdfstring{$\ast$}{*} {\bfseries sidebar} = nullptr
+\item 
+\Hypertarget{classMainFrame_a49b49e261c3923e1d2c45175eae5fa0c}\label{classMainFrame_a49b49e261c3923e1d2c45175eae5fa0c} 
+\doxymbox{\hyperlink{classToolbar}{Toolbar}} \texorpdfstring{$\ast$}{*} {\bfseries toolbar} = nullptr
+\item 
+\Hypertarget{classMainFrame_a73eaadfb1e5113b8d2b3707b812a90e0}\label{classMainFrame_a73eaadfb1e5113b8d2b3707b812a90e0} 
+Theme {\bfseries m\+\_\+theme}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Main GUI page used to launch into projects. 
+
+\doxylink{classMainFrame}{Main\+Frame} class is the main application window. It contains:\+
+
+
+\begin{DoxyItemize}
+\item A toolbar with features like Start, Stop, Collect, \doxylink{classSensor}{Sensor} and Graph, that are disabled unless a project is open, and where actions like start/\+ stop/\+collect/\+graph won\textquotesingle{}t run unless a sensor is selected.
+\item A sidebar on the left with New Project, Load Project, Connect, Sensors, and other user options.
+\item A central Display window for showing \doxylink{classProjectPanel}{Project\+Panel} instances.
+\end{DoxyItemize}
+
+Each \doxylink{classProjectPanel}{Project\+Panel} instance is wrapped into a wx\+AUINotebook with switchable tabs. 
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+include/\+daq\+\_\+capstone/\+ui/\+Main\+Frame.\+h\item 
+src/\+ui/\+Main\+Frame.\+cpp\end{DoxyCompactItemize}

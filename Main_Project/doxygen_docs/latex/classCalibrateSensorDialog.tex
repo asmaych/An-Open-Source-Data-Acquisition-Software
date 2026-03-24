@@ -1,0 +1,55 @@
+\doxysection{Calibrate\+Sensor\+Dialog Class Reference}
+\hypertarget{classCalibrateSensorDialog}{}\label{classCalibrateSensorDialog}\index{CalibrateSensorDialog@{CalibrateSensorDialog}}
+
+
+GUI object used to allow user to select which \doxylink{classCalibrator}{Calibrator} implementation to configure for a selected \doxylink{classSensor}{Sensor}.  
+
+
+
+
+{\ttfamily \+\#include $<$Calibrate\+Sensor\+Dialog.\+h$>$}
+
+Inheritance diagram for Calibrate\+Sensor\+Dialog:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classCalibrateSensorDialog}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classCalibrateSensorDialog_a65b7116b3c2f5031aa81b626356f090b}\label{classCalibrateSensorDialog_a65b7116b3c2f5031aa81b626356f090b} 
+{\bfseries Calibrate\+Sensor\+Dialog} (wx\+Window \texorpdfstring{$\ast$}{*}parent, const wx\+String \&title, \doxymbox{\hyperlink{classSensorManager}{Sensor\+Manager}} \texorpdfstring{$\ast$}{*}sensor\+Manager, const long sensor\+\_\+index)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classCalibrateSensorDialog_a92979e0360a0ee6c2a4478a1c3209749}\label{classCalibrateSensorDialog_a92979e0360a0ee6c2a4478a1c3209749} 
+void {\bfseries on\+Manual\+Table\+Pressed} (wx\+Command\+Event \&evt)
+\item 
+\Hypertarget{classCalibrateSensorDialog_a71d172bcbe6c7854ac2f8d94fea7363c}\label{classCalibrateSensorDialog_a71d172bcbe6c7854ac2f8d94fea7363c} 
+void {\bfseries on\+Equation\+Pressed} (wx\+Command\+Event \&evt)
+\item 
+\Hypertarget{classCalibrateSensorDialog_ac1d8f5459e2f784607fd7b8e487e7aa4}\label{classCalibrateSensorDialog_ac1d8f5459e2f784607fd7b8e487e7aa4} 
+void {\bfseries on\+Datasheet\+Pressed} (wx\+Command\+Event \&evt)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classCalibrateSensorDialog_a6e2bcc1862dbba12057108b0c2c0b68e}\label{classCalibrateSensorDialog_a6e2bcc1862dbba12057108b0c2c0b68e} 
+\doxymbox{\hyperlink{classSensorManager}{Sensor\+Manager}} \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+sensor\+Manager}
+\item 
+\Hypertarget{classCalibrateSensorDialog_ae436a50c7010aa02f19f978f450c0c33}\label{classCalibrateSensorDialog_ae436a50c7010aa02f19f978f450c0c33} 
+long {\bfseries m\+\_\+sensor\+\_\+index}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+GUI object used to allow user to select which \doxylink{classCalibrator}{Calibrator} implementation to configure for a selected \doxylink{classSensor}{Sensor}. 
+
+When this GUI dialog is created, it displays a list of options to the user. Each option represents a calibration method that the user can choose. The calibration method chosen is applied to the sensor which is selected by the user prior to dialog launch. 
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+include/\+daq\+\_\+capstone/\+ui/\+Calibrate\+Sensor\+Dialog.\+h\item 
+src/\+ui/\+Calibrate\+Sensor\+Dialog.\+cpp\end{DoxyCompactItemize}

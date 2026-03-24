@@ -1,0 +1,86 @@
+\doxysection{Serial\+Comm.\+h}
+\hypertarget{SerialComm_8h_source}{}\label{SerialComm_8h_source}\index{include/daq\_capstone/serial/SerialComm.h@{include/daq\_capstone/serial/SerialComm.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}Sensor.h"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <set>}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{comment}{//explicitly\ declaring\ the\ library\ for\ libserialport:}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <libserialport.h>}}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{keyword}{enum}\ PORT\_STATUS\ \{\ PORT\_OPEN,\ PORT\_CLOSED\ \};}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classSerialComm_af27895c3ecb34eec66a963a50c05d1cd}{SerialComm}}}
+\DoxyCodeLine{00024\ \{}
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classSerialComm_af27895c3ecb34eec66a963a50c05d1cd}{SerialComm}}();}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classSerialComm_a078cdbc5a4f8fb081e164948b2afda08}{\string~SerialComm}}();}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \textcolor{comment}{//keeping\ it\ as\ an\ atomic\ \ method\ allows\ us\ to\ re-\/scan\ at\ any\ time\ we\ want.}}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{classSerialComm_ae34ca1dca48f4dd153f27f90886f6c2e}{scanPorts}}();}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \textcolor{comment}{//getter\ method\ to\ return\ the\ null-\/terminated\ array\ of\ actual\ ports}}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }sp\_port\ **\ \doxymbox{\hyperlink{classSerialComm_ac599d67ce83f5f59f2b3d3e3fea37e00}{getPortList}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \textcolor{comment}{//this\ function\ sends\ a\ "{}ping\(\backslash\)n"{}\ and\ returns\ true\ if\ it\ receieves}}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \textcolor{comment}{//"{}pong\(\backslash\)n"{}\ in\ return.}}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{classSerialComm_a1676d33f795579aa7f743afd2582c16f}{handshake}}(std::string\ portname);}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ \textcolor{comment}{/*This\ is\ a\ helper\ function\ that\ uses\ an\ enum\ provided}}
+\DoxyCodeLine{00103\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ *\ by\ libserialport\ to\ handle\ different\ error\ codes\ that}}
+\DoxyCodeLine{00104\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ *\ may\ occur\ as\ a\ result\ of\ using\ library\ function\ calls}}
+\DoxyCodeLine{00105\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{classSerialComm_a4d8f499c9fb4271240bb4758152c9225}{check}}(\textcolor{keyword}{enum}\ sp\_return\ result);}
+\DoxyCodeLine{00118\ }
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{classSerialComm_a68619b82d777575192a519e87caeb6e6}{addSensor}}(\textcolor{keyword}{const}\ std::string\&\ sensorName,\ \textcolor{keywordtype}{int}\ pin);}
+\DoxyCodeLine{00145\ }
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{classSerialComm_ae41fa41318c05b57117e3b9be861703b}{removeSensor}}(\textcolor{keyword}{const}\ std::string\&\ sensorName);}
+\DoxyCodeLine{00166\ }
+\DoxyCodeLine{00172\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{classSerialComm_aa3c4dd96035ab4334f470fbfdaae7770}{adjustPollingRate}}(\textcolor{keywordtype}{float}\ rate)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00173\ }
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{classSerialComm_aea12aaa19a5d51dea718de6ca958d109}{reset}}();}
+\DoxyCodeLine{00185\ }
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{classSerialComm_ac0b31280eff4617795480f173f8854b9}{writeString}}(\textcolor{keyword}{const}\ std::string\&\ str);}
+\DoxyCodeLine{00192\ }
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{classSerialComm_a53abb44196987dff0b12709ee244f59a}{readDataFrame}}(std::vector<std::unique\_ptr<Sensor>>\&\ sensors);}
+\DoxyCodeLine{00210\ }
+\DoxyCodeLine{00216\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{classSerialComm_a49335bd844798ce814f8b10d14da4bdf}{flush}}();}
+\DoxyCodeLine{00217\ }
+\DoxyCodeLine{00221\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{classSerialComm_a1228cf902a5c7ea907099a2d6c097542}{handshakeresult}}\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00222\ }
+\DoxyCodeLine{00223\ }
+\DoxyCodeLine{00224\ }
+\DoxyCodeLine{00225\ }
+\DoxyCodeLine{00226\ }
+\DoxyCodeLine{00227\ }
+\DoxyCodeLine{00228\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00244\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{classSerialComm_aa78bdb936b8006de97ed36f398f7680f}{cleanPort}}();}
+\DoxyCodeLine{00248\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }sp\_port\ **\doxymbox{\hyperlink{classSerialComm_abdc63039c8b337801cbc3db2f721d1d7}{m\_port\_list}};}
+\DoxyCodeLine{00249\ }
+\DoxyCodeLine{00253\ \ \ \ \ \ \ \ \ std::vector<std::string>\ \doxymbox{\hyperlink{classSerialComm_a19e90afe4499406d1cb495e7ed352ea7}{m\_port\_name\_list}};}
+\DoxyCodeLine{00254\ }
+\DoxyCodeLine{00258\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }sp\_port\_config\ *\ \doxymbox{\hyperlink{classSerialComm_afe9e75764581074e91dadeb683e57902}{m\_default\_config}};}
+\DoxyCodeLine{00259\ }
+\DoxyCodeLine{00260\ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ This\ struct\ represents\ a\ "{}port"{}\ object\ that\ can\ be\ used\ by}}
+\DoxyCodeLine{00261\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ *\ libserialport\ library.\ It\ is\ being\ declared\ as\ a\ private\ variable}}
+\DoxyCodeLine{00262\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ *\ here\ because\ we\ wish\ to\ use\ it\ across\ multiple\ class\ methods.}}
+\DoxyCodeLine{00263\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00264\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ *\ We\ will\ only\ open\ communication\ via\ a\ single\ port,\ and\ this\ is}}
+\DoxyCodeLine{00265\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ *\ that\ port\ that\ will\ always\ be\ used,\ unconditionally.}}
+\DoxyCodeLine{00266\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00270\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }sp\_port\ *\ \doxymbox{\hyperlink{classSerialComm_ae7f32325137affe428425a773bd12b7b}{m\_port}}\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00271\ }
+\DoxyCodeLine{00275\ \ \ \ \ \ \ \ \ PORT\_STATUS\ \doxymbox{\hyperlink{classSerialComm_ae211a784cb59b4c45ec59905d1355119}{m\_port\_status}}\ =\ PORT\_CLOSED;}
+\DoxyCodeLine{00276\ }
+\DoxyCodeLine{00280\ \ \ \ \ \ \ \ \ std::string\ \doxymbox{\hyperlink{classSerialComm_a16bd88ec01adf0bd0e38ad33223981fd}{m\_portName}};}
+\DoxyCodeLine{00281\ }
+\DoxyCodeLine{00285\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ std::set<std::string>\ \doxymbox{\hyperlink{classSerialComm_a37cfe2c3a0480052a184aece4cfaeedd}{g\_ports\_in\_use}};}
+\DoxyCodeLine{00286\ \};}
+
+\end{DoxyCode}

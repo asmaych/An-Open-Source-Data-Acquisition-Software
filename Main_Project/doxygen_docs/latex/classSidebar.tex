@@ -1,0 +1,79 @@
+\doxysection{Sidebar Class Reference}
+\hypertarget{classSidebar}{}\label{classSidebar}\index{Sidebar@{Sidebar}}
+
+
+GUI object that encapsulates all \doxylink{classSidebar}{Sidebar} controls into one class.  
+
+
+
+
+{\ttfamily \+\#include $<$Sidebar.\+h$>$}
+
+Inheritance diagram for Sidebar:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classSidebar}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classSidebar_a2b864b1f0b0592db3125a5e367964c0a}\label{classSidebar_a2b864b1f0b0592db3125a5e367964c0a} 
+{\bfseries Sidebar} (\doxymbox{\hyperlink{classMainFrame}{Main\+Frame}} \texorpdfstring{$\ast$}{*}parent)
+\item 
+\Hypertarget{classSidebar_aa9829644982b830f419e9649f2e4b235}\label{classSidebar_aa9829644982b830f419e9649f2e4b235} 
+void {\bfseries refresh\+Connection} ()
+\item 
+\Hypertarget{classSidebar_a2a12f93cd74671295abf32478a5f7e1e}\label{classSidebar_a2a12f93cd74671295abf32478a5f7e1e} 
+void {\bfseries apply\+Theme} (Theme theme)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classSidebar_a9dc6bdb6440ea8122939e6341c52bca6}\label{classSidebar_a9dc6bdb6440ea8122939e6341c52bca6} 
+void {\bfseries On\+New\+Project} (wx\+Command\+Event \&evt)
+\item 
+\Hypertarget{classSidebar_a91e7bba514fa38ca49c4807f6b8193c6}\label{classSidebar_a91e7bba514fa38ca49c4807f6b8193c6} 
+void {\bfseries On\+Load\+Project} (wx\+Command\+Event \&evt)
+\item 
+\Hypertarget{classSidebar_a43fa18f8bfc2c238e5714c9cb39d00f9}\label{classSidebar_a43fa18f8bfc2c238e5714c9cb39d00f9} 
+void {\bfseries On\+Connect} (wx\+Command\+Event \&evt)
+\item 
+\Hypertarget{classSidebar_a789dd59e9ccb727651b59b8b0baf606c}\label{classSidebar_a789dd59e9ccb727651b59b8b0baf606c} 
+void {\bfseries On\+Add\+Remove\+Sensor} (wx\+Command\+Event \&evt)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classSidebar_a5705672c6308c7b457028223da5ee75d}\label{classSidebar_a5705672c6308c7b457028223da5ee75d} 
+wx\+Button \texorpdfstring{$\ast$}{*} {\bfseries new\+\_\+project\+\_\+button}
+\item 
+\Hypertarget{classSidebar_ab4cb3d082da67c2d66bb04f0f4b2aa74}\label{classSidebar_ab4cb3d082da67c2d66bb04f0f4b2aa74} 
+wx\+Button \texorpdfstring{$\ast$}{*} {\bfseries load\+\_\+project\+\_\+button}
+\item 
+\Hypertarget{classSidebar_a2b1cce6fb91fc7edf3bb5e64b9578876}\label{classSidebar_a2b1cce6fb91fc7edf3bb5e64b9578876} 
+wx\+Button \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+connect\+\_\+button}
+\item 
+\Hypertarget{classSidebar_aaeae598743ab7eb18e016c5497a7833a}\label{classSidebar_aaeae598743ab7eb18e016c5497a7833a} 
+wx\+Button \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+sensor\+\_\+button}
+\item 
+\Hypertarget{classSidebar_a12a285407b89301038d1320d4848e36d}\label{classSidebar_a12a285407b89301038d1320d4848e36d} 
+\doxymbox{\hyperlink{classMainFrame}{Main\+Frame}} \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+parent}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+GUI object that encapsulates all \doxylink{classSidebar}{Sidebar} controls into one class. 
+
+The \doxylink{classSidebar}{Sidebar} currently includes controls for:\+
+\begin{DoxyItemize}
+\item New Project
+\item Load Project (in progress)
+\item Connect (to a microcontroller)
+\item Sensors (launches \doxylink{classSensorConfigDialog}{Sensor\+Config\+Dialog}) 
+\end{DoxyItemize}
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+include/\+daq\+\_\+capstone/\+ui/\+Sidebar.\+h\item 
+src/\+ui/\+Sidebar.\+cpp\end{DoxyCompactItemize}

@@ -1,0 +1,46 @@
+\doxysection{Data\+Session.\+h}
+\hypertarget{DataSession_8h_source}{}\label{DataSession_8h_source}\index{include/daq\_capstone/data/DataSession.h@{include/daq\_capstone/data/DataSession.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once\ }}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <fstream>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <mutex>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <chrono>}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00018\ \textcolor{keyword}{class\ }DataSession\{}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//constructor\ to\ assign\ the\ sensorName\ \ \ \ }}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{explicit}\ DataSession(\textcolor{keyword}{const}\ std::string\&\ sensorName);}
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Add\ a\ numeric\ reading\ from\ the\ sensor\ to\ the\ session}}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ addValue(\textcolor{keywordtype}{double}\ value);}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \textcolor{comment}{//return\ all\ values\ collected\ so\ far\ \&\ sensorName}}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ std::vector<double>\ getValues()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ std::string\ getSensorName()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ std::vector<double>\ getTimestamps()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \textcolor{comment}{//clear\ all\ values\ to\ reset\ session}}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ clear();}
+\DoxyCodeLine{00034\ \ \ \ \ }
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \textcolor{comment}{//Name\ of\ the\ sensor,\ used\ in\ display\ and\ reference}}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ std::string\ m\_sensorName;}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \textcolor{comment}{//STILL\ NOT\ SURE\ ABOUT\ THIS\ PART}}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \textcolor{comment}{//mutable\ allows\ us\ to\ modify\ even\ data\ members\ that\ belong\ to\ a\ const\ object.}}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \textcolor{comment}{//It's\ used\ here\ to\ protect\ m\_value\ across\ threads.}}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \textcolor{keyword}{mutable}\ std::mutex\ m\_mutex;}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \textcolor{comment}{//List\ of\ the\ values\ collected}}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ std::vector<double>\ m\_values;}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ std::vector<double>\ m\_timestamps;}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ std::chrono::steady\_clock::time\_point\ m\_startTime;}
+\DoxyCodeLine{00049\ \};}
+\DoxyCodeLine{00050\ }
+
+\end{DoxyCode}

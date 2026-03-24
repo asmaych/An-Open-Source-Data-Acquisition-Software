@@ -1,0 +1,51 @@
+\doxysection{Data\+Table\+Window.\+h}
+\hypertarget{DataTableWindow_8h_source}{}\label{DataTableWindow_8h_source}\index{include/daq\_capstone/data/DataTableWindow.h@{include/daq\_capstone/data/DataTableWindow.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <wx/wx.h>}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <wx/grid.h>}\ \textcolor{comment}{//\ Grid\ widget\ used\ for\ displaying\ and\ editing\ tabular\ data}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}data/DataSession.h"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}data/Run.h"{}}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}ui/Theme.h"{}}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ "{}ui/ProjectPanel.h"{}}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classProjectPanel}{ProjectPanel}};}
+\DoxyCodeLine{00011\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classRun}{Run}};}
+\DoxyCodeLine{00012\ \textcolor{keyword}{enum\ class}\ Theme;}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00021\ \textcolor{keyword}{class\ }DataTableWindow\ :\ \textcolor{keyword}{public}\ wxPanel}
+\DoxyCodeLine{00022\ \{}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ DataTableWindow(wxWindow*\ parent,\ \textcolor{keyword}{const}\ std::vector<std::shared\_ptr<DataSession>>\&\ sessions,}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::shared\_ptr<Run>\ run\ =\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \textcolor{comment}{//update\ table\ with\ latest\ values}}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ updateTable();}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \textcolor{comment}{//set\ which\ sensors\ to\ display\ (dynamic)}}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setSelectedSessions(\textcolor{keyword}{const}\ std::vector<std::shared\_ptr<DataSession>>\&\ sessions);}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \textcolor{comment}{//append\ a\ single\ value\ to\ a\ specific\ column}}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ appendRow(\textcolor{keyword}{const}\ std::vector<double>\&\ rowValues);}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \textcolor{comment}{//change\ the\ table\ theme}}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ applyTheme(Theme\ theme);}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ std::shared\_ptr<Run>\ getAssociatedRun()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::vector<double>\&\ getTimes()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ m\_times;\ \}}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::vector<std::vector<double>>\&\ getValues()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \ m\_values;\ \}}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ wxGrid*\ getGrid()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ m\_grid;\ \}}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ std::shared\_ptr<Run>\ m\_associatedRun;}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ std::vector<std::shared\_ptr<DataSession>>\ m\_sessions;\ \textcolor{comment}{//sessions\ currently\ displayed}}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ std::vector<double>\ m\_times;}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::vector<std::vector<double>>\ m\_values;}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ wxGrid*\ m\_grid;\ \textcolor{comment}{//Grid\ widget\ to\ display\ the\ table}}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ wxButton*\ m\_collect\_button;}
+\DoxyCodeLine{00052\ \};}
+
+\end{DoxyCode}

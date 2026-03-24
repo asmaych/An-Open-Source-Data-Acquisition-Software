@@ -1,4 +1,9 @@
-/* Here we define the struct that represents a single data point
+#pragma once
+
+/**
+ * @brief Stores a single mapped pair of values - vectorized with other pairs, and used by InterPolator
+ *
+ * Here we define the struct that represents a single data point
  * for the calibration. It consists of two items:
  *
  * 	- 1:	the raw value from the sensor
@@ -7,9 +12,6 @@
  * The actual table for interpolation, will contain n number of these
  * data points, and they will all be stored in a vector.
  */
-
-#pragma once
-
 struct CalibrationPoint
 {
 	double raw;

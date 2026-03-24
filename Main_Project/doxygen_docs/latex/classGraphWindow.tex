@@ -1,0 +1,87 @@
+\doxysection{Graph\+Window Class Reference}
+\hypertarget{classGraphWindow}{}\label{classGraphWindow}\index{GraphWindow@{GraphWindow}}
+
+
+GUI object that displays a graph based on vectorized datapoints.  
+
+
+
+
+{\ttfamily \+\#include $<$Graph\+Window.\+h$>$}
+
+Inheritance diagram for Graph\+Window:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classGraphWindow}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \doxymbox{\hyperlink{structGraphWindow_1_1Curve}{Curve}}
+\begin{DoxyCompactList}\small\item\em Collection of data elements used to generate a plot of readings on a \doxylink{classGraphWindow}{Graph\+Window}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classGraphWindow_a6fc59c244d907029b943da7bce57e7b0}\label{classGraphWindow_a6fc59c244d907029b943da7bce57e7b0} 
+{\bfseries Graph\+Window} (wx\+Window \texorpdfstring{$\ast$}{*}parent)
+\item 
+\Hypertarget{classGraphWindow_a0edfe90b50bfe4ddd82ff6aa777987fa}\label{classGraphWindow_a0edfe90b50bfe4ddd82ff6aa777987fa} 
+void {\bfseries add\+Curve} (const std::\+vector$<$ double $>$ \&x, const std::\+vector$<$ double $>$ \&y, const std::\+string \&label, size\+\_\+t run\+Number, const std::\+string \&id)
+\item 
+\Hypertarget{classGraphWindow_a8fbd4755b4f236f4d4090fac58a13994}\label{classGraphWindow_a8fbd4755b4f236f4d4090fac58a13994} 
+void {\bfseries add\+Demand\+Point} (const std::\+string \&curve\+Id, double x, double y)
+\item 
+\Hypertarget{classGraphWindow_a6fd293b4440777d0e271f7d036bc0028}\label{classGraphWindow_a6fd293b4440777d0e271f7d036bc0028} 
+void {\bfseries clear} ()
+\item 
+\Hypertarget{classGraphWindow_ac9f2099d21657fb273e7bcf60fac8938}\label{classGraphWindow_ac9f2099d21657fb273e7bcf60fac8938} 
+void {\bfseries set\+Theme} (Theme theme)
+\item 
+\Hypertarget{classGraphWindow_a5462233118a84f63675dad3334552cdb}\label{classGraphWindow_a5462233118a84f63675dad3334552cdb} 
+void {\bfseries export\+Image} (const wx\+String \&path)
+\item 
+\Hypertarget{classGraphWindow_a52e8529a77207d7ac20919c36cf88910}\label{classGraphWindow_a52e8529a77207d7ac20919c36cf88910} 
+const std::\+vector$<$ \doxymbox{\hyperlink{structGraphWindow_1_1Curve}{Curve}} $>$ \& {\bfseries get\+Curves} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classGraphWindow_a7c996bc47c320089c89abe7f89ea70ef}\label{classGraphWindow_a7c996bc47c320089c89abe7f89ea70ef} 
+void {\bfseries On\+Paint} (wx\+Paint\+Event \&evt)
+\item 
+\Hypertarget{classGraphWindow_a737e2e4320eb03ef4044fb637f596fca}\label{classGraphWindow_a737e2e4320eb03ef4044fb637f596fca} 
+void {\bfseries draw} (wx\+DC \&dc)
+\item 
+\Hypertarget{classGraphWindow_aa58ac0d105da0b6ccaadc1c51d6eadfa}\label{classGraphWindow_aa58ac0d105da0b6ccaadc1c51d6eadfa} 
+void {\bfseries open\+Curve\+Selector} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classGraphWindow_ade0cd55e9280386cacce0a963f80827b}\label{classGraphWindow_ade0cd55e9280386cacce0a963f80827b} 
+wx\+Panel \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+panel}
+\item 
+\Hypertarget{classGraphWindow_ac3f75a5b32e10e5e09f05cff82b4384e}\label{classGraphWindow_ac3f75a5b32e10e5e09f05cff82b4384e} 
+std::\+vector$<$ \doxymbox{\hyperlink{structGraphWindow_1_1Curve}{Curve}} $>$ {\bfseries m\+\_\+curves}
+\item 
+\Hypertarget{classGraphWindow_a3f3ade82c9552aa169320fed8caab4a5}\label{classGraphWindow_a3f3ade82c9552aa169320fed8caab4a5} 
+Theme {\bfseries m\+\_\+current\+Theme} = Theme::\+\+Light
+\item 
+\Hypertarget{classGraphWindow_a231b0e25f6344b574457fedb495b1f55}\label{classGraphWindow_a231b0e25f6344b574457fedb495b1f55} 
+wx\+Button \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+selected\+Button}
+\item 
+\Hypertarget{classGraphWindow_a97b8229f578356cc0e0c72177cc92069}\label{classGraphWindow_a97b8229f578356cc0e0c72177cc92069} 
+std::\+mutex {\bfseries m\+\_\+graph\+Mutex}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+GUI object that displays a graph based on vectorized datapoints. 
+
+Graphwindow is a class that displays a graph of the collected sensor data. each \doxylink{classGraphWindow}{Graph\+Window} is tied to a \doxylink{classDataSession}{Data\+Session} and can display/\+visualize its values. 
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+include/\+daq\+\_\+capstone/\+data/\+Graph\+Window.\+h\item 
+src/\+data/\+Graph\+Window.\+cpp\end{DoxyCompactItemize}

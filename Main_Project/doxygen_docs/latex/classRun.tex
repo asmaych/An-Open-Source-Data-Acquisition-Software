@@ -1,0 +1,54 @@
+\doxysection{Run Class Reference}
+\hypertarget{classRun}{}\label{classRun}\index{Run@{Run}}
+
+
+Holds all timestamped sensor readings from all sensors for one run of data collection.  
+
+
+
+
+{\ttfamily \+\#include $<$Run.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classRun_a90040f55c13ffcd90418a0b9d0caa3b6}\label{classRun_a90040f55c13ffcd90418a0b9d0caa3b6} 
+{\bfseries Run} (size\+\_\+t run\+Number)
+\item 
+\Hypertarget{classRun_accd9d6cd29e09d476270ffe067487182}\label{classRun_accd9d6cd29e09d476270ffe067487182} 
+void {\bfseries add\+Frame} (double time, const std::\+vector$<$ double $>$ \&values)
+\item 
+\Hypertarget{classRun_a03ec98c8d7abc3e99e7bc2131a4ceafc}\label{classRun_a03ec98c8d7abc3e99e7bc2131a4ceafc} 
+size\+\_\+t {\bfseries get\+Run\+Number} () const
+\item 
+\Hypertarget{classRun_afb2f1cf7771fb76ab0e080415848de65}\label{classRun_afb2f1cf7771fb76ab0e080415848de65} 
+const std::\+vector$<$ double $>$ \& {\bfseries get\+Times} () const
+\item 
+\Hypertarget{classRun_ababd8d882ca097e5fa79507457ed3ce1}\label{classRun_ababd8d882ca097e5fa79507457ed3ce1} 
+const std::\+vector$<$ std::\+vector$<$ double $>$ $>$ \& {\bfseries get\+Frames} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classRun_a0b9cec187f23635fa620ba1a52bb3f79}\label{classRun_a0b9cec187f23635fa620ba1a52bb3f79} 
+size\+\_\+t {\bfseries m\+\_\+run\+Number}
+\item 
+\Hypertarget{classRun_a6246f1bfea73ff12a28a0d9e4f7308b9}\label{classRun_a6246f1bfea73ff12a28a0d9e4f7308b9} 
+std::\+vector$<$ double $>$ {\bfseries m\+\_\+times}
+\item 
+\Hypertarget{classRun_a9c0b3779798d6ed13f277035d0ba786e}\label{classRun_a9c0b3779798d6ed13f277035d0ba786e} 
+std::\+vector$<$ std::\+vector$<$ double $>$ $>$ {\bfseries m\+\_\+frames}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Holds all timestamped sensor readings from all sensors for one run of data collection. 
+
+When the user presses the \doxylink{classToolbar}{Toolbar} Start button, A run of data will begin -\/ as long as there is at least one sensor. \doxylink{classSensor}{Sensor} Values will be recorded and stored together in timestamped frames.
+
+When the user presses the \doxylink{classToolbar}{Toolbar} Stop button, the run will end, and subsequently pressing the Start button again will result in a different, new run. 
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+include/\+daq\+\_\+capstone/\+data/\+Run.\+h\item 
+src/\+data/\+Run.\+cpp\end{DoxyCompactItemize}

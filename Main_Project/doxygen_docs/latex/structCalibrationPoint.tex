@@ -1,0 +1,35 @@
+\doxysection{Calibration\+Point Struct Reference}
+\hypertarget{structCalibrationPoint}{}\label{structCalibrationPoint}\index{CalibrationPoint@{CalibrationPoint}}
+
+
+Stores a single mapped pair of values -\/ vectorized with other pairs, and used by Inter\+Polator.  
+
+
+
+
+{\ttfamily \+\#include $<$Calibration\+Point.\+h$>$}
+
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structCalibrationPoint_a44c6d1aea457ea24295e79821eb235d3}\label{structCalibrationPoint_a44c6d1aea457ea24295e79821eb235d3} 
+double {\bfseries raw}
+\item 
+\Hypertarget{structCalibrationPoint_a041c7730f0c908329c67116c4d7e3f6b}\label{structCalibrationPoint_a041c7730f0c908329c67116c4d7e3f6b} 
+double {\bfseries mapped}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Stores a single mapped pair of values -\/ vectorized with other pairs, and used by Inter\+Polator. 
+
+Here we define the struct that represents a single data point for the calibration. It consists of two items:\+ \begin{DoxyVerb}- 1:    the raw value from the sensor
+- 2:    the actual value that the raw value should represent
+\end{DoxyVerb}
+
+
+The actual table for interpolation, will contain n number of these data points, and they will all be stored in a vector. 
+
+The documentation for this struct was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+include/\+daq\+\_\+capstone/\+sensor/\+Calibration\+Point.\+h\end{DoxyCompactItemize}

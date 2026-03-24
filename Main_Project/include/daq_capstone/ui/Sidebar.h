@@ -10,6 +10,15 @@
 */
 class MainFrame;
 
+/**
+ * @brief GUI object that encapsulates all Sidebar controls into one class.
+ *
+ * The Sidebar currently includes controls for:
+ *	-	New Project
+ *	-	Load Project (in progress)
+ *	-	Connect (to a microcontroller)
+ *	-	Sensors (launches SensorConfigDialog)
+ */
 class Sidebar : public wxPanel
 {
 	public:

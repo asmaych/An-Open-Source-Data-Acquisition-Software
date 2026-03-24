@@ -1,0 +1,75 @@
+\doxysection{Calibration\+Table\+Dialog Class Reference}
+\hypertarget{classCalibrationTableDialog}{}\label{classCalibrationTableDialog}\index{CalibrationTableDialog@{CalibrationTableDialog}}
+
+
+GUI object used to allow user entry of raw-\/mapped pairs into a table for use in an \doxylink{classInterpolator}{Interpolator}.  
+
+
+
+
+{\ttfamily \+\#include $<$Calibration\+Table\+Dialog.\+h$>$}
+
+Inheritance diagram for Calibration\+Table\+Dialog:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classCalibrationTableDialog}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classCalibrationTableDialog_ab10f0632129515ce614cc0c3ac0a4688}\label{classCalibrationTableDialog_ab10f0632129515ce614cc0c3ac0a4688} 
+{\bfseries Calibration\+Table\+Dialog} (wx\+Window \texorpdfstring{$\ast$}{*}parent, \doxymbox{\hyperlink{classSensorManager}{Sensor\+Manager}} \texorpdfstring{$\ast$}{*}sensor\+Manager, long sensor\+\_\+index)
+\item 
+\Hypertarget{classCalibrationTableDialog_a5ff3b13e3d0803fe70724f6e0d774b00}\label{classCalibrationTableDialog_a5ff3b13e3d0803fe70724f6e0d774b00} 
+void {\bfseries get\+Calibration\+Points} ()
+\item 
+\Hypertarget{classCalibrationTableDialog_a8e52729e86b08acccb11a41f25827c89}\label{classCalibrationTableDialog_a8e52729e86b08acccb11a41f25827c89} 
+void {\bfseries load\+Calibration\+Points} (const std::\+vector$<$ \doxymbox{\hyperlink{structCalibrationPoint}{Calibration\+Point}} $>$ \&table)
+\item 
+\Hypertarget{classCalibrationTableDialog_ac69bcb7954904e4753f0588fc9f45b12}\label{classCalibrationTableDialog_ac69bcb7954904e4753f0588fc9f45b12} 
+void {\bfseries on\+Cell\+Edited} (wx\+Grid\+Event \&evt)
+\item 
+\Hypertarget{classCalibrationTableDialog_ad77e59ee828a509410aff4d4bf6a82ef}\label{classCalibrationTableDialog_ad77e59ee828a509410aff4d4bf6a82ef} 
+void {\bfseries on\+Enter\+Pressed} (wx\+Key\+Event \&evt)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classCalibrationTableDialog_a5c78abd07845829f7e94016f1558b08f}\label{classCalibrationTableDialog_a5c78abd07845829f7e94016f1558b08f} 
+void {\bfseries on\+Ok\+Pressed} (wx\+Command\+Event \&evt)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classCalibrationTableDialog_a854e5d9adfaecce6c8fb11259527c893}\label{classCalibrationTableDialog_a854e5d9adfaecce6c8fb11259527c893} 
+wx\+Grid \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+grid}
+\item 
+\Hypertarget{classCalibrationTableDialog_ae2ad71f013bf2b3425dffcc2ec4dd49e}\label{classCalibrationTableDialog_ae2ad71f013bf2b3425dffcc2ec4dd49e} 
+long {\bfseries m\+\_\+sensor\+\_\+index}
+\item 
+\Hypertarget{classCalibrationTableDialog_a97194168cc0c21879b60e7e827c2a217}\label{classCalibrationTableDialog_a97194168cc0c21879b60e7e827c2a217} 
+\doxymbox{\hyperlink{classSensorManager}{Sensor\+Manager}} \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+sensor\+Manager}
+\item 
+\Hypertarget{classCalibrationTableDialog_a51d1bb8bed45d20894585707dda977d4}\label{classCalibrationTableDialog_a51d1bb8bed45d20894585707dda977d4} 
+std::\+unique\+\_\+ptr$<$ std::\+vector$<$ \doxymbox{\hyperlink{structCalibrationPoint}{Calibration\+Point}} $>$ $>$ {\bfseries m\+\_\+table}
+\item 
+\Hypertarget{classCalibrationTableDialog_a01e262ea8ac6cc729e075482ba9143fe}\label{classCalibrationTableDialog_a01e262ea8ac6cc729e075482ba9143fe} 
+std::\+unique\+\_\+ptr$<$ \doxymbox{\hyperlink{classInterpolator}{Interpolator}} $>$ {\bfseries m\+\_\+interpolator}
+\item 
+\Hypertarget{classCalibrationTableDialog_a5734fac71de9d69ef2932b71e18f3394}\label{classCalibrationTableDialog_a5734fac71de9d69ef2932b71e18f3394} 
+std::\+vector$<$ \doxymbox{\hyperlink{structCalibrationPoint}{Calibration\+Point}} $>$ const  \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+calibration\+Points} = nullptr
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+GUI object used to allow user entry of raw-\/mapped pairs into a table for use in an \doxylink{classInterpolator}{Interpolator}. 
+
+When this dialog is created, it loads a table of raw-\/mapped pairs, that the user can add to or modify. These values are used to create a vector of \doxylink{structCalibrationPoint}{Calibration\+Point} objects, which are loaded into an \doxylink{classInterpolator}{Interpolator} for use in a specific \doxylink{classSensor}{Sensor} selected earlier by the user.
+
+If there is no current calibration configured for the selected \doxylink{classSensor}{Sensor}, the table will be blank. Otherwise, the calibration table will be loaded with the current values. 
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+include/\+daq\+\_\+capstone/\+ui/\+Calibration\+Table\+Dialog.\+h\item 
+src/\+ui/\+Calibration\+Table\+Dialog.\+cpp\end{DoxyCompactItemize}

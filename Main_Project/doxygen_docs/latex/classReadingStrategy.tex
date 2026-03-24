@@ -1,0 +1,40 @@
+\doxysection{Reading\+Strategy Class Reference}
+\hypertarget{classReadingStrategy}{}\label{classReadingStrategy}\index{ReadingStrategy@{ReadingStrategy}}
+
+
+Interface for implementation of \doxylink{classReadingStrategy}{Reading\+Strategy} Strategy Pattern.  
+
+
+
+
+{\ttfamily \+\#include $<$Reading\+Strategy.\+h$>$}
+
+Inheritance diagram for Reading\+Strategy:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classReadingStrategy}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classReadingStrategy_ad13a4218cad1cc5ea728127bedb87e4b}\label{classReadingStrategy_ad13a4218cad1cc5ea728127bedb87e4b} 
+virtual double {\bfseries get\+Value} (const \doxymbox{\hyperlink{structReadingPacket}{Reading\+Packet}} \&packet) const =0
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Interface for implementation of \doxylink{classReadingStrategy}{Reading\+Strategy} Strategy Pattern. 
+
+This class has no implementation. It is an abstract class that is only used to construct one of many specific implementations. It allows the user to select one of three forms of sensor reading:\+ Raw, Voltage, and Mapped. By using the Strategy Pattern, runtime Polymorphism can be used to change which type of reading is returned from a \doxylink{classSensor}{Sensor} object\textquotesingle{}s get\+Reading() method.
+
+This Interface is, or will be implemented by the three following classes:\+
+\begin{DoxyItemize}
+\item \doxylink{classVoltageReader}{Voltage\+Reader}
+\item \doxylink{classRawReader}{Raw\+Reader}
+\item \doxylink{classMappedReader}{Mapped\+Reader} 
+\end{DoxyItemize}
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+include/\+daq\+\_\+capstone/\+sensor/\+Reading\+Strategy.\+h\end{DoxyCompactItemize}

@@ -1,0 +1,164 @@
+\doxysection{Project\+Panel.\+h}
+\hypertarget{ProjectPanel_8h_source}{}\label{ProjectPanel_8h_source}\index{include/daq\_capstone/ui/ProjectPanel.h@{include/daq\_capstone/ui/ProjectPanel.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <wx/wx.h>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <wx/listctrl.h>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <thread>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <wx/splitter.h>}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include"{}controllers/SessionController.h"{}}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ "{}controllers/DataCollector.h"{}}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ "{}Theme.h"{}}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ "{}data/DataTableWindow.h"{}}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ "{}data/Run.h"{}}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#include\ "{}data/GraphWindow.h"{}}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ "{}data/LiveDataWindow.h"{}}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ "{}sensor/SensorDatabase.h"{}}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ "{}Events.h"{}}}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \textcolor{comment}{/*\ ProjectPanel\ class\ represents\ one\ project\ tab,\ it\ contains:}}
+\DoxyCodeLine{00020\ \textcolor{comment}{\ \ \ All\ sensors\ in\ a\ project,\ SerialComm\ instance\ for\ readings,\ Runs\ (continuous\ acquisition\ buffers)}}
+\DoxyCodeLine{00021\ \textcolor{comment}{\ \ \ It\ provides:\ start/stop\ live\ readings,\ collect\ data,\ graph\ \&\ export\ it,\ add/remove\ sensor}}
+\DoxyCodeLine{00022\ \textcolor{comment}{*/}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classSerialComm}{SerialComm}};}
+\DoxyCodeLine{00025\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classSensor}{Sensor}};}
+\DoxyCodeLine{00026\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classSensorManager}{SensorManager}};}
+\DoxyCodeLine{00027\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classSensorDatabase}{SensorDatabase}};}
+\DoxyCodeLine{00028\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classRun}{Run}};}
+\DoxyCodeLine{00029\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classDataSession}{DataSession}};}
+\DoxyCodeLine{00030\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classLiveDataWindow}{LiveDataWindow}};}
+\DoxyCodeLine{00031\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classDataTableWindow}{DataTableWindow}};}
+\DoxyCodeLine{00032\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classGraphWindow}{GraphWindow}};}
+\DoxyCodeLine{00033\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classHandshakeDialog}{HandshakeDialog}};}
+\DoxyCodeLine{00034\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classSessionController}{SessionController}};}
+\DoxyCodeLine{00035\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classMainFrame}{MainFrame}};}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00045\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classProjectPanel_a8cee1b4462f94120cb68517dbb90eb1f}{ProjectPanel}}\ :\ \textcolor{keyword}{public}\ wxPanel}
+\DoxyCodeLine{00046\ \{}
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classProjectPanel_a8cee1b4462f94120cb68517dbb90eb1f}{ProjectPanel}}(wxWindow*\ parent,\ \textcolor{keyword}{const}\ wxString\&\ title);}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classProjectPanel_a58d4df53dd027b081ef7546b8d55645e}{\string~ProjectPanel}}()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \textcolor{comment}{//Toolbar\ actions\ from\ Mainframe}}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{classProjectPanel_a3402e6b029d8c4dbc7a550cf936f9843}{toggleStartStop}}();\ \textcolor{comment}{//start\ or\ stop\ a\ Run}}
+\DoxyCodeLine{00081\ }
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \textcolor{comment}{//Run\ lifecycle}}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{classProjectPanel_add52dfacb9e981388f4f5bd10332278a}{startRun}}();\ \textcolor{comment}{//creates\ a\ new\ run\ and\ starts\ collecting}}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{classProjectPanel_a0cb59eb7c87030bb87e1aac4b2d3c672}{stopRun}}();\ \textcolor{comment}{//stops\ the\ current\ run}}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ resetSessionData();\ \textcolor{comment}{//clears\ all\ runs\ and\ reset\ live\ window}}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ collectCurrentValues();\ \textcolor{comment}{//collects\ on\ demand\ from\ the\ current\ run}}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ graphSelectedSensor(wxCommandEvent\&\ evt);\ \textcolor{comment}{//open\ graph\ window\ for\ selected\ sensor}}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ onCollectNowGraphPoint(wxCommandEvent\&\ evt);\ \textcolor{comment}{//graph\ the\ collected\ on\ demand\ point}}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ resetTableWindow();}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ exportSessions(wxCommandEvent\&\ evt);\ \textcolor{comment}{//export\ collected\ runs}}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ updateLayout();\ \textcolor{comment}{//to\ handle\ the\ new\ ui\ logic}}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ onSensors();\ \textcolor{comment}{//open\ sensor\ selection/management\ dialog}}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ applyTheme(Theme\ theme);\ \textcolor{comment}{//black/light\ theme}}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ adjustSampleRate(\textcolor{keywordtype}{float}\ rate)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classSensorManager}{SensorManager}}\ *\ getSensorManager()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00113\ }
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \textcolor{comment}{//MainFrame\ needs\ this\ to\ change\ toolbar\ state}}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setMainFrame(\doxymbox{\hyperlink{classMainFrame}{MainFrame}}*\ frame)\ \{m\_mainFrame\ =\ frame;\}}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \textcolor{comment}{//event\ for\ new\ frame\ from\ serial}}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ onNewDataFrame();}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \textcolor{comment}{//helper\ of\ export}}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ wxString\ askSaveFile(wxWindow*\ parent);}
+\DoxyCodeLine{00122\ }
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \textcolor{comment}{//ui\ helpers}}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ openConnectDialog();}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \textcolor{comment}{//getter}}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classLiveDataWindow}{LiveDataWindow}}*\ getLiveWindow();}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classDataTableWindow}{DataTableWindow}}*\ getTableWindow();}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classGraphWindow}{GraphWindow}}*\ getGraphWindow();}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ std::shared\_ptr<Run>\ getCurrentRun();}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ isRunning()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ isConnected()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::vector<std::unique\_ptr<Sensor>>\&\ getSensors()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00134\ }
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ \textcolor{comment}{//parse\ csv\ string\ into\ vector<double>}}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ std::vector<double>\ parseSerialFrame(\textcolor{keyword}{const}\ std::string\&\ frame);}
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \textcolor{comment}{//used\ to\ update\ layout\ when\ buttons\ pressed}}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setGraphVisible(\textcolor{keywordtype}{bool}\ visible)\ \{graphVisible\ =\ visible;\ \}}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setLiveVisible(\textcolor{keywordtype}{bool}\ visible)\ \{liveVisible\ =\ visible;\ \}}
+\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setCollectNowVisible(\textcolor{keywordtype}{bool}\ visible)\ \{collectNowVisible\ =\ visible;\ \}}
+\DoxyCodeLine{00142\ }
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ \textcolor{comment}{//Mainframe\ needs\ access\ to\ sensors\ for\ selection\ dialogs}}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ std::vector<std::unique\_ptr<Sensor>>\ m\_sensors;}
+\DoxyCodeLine{00145\ }
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ \textcolor{comment}{//putting\ this\ in\ public\ so\ that\ objects\ can\ see\ if\ it\ has\ a\ connected\ controller}}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ handshakeComplete\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00148\ }
+\DoxyCodeLine{00149\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ \textcolor{comment}{//splitter\ for\ live\ graph\ (top)\ live\ table\ (bottom)}}
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ std::unique\_ptr<wxSplitterWindow>\ m\_splitter;}
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ std::unique\_ptr<wxSplitterWindow>\ m\_bottom\_splitter;\ \textcolor{comment}{//for\ splitting\ the\ buttom\ space\ when\ collect\ now\ is\ used}}
+\DoxyCodeLine{00153\ }
+\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ \textcolor{comment}{//graph\ helpers}}
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ graphTable(\doxymbox{\hyperlink{classDataTableWindow}{DataTableWindow}}*);\ \textcolor{comment}{//graph\ collect\ on\ demand\ table}}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ graphRun(\textcolor{keyword}{const}\ std::shared\_ptr<Run>\&\ run);\ \textcolor{comment}{//graph\ a\ full\ run}}
+\DoxyCodeLine{00157\ }
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ \textcolor{comment}{//export\ helpers}}
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ exportRun(\textcolor{keyword}{const}\ std::shared\_ptr<Run>\&\ run,\ \textcolor{keyword}{const}\ wxString\&\ path);}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ exportTable(\doxymbox{\hyperlink{classDataTableWindow}{DataTableWindow}}*\ table,\ \textcolor{keyword}{const}\ wxString\&\ path);}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ exportGraph(\doxymbox{\hyperlink{classGraphWindow}{GraphWindow}}*\ graph,\ \textcolor{keyword}{const}\ wxString\&\ path);}
+\DoxyCodeLine{00162\ }
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ wxListCtrl*\ m\_sensorList\{\};\ \textcolor{comment}{//display\ all\ available\ sensors}}
+\DoxyCodeLine{00164\ \ \ \ \ \ \ \ \ wxButton*\ m\_connect\_button\{\};\ \textcolor{comment}{//button\ to\ open\ handshake\ dialog}}
+\DoxyCodeLine{00165\ }
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ \textcolor{comment}{//hardware\ \&\ control}}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ std::unique\_ptr<SerialComm>\ m\_serial;\ \textcolor{comment}{//SerialComm\ instance}}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ std::unique\_ptr<SensorManager>\ m\_sensorManager;}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ std::unique\_ptr<SessionController>\ m\_controller;}
+\DoxyCodeLine{00170\ }
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \ \ \textcolor{comment}{//live\ display\ \&\ tables}}
+\DoxyCodeLine{00172\ \ \ \ \ \ \ \ \ std::unique\_ptr<LiveDataWindow>\ m\_liveWindow;\ \textcolor{comment}{//single\ embedded\ live\ window}}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ std::unique\_ptr<DataTableWindow>\ m\_tableWindow;\ \textcolor{comment}{//single\ collect\ on\ demand\ window\ collection}}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ std::unique\_ptr<DataTableWindow>\ m\_continuousTableWindow;\ \textcolor{comment}{//table\ for\ run}}
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \ \ std::unique\_ptr<GraphWindow>\ m\_graphWindow;\ \textcolor{comment}{//current\ graph\ window}}
+\DoxyCodeLine{00176\ }
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \ \ \textcolor{comment}{//state\ flags}}
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ graphVisible\ =\ \textcolor{keyword}{false};\ \textcolor{comment}{//assigned\ to\ true\ cause\ when\ pressing\ start\ both\ graph\ and\ collect\ continuous\ are\ displayed}}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ liveVisible\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ collectNowVisible\ =\ \textcolor{keyword}{false};\ \textcolor{comment}{//depends\ on\ the\ user}}
+\DoxyCodeLine{00181\ }
+\DoxyCodeLine{00182\ \ \ \ \ \ \ \ \ \textcolor{comment}{//all\ recorded\ runs\ for\ this\ project}}
+\DoxyCodeLine{00183\ \ \ \ \ \ \ \ \ std::vector<std::shared\_ptr<Run>>\ m\_runs;}
+\DoxyCodeLine{00184\ }
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ \textcolor{comment}{//currently\ active\ run}}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ std::shared\_ptr<Run>\ m\_currentRun;}
+\DoxyCodeLine{00187\ }
+\DoxyCodeLine{00188\ \ \ \ \ \ \ \ \ \textcolor{comment}{//mainFrame}}
+\DoxyCodeLine{00189\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classMainFrame}{MainFrame}}*\ m\_mainFrame\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00190\ }
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ \textcolor{comment}{//current\ theme\ by\ default}}
+\DoxyCodeLine{00192\ \ \ \ \ \ \ \ \ Theme\ m\_currentTheme;}
+\DoxyCodeLine{00193\ }
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ \textcolor{comment}{//Absolute\ start\ time\ of\ the\ active\ run\ in\ seconds}}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ m\_runStartTime\ =\ 0.0;}
+\DoxyCodeLine{00196\ }
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \ \ \textcolor{comment}{//Events\ sent\ from\ background\ serial\ thread}}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ onHandshakeSuccess(wxThreadEvent\&\ evt);}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ onSerialUpdate(wxThreadEvent\&\ evt);}
+\DoxyCodeLine{00200\ }
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ \textcolor{comment}{//State\ flags}}
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ m\_isRunning\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00203\ }
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \ \ \textcolor{comment}{//database\ lives\ as\ long\ as\ the\ project}}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classSensorDatabase}{SensorDatabase}}\ m\_sensorDB;}
+\DoxyCodeLine{00206\ \};}
+
+\end{DoxyCode}

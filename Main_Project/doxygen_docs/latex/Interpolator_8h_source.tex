@@ -1,0 +1,26 @@
+\doxysection{Interpolator.\+h}
+\hypertarget{Interpolator_8h_source}{}\label{Interpolator_8h_source}\index{include/daq\_capstone/sensor/Interpolator.h@{include/daq\_capstone/sensor/Interpolator.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ "{}Calibrator.h"{}}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}CalibrationPoint.h"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{class\ }Interpolator\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classCalibrator}{Calibrator}}}
+\DoxyCodeLine{00024\ \{}
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ \textcolor{comment}{//implement\ the\ constructor\ for\ this\ class\ that\ implements\ the\ Calibrator\ interface}}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \textcolor{keyword}{explicit}\ Interpolator(std::unique\_ptr<std::vector<CalibrationPoint>>\ table);}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ std::vector<CalibrationPoint>\ \textcolor{keyword}{const}\ *\ getCalibrationTable()\ \textcolor{keyword}{const\ override};}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \textcolor{comment}{//using\ the\ override\ keyword\ here,\ because\ this\ method\ will\ be\ changed\ in\ the\ .cpp}}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ evaluate(\textcolor{keywordtype}{double}\ raw)\ \textcolor{keyword}{const\ override};}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ std::unique\_ptr<std::vector<CalibrationPoint>>\ m\_table;}
+\DoxyCodeLine{00036\ \};}
+
+\end{DoxyCode}

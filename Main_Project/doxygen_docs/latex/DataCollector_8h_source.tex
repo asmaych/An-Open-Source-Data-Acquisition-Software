@@ -1,0 +1,36 @@
+\doxysection{Data\+Collector.\+h}
+\hypertarget{DataCollector_8h_source}{}\label{DataCollector_8h_source}\index{include/daq\_capstone/controllers/DataCollector.h@{include/daq\_capstone/controllers/DataCollector.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}data/DataSession.h"{}}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{keyword}{enum\ class}\ CollectionMode\ \{Continuous,\ LastValue\};}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00016\ \textcolor{keyword}{class\ }DataCollector}
+\DoxyCodeLine{00017\ \{}
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ DataCollector()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setMode(CollectionMode\ m)\ \{\ m\_mode\ =\ m;\ \}}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ CollectionMode\ getMode()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ m\_mode;\ \}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \textcolor{comment}{//Append\ a\ single\ value\ from\ polling\ into\ the\ correct\ session\ index}}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ collectContinuous(std::vector<std::unique\_ptr<DataSession>>\&\ sessions,\ \textcolor{keywordtype}{size\_t}\ index,\ \textcolor{keywordtype}{double}\ value);}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \textcolor{comment}{//Snapshot\ collect,\ appending\ last\ value\ for\ each\ selected\ sensor}}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ collectLastValue(std::vector<std::unique\_ptr<DataSession>>\&\ sessions,}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::vector<size\_t>\&\ indices,}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::vector<int>\&\ lastValues);}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \textcolor{comment}{//A\ helper\ to\ collect\ last\ values\ for\ ALL\ sensors\ (indices\ =\ 0..n-\/1)}}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ collectLastValueAll(std::vector<std::unique\_ptr<DataSession>>\&\ sessions,}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::vector<int>\&\ latestValues);}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ CollectionMode\ m\_mode\ =\ CollectionMode::Continuous;}
+\DoxyCodeLine{00038\ \};}
+\DoxyCodeLine{00039\ }
+
+\end{DoxyCode}

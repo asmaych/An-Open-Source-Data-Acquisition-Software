@@ -2,15 +2,17 @@
 #include <memory>
 #include "data/DataSession.h"
 
-/*
-	DataCollector is a lightweight helper for the 2 diff methods of collecting that we have:
-	1. continuous collect which append incoming values into their sessions
-	2. collect last-value which append the last value received from sensors
-	Thus, this class provides two methods that the GUI can call. it does not own sessions.
-*/
-
 enum class CollectionMode {Continuous, LastValue};
 
+/**
+ * @brief A lightweight helper class for the different methods of recording sensor values
+ *
+ * DataCollector is a lightweight helper for the 2 different methods of collecting that we have:
+ *	1. continuous-collect that continuously appends incoming sensor readings into the current session until stopped
+ *	2. collect-last-value that appends only the last set of values received once per invocation
+ *
+ * This class provides two methods that the GUI can call. it does not own sessions.
+ */
 class DataCollector
 {
 	public:

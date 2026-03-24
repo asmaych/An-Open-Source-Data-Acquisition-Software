@@ -4,6 +4,14 @@
 
 class ProjectPanel;
 
+/**
+ * @brief Gui object used to modify Application and Project Parameters at runtime
+ *
+ * This is a dialog that allows the user to switch between light and dark mode, select polling rate,
+ * and choose between what type of sensor reading to capture. In the future, any additional configuration
+ * requirements will be implemented on the front-end here.
+ *
+ */
 class ProjectConfigDialog : public wxDialog
 {
     public:

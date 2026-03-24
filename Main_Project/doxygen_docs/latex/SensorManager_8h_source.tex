@@ -1,0 +1,62 @@
+\doxysection{Sensor\+Manager.\+h}
+\hypertarget{SensorManager_8h_source}{}\label{SensorManager_8h_source}\index{include/daq\_capstone/sensor/SensorManager.h@{include/daq\_capstone/sensor/SensorManager.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}Sensor.h"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}SerialComm.h"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <functional>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ "{}Calibrator.h"{}}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ "{}Interpolator.h"{}}}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00025\ \textcolor{keyword}{class\ }SensorManager}
+\DoxyCodeLine{00026\ \{}
+\DoxyCodeLine{00027\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \textcolor{comment}{//constructor\ that\ takes\ an\ address\ to\ a\ vector\ of\ Sensors}}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \textcolor{comment}{//and\ a\ raw\ pointer\ to\ the\ serialComm\ object\ owned\ by\ Project}}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ SensorManager(std::vector<std::unique\_ptr<Sensor>>\&\ sensors,\ \doxymbox{\hyperlink{classSerialComm}{SerialComm}}*\ serialComm);}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \textcolor{comment}{//a\ general\ method\ for\ adding\ new\ sensors}}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ addSensor(std::unique\_ptr<Sensor>\ s);}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \textcolor{comment}{//a\ general\ method\ for\ removing\ existing\ sensors}}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ removeSensor(\textcolor{keyword}{const}\ std::string\&\ sensorName);}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \textcolor{comment}{//checker\ function\ to\ make\ sure\ we\ don't\ have\ duplicate\ names}}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ nameExists(\textcolor{keyword}{const}\ std::string\&\ name);}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \textcolor{comment}{//checker\ function\ to\ make\ sure\ we\ don't\ have\ two\ sensors\ using}}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \textcolor{comment}{//the\ same\ arduino\ pin\ number}}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ pinExists(\textcolor{keywordtype}{int}\ pin)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setAllReadingStrategy(\textcolor{keyword}{const}\ std::string\ \&reading\_strategy);}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setReadingStrategy(\textcolor{keywordtype}{long}\ sensor\_index,\ \textcolor{keyword}{const}\ std::string\ \&reading\_strategy);}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setCalibration(\textcolor{keywordtype}{long}\ sensor\_index,\ std::unique\_ptr<Calibrator>\ calibrator);}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ std::vector<CalibrationPoint>\ \textcolor{keyword}{const}\ *getSensorCalibration(\textcolor{keywordtype}{long}\ sensor\_index)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \textcolor{comment}{//helper\ to\ get\ all\ selected\ sensors}}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ std::vector<Sensor*>\ getSelectedSensors()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setOnChangeCallback(std::function<\textcolor{keywordtype}{void}()>\ cb);}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \textcolor{comment}{//CLASS\ MEMBERS}}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \textcolor{comment}{//reference\ to\ a\ vector\ of\ Sensors.\ This\ will\ be\ assigned\ to}}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \textcolor{comment}{//the\ vector\ owned\ by\ Project,\ so\ that\ this\ class\ can\ modify\ it}}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ std::vector<std::unique\_ptr<Sensor>>\&\ m\_sensors;}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \textcolor{comment}{//raw\ pointer\ to\ the\ SerialComm\ object\ owned\ by\ Project}}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classSerialComm}{SerialComm}}*\ m\_serialComm;}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ std::function<void()>\ m\_onChange;}
+\DoxyCodeLine{00070\ \};}
+
+\end{DoxyCode}

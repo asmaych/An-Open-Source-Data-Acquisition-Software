@@ -1,0 +1,58 @@
+\doxysection{Add\+Sensor\+Dialog Class Reference}
+\hypertarget{classAddSensorDialog}{}\label{classAddSensorDialog}\index{AddSensorDialog@{AddSensorDialog}}
+
+
+GUI object used to allow user-\/entry of new \doxylink{classSensor}{Sensor} parameters.  
+
+
+
+
+{\ttfamily \+\#include $<$Add\+Sensor\+Dialog.\+h$>$}
+
+Inheritance diagram for Add\+Sensor\+Dialog:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classAddSensorDialog}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classAddSensorDialog_ad0e1a47890641fed532df51299a34878}\label{classAddSensorDialog_ad0e1a47890641fed532df51299a34878} 
+{\bfseries Add\+Sensor\+Dialog} (wx\+Window \texorpdfstring{$\ast$}{*}parent, const wx\+String \&title, \doxymbox{\hyperlink{classSensorManager}{Sensor\+Manager}} \texorpdfstring{$\ast$}{*}sensor\+Manager, \doxymbox{\hyperlink{classSensorDatabase}{Sensor\+Database}} \texorpdfstring{$\ast$}{*}sensor\+Database)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classAddSensorDialog_a362ece1f8fa6477560ccf356e61360b7}\label{classAddSensorDialog_a362ece1f8fa6477560ccf356e61360b7} 
+void {\bfseries on\+Add\+Pressed} (wx\+Command\+Event \&evt)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classAddSensorDialog_a256184cc62be51e593976ae07b604fd5}\label{classAddSensorDialog_a256184cc62be51e593976ae07b604fd5} 
+\doxymbox{\hyperlink{classSensorManager}{Sensor\+Manager}} \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+sensor\+Manager}
+\item 
+\Hypertarget{classAddSensorDialog_adba1b905293da57e812895c603cbc0db}\label{classAddSensorDialog_adba1b905293da57e812895c603cbc0db} 
+wx\+Text\+Ctrl \texorpdfstring{$\ast$}{*} {\bfseries name\+\_\+field}
+\item 
+\Hypertarget{classAddSensorDialog_a3d9e88f1fc9abdac7a1e84c7f7469e1a}\label{classAddSensorDialog_a3d9e88f1fc9abdac7a1e84c7f7469e1a} 
+wx\+Text\+Ctrl \texorpdfstring{$\ast$}{*} {\bfseries pin\+\_\+field}
+\item 
+\Hypertarget{classAddSensorDialog_aef4dd69d1727ef495a00e80a1023e358}\label{classAddSensorDialog_aef4dd69d1727ef495a00e80a1023e358} 
+wx\+Check\+Box \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+save\+To\+DB}
+\item 
+\Hypertarget{classAddSensorDialog_a31190d0da22777e29ae6ce7169a86b28}\label{classAddSensorDialog_a31190d0da22777e29ae6ce7169a86b28} 
+\doxymbox{\hyperlink{classSensorDatabase}{Sensor\+Database}} \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+sensor\+Database}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+GUI object used to allow user-\/entry of new \doxylink{classSensor}{Sensor} parameters. 
+
+This class is used to provide a GUI to the user that allows them to manually enter details related to the new sensor they wish to configure. Additionally, the user is able to select an option that saves the sensor to the global database of sensors for easier reuse. 
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+include/\+daq\+\_\+capstone/\+ui/\+Add\+Sensor\+Dialog.\+h\item 
+src/\+ui/\+Add\+Sensor\+Dialog.\+cpp\end{DoxyCompactItemize}

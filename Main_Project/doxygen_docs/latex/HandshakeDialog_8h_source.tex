@@ -1,0 +1,43 @@
+\doxysection{Handshake\+Dialog.\+h}
+\hypertarget{HandshakeDialog_8h_source}{}\label{HandshakeDialog_8h_source}\index{include/daq\_capstone/ui/HandshakeDialog.h@{include/daq\_capstone/ui/HandshakeDialog.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <memory>}\ \ \ \textcolor{comment}{//include\ for\ smart\ pointers}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <wx/wx.h>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}SerialComm.h"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <libserialport.h>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <unordered\_map>}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00016\ \textcolor{keyword}{class\ }HandshakeDialog\ :\ \textcolor{keyword}{public}\ wxDialog}
+\DoxyCodeLine{00017\ \{}
+\DoxyCodeLine{00018\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00019\ \ \ \ \ HandshakeDialog(wxWindow*\ parent,\ \textcolor{keyword}{const}\ wxString\&\ title,\ \doxymbox{\hyperlink{classSerialComm}{SerialComm}}*\ serialComm);}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \ \ \ \ \textcolor{keywordtype}{void}\ loadPorts();}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{comment}{//this\ will\ be\ a\ raw\ pointer\ passed\ through\ the\ constructor}}
+\DoxyCodeLine{00026\ \ \ \ \ \doxymbox{\hyperlink{classSerialComm}{SerialComm}}*\ serialComm;}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{comment}{//this\ will\ be\ used\ to\ map\ a\ port\ selection\ with\ an\ actual\ port\ object}}
+\DoxyCodeLine{00029\ \ \ \ \ std::unordered\_map<std::string,\ std::string>\ m\_portMap;}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \ \ \ \ \textcolor{comment}{//declaring\ the\ dropdown\ menu\ so\ it\ can\ be\ used\ across\ the\ class}}
+\DoxyCodeLine{00032\ \ \ \ \ wxComboBox*\ portChoice;}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{comment}{//declare\ a\ status\ textbox\ so\ that\ we\ can\ send\ updates\ to\ it\ from\ across}}
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{comment}{//the\ class}}
+\DoxyCodeLine{00036\ \ \ \ \ wxStaticText*\ status;}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keywordtype}{void}\ onPortChosen(wxCommandEvent\&\ event);}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keywordtype}{void}\ onRefreshPorts(wxCommandEvent\ \&event);}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keywordtype}{bool}\ handshakecompleted\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \};}
+
+\end{DoxyCode}

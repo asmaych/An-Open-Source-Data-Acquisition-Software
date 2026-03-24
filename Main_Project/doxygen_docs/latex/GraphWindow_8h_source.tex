@@ -1,0 +1,63 @@
+\doxysection{Graph\+Window.\+h}
+\hypertarget{GraphWindow_8h_source}{}\label{GraphWindow_8h_source}\index{include/daq\_capstone/data/GraphWindow.h@{include/daq\_capstone/data/GraphWindow.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <wx/wx.h>}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <map>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}ui/Theme.h"{}}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}ui/ProjectPanel.h"{}}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{keyword}{enum\ class}\ Theme;}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00017\ \textcolor{keyword}{class\ }GraphWindow\ :\ \textcolor{keyword}{public}\ wxPanel}
+\DoxyCodeLine{00018\ \{}
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{structGraphWindow_1_1Curve}{Curve}}\{\ \ \ std::vector<double>\ x;}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::vector<double>\ y;}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ label;}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ wxColour\ color;}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ id;}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ visible\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ runNumber;}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::vector<std::pair<double,double>>\ demandPoints;\ \};\ \textcolor{comment}{//id\ is\ a\ unique\ key:\ runID}}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \textcolor{comment}{//constructor\ with\ a\ parent\ with\ is\ the\ mainFrame\ and\ a\ pointer\ to\ DataSession}}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ GraphWindow(wxWindow*\ parent);}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \textcolor{comment}{//Add\ one\ curve\ (one\ sensor\ from\ one\ run)}}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ addCurve(\textcolor{keyword}{const}\ std::vector<double>\&\ x,\ \textcolor{keyword}{const}\ std::vector<double>\&\ y,\ \textcolor{keyword}{const}\ std::string\&\ label,}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ runNumber,\ \textcolor{keyword}{const}\ std::string\&\ \textcolor{keywordtype}{id});}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \textcolor{comment}{//draw\ the\ collect\ on\ demand\ points}}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ addDemandPoint(\textcolor{keyword}{const}\ std::string\&\ curveId,\ \textcolor{keywordtype}{double}\ x,\ \textcolor{keywordtype}{double}\ y);}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \textcolor{comment}{//remove\ all\ curves}}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ clear();}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \textcolor{comment}{//change\ theme\ for\ the\ graph}}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setTheme(Theme\ theme);}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \textcolor{comment}{//export\ the\ graph\ as\ png}}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ exportImage(\textcolor{keyword}{const}\ wxString\&\ path);}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \textcolor{comment}{//getter}}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::vector<Curve>\&\ getCurves()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ m\_curves;\ \}}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ wxPanel*\ m\_panel;}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ std::vector<Curve>\ m\_curves;}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ Theme\ m\_currentTheme\ =\ Theme::Light;}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ wxButton*\ m\_selectedButton;\ \textcolor{comment}{//Selector\ button\ for\ showing/hiding\ curves}}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ std::mutex\ m\_graphMutex;}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ OnPaint(wxPaintEvent\&\ evt);}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ draw(wxDC\&\ dc);}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ openCurveSelector();\ \textcolor{comment}{//open\ dialog\ for\ curve\ visibility}}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \};}
+
+\end{DoxyCode}

@@ -1,0 +1,31 @@
+\doxysection{Run.\+h}
+\hypertarget{Run_8h_source}{}\label{Run_8h_source}\index{include/daq\_capstone/data/Run.h@{include/daq\_capstone/data/Run.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00013\ \textcolor{keyword}{class\ }Run}
+\DoxyCodeLine{00014\ \{}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{keyword}{explicit}\ Run(\textcolor{keywordtype}{size\_t}\ runNumber);}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{comment}{//add\ one\ full\ frame\ (time\ +\ all\ sensor\ values)}}
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{keywordtype}{void}\ addFrame(\textcolor{keywordtype}{double}\ time,\ \textcolor{keyword}{const}\ std::vector<double>\&\ values);}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{comment}{//getters}}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ getRunNumber()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{keyword}{const}\ std::vector<double>\&\ getTimes()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keyword}{const}\ std::vector<std::vector<double>>\&\ getFrames()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{comment}{//Run\ 1,\ Run\ 2,\ ...}}
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ m\_runNumber;}
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{comment}{//t0,\ t1,\ t2\ ...}}
+\DoxyCodeLine{00031\ \ \ \ \ std::vector<double>\ m\_times;}
+\DoxyCodeLine{00032\ \ \ \ \ \textcolor{comment}{//[\ [s1,\ s2,\ s3\ ...],\ ...]}}
+\DoxyCodeLine{00033\ \ \ \ \ std::vector<std::vector<double>>\ m\_frames;}
+\DoxyCodeLine{00034\ \};}
+
+\end{DoxyCode}

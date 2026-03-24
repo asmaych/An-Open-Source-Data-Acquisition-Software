@@ -1,0 +1,62 @@
+\doxysection{Session\+Controller.\+h}
+\hypertarget{SessionController_8h_source}{}\label{SessionController_8h_source}\index{include/daq\_capstone/controllers/SessionController.h@{include/daq\_capstone/controllers/SessionController.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <mutex>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <atomic>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <thread>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}serial/SerialComm.h"{}}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ "{}ui/ProjectPanel.h"{}}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ "{}data/Run.h"{}}}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{comment}{/*\ SessionController\ is\ a\ class\ that\ is\ responsible\ for\ start/stop/reset\ lifecycle\ handling.}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ \ \ It\ doesn't\ itself\ poll\ the\ serial\ port,\ projectPanel\ still\ polls.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ \ \ Instead\ it\ manages\ the\ "{}running"{}\ state,\ reset\ logic\ (cleaning\ sessions),\ and\ exposes\ simple\ control\ API\ used\ by\ toolbar\ buttons.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{*/}}
+\DoxyCodeLine{00015\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classProjectPanel}{ProjectPanel}};}
+\DoxyCodeLine{00016\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classSerialComm}{SerialComm}};}
+\DoxyCodeLine{00017\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classDataSession}{DataSession}};}
+\DoxyCodeLine{00018\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classDataCollector}{DataCollector}};}
+\DoxyCodeLine{00019\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classSensor}{Sensor}};}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00029\ \textcolor{keyword}{class\ }SessionController\ \{}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ SessionController();}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ SessionController(\doxymbox{\hyperlink{classSerialComm}{SerialComm}}*\ serial,\ std::vector<std::shared\_ptr<Run>>*\ runs,}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classProjectPanel}{ProjectPanel}}*\ panel,\ std::vector<std::unique\_ptr<Sensor>>*\ sensors);}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \string~SessionController();}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \textcolor{comment}{//Start\ the\ experiment\ (set\ running\ as\ true).\ returns\ true\ if\ started.}}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ start();}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \textcolor{comment}{//Stop\ the\ experiment\ (set\ running\ false),\ returns\ true\ if\ stopped.}}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ stop();}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{classSessionController_a05e182755424790d75438eae04102461}{setInterval}}(\textcolor{keywordtype}{float}\ rate);}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \textcolor{comment}{//toggle\ start/stop\ }}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ toggle();}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \textcolor{comment}{//Reset\ sessions:\ clear\ all\ stored\ DataSessions\ passed\ in.}}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ reset(std::vector<std::unique\_ptr<DataSession>>\&\ sessions);}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \textcolor{comment}{//Query\ running\ state}}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ isRunning()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classSerialComm}{SerialComm}}*\ m\_serial\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \ \ \ \ std::vector<std::shared\_ptr<Run>>*\ m\_runs\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classProjectPanel}{ProjectPanel}}*\ m\_panel\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ std::vector<std::unique\_ptr<Sensor>>*\ m\_sensors\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ std::atomic<bool>\ m\_running;}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ std::thread\ m\_thread;}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ std::mutex\ m\_mutex;\ \textcolor{comment}{//protects\ complex\ transitions\ if\ needed}}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ std::atomic<float>\ m\_sampleRate\{50\};\ \ \ \ \textcolor{comment}{//set\ default\ to\ 50ms\ delay}}
+\DoxyCodeLine{00071\ \};}
+
+\end{DoxyCode}

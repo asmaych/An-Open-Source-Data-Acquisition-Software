@@ -8,6 +8,13 @@
 #include <wx/listctrl.h>
 #include <wx/wx.h>
 
+/**
+ * @brief GUI that provides users with a top-level view of all Sensor Objects and interfaces to modify them
+ *
+ * This is a dialog that shows users a list of all Sensor objects currently configured in the project.
+ * It displays sensors by name in a table, and above that table, it displays buttons that allow the user
+ * to add a new Sensor, remove or calibrate a selected Sensor, and load a sensor from the sensor database.
+ */
 class SensorConfigDialog : public wxDialog
 {
 	public:

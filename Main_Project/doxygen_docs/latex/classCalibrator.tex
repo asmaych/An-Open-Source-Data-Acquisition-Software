@@ -1,0 +1,45 @@
+\doxysection{Calibrator Class Reference}
+\hypertarget{classCalibrator}{}\label{classCalibrator}\index{Calibrator@{Calibrator}}
+
+
+Interface for implementation of Calibration Strategy Pattern.  
+
+
+
+
+{\ttfamily \+\#include $<$Calibrator.\+h$>$}
+
+Inheritance diagram for Calibrator:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classCalibrator}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classCalibrator_ada4582788d26243887cc14e46c7f0f94}\label{classCalibrator_ada4582788d26243887cc14e46c7f0f94} 
+virtual double {\bfseries evaluate} (double raw) const =0
+\item 
+\Hypertarget{classCalibrator_af0ef02e2f5706724c06ac71501fbb065}\label{classCalibrator_af0ef02e2f5706724c06ac71501fbb065} 
+virtual std::\+vector$<$ \doxymbox{\hyperlink{structCalibrationPoint}{Calibration\+Point}} $>$ const \texorpdfstring{$\ast$}{*} {\bfseries get\+Calibration\+Table} () const =0
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Interface for implementation of Calibration Strategy Pattern. 
+
+This class has no implementation. It is an abstract class that is only used to construct one of many specific implementations. There are many ways to convert raw sensor readings into meaningful values, and in order to allow the user to choose between these methods, a Strategy Pattern is used to allow for runtime polymorphism.
+
+This Interface is, or will be implemented by the three following methods:\+
+\begin{DoxyItemize}
+\item \doxylink{classInterpolator}{Interpolator}
+\item Equation entry
+\item Image-\/based function extraction
+\end{DoxyItemize}
+
+If any new method of calibration is desired, it only needs to be implemented in accordance with this interface, and then to allow the user to select it, a new implementation-\/specific option will need to be added inside \doxylink{classCalibrateSensorDialog}{Calibrate\+Sensor\+Dialog}. Other than that, it will be plug-\/and-\/play, and no modifications to any other source code will be required. 
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+include/\+daq\+\_\+capstone/\+sensor/\+Calibrator.\+h\end{DoxyCompactItemize}

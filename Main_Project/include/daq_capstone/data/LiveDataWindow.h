@@ -9,12 +9,15 @@
 #include "ui/Theme.h"
 
 class Run;
-/* LiveDataWIndow class displays live data during acquisition.
-   Each run is shown in its OWN tab.
-   Format: time : v1, v2, v3 ...
-   wxTextCntrl is used to display values in a multi-line form.
-*/
 
+/**
+ * @brief GUI object that displays sensor readings in a table that updates in real time
+ *
+ * LiveDataWindow class displays live data during acquisition.
+ * Each run is shown in its OWN tab.
+ * Format: time : v1, v2, v3 ... vn
+ * wxTextCtrl is used to display values in a multi-line form.
+*/
 class LiveDataWindow : public wxPanel
 {
 	public:

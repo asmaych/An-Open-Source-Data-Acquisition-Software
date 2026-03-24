@@ -1,0 +1,64 @@
+\doxysection{Live\+Data\+Window Class Reference}
+\hypertarget{classLiveDataWindow}{}\label{classLiveDataWindow}\index{LiveDataWindow@{LiveDataWindow}}
+
+
+GUI object that displays sensor readings in a table that updates in real time.  
+
+
+
+
+{\ttfamily \+\#include $<$Live\+Data\+Window.\+h$>$}
+
+Inheritance diagram for Live\+Data\+Window:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classLiveDataWindow}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classLiveDataWindow_a37ca1a798dc726b3ecbac78863f14316}\label{classLiveDataWindow_a37ca1a798dc726b3ecbac78863f14316} 
+{\bfseries Live\+Data\+Window} (wx\+Window \texorpdfstring{$\ast$}{*}parent)
+\item 
+\Hypertarget{classLiveDataWindow_a34f74ae4f8d44ec2f142dc6f126a7843}\label{classLiveDataWindow_a34f74ae4f8d44ec2f142dc6f126a7843} 
+void {\bfseries start\+New\+Run} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{classRun}{Run}} $>$ run, const std::\+vector$<$ std::\+unique\+\_\+ptr$<$ \doxymbox{\hyperlink{classSensor}{Sensor}} $>$ $>$ \&sensors)
+\item 
+\Hypertarget{classLiveDataWindow_abec083df63da7fe577b83c9aafd76d1d}\label{classLiveDataWindow_abec083df63da7fe577b83c9aafd76d1d} 
+void {\bfseries stop\+Run} ()
+\item 
+\Hypertarget{classLiveDataWindow_ad15bd1f1b4313989089ff5877b5cdc81}\label{classLiveDataWindow_ad15bd1f1b4313989089ff5877b5cdc81} 
+void {\bfseries add\+Frame} (double time, const std::\+vector$<$ double $>$ \&values)
+\item 
+\Hypertarget{classLiveDataWindow_afbd04dbeb2ceaa41d76a0378692ed0ca}\label{classLiveDataWindow_afbd04dbeb2ceaa41d76a0378692ed0ca} 
+void {\bfseries clear\+All} ()
+\item 
+\Hypertarget{classLiveDataWindow_a16ca0986e6ceeb53b030e5dbac8a1722}\label{classLiveDataWindow_a16ca0986e6ceeb53b030e5dbac8a1722} 
+void {\bfseries apply\+Theme} (Theme theme)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classLiveDataWindow_a8cc2f1d8d832fe40d4e3d5b756721d7c}\label{classLiveDataWindow_a8cc2f1d8d832fe40d4e3d5b756721d7c} 
+wx\+Notebook \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+notebook} = nullptr
+\item 
+\Hypertarget{classLiveDataWindow_a4cba61d7ca945bb5fd68dab9b0535b87}\label{classLiveDataWindow_a4cba61d7ca945bb5fd68dab9b0535b87} 
+wx\+Grid \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+active\+Grid} = nullptr
+\item 
+\Hypertarget{classLiveDataWindow_a6b0a335eca3bdb7cedae9c904f79084d}\label{classLiveDataWindow_a6b0a335eca3bdb7cedae9c904f79084d} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{classRun}{Run}} $>$ {\bfseries m\+\_\+active\+Run}
+\item 
+\Hypertarget{classLiveDataWindow_a82885dca25d6ac9048f26c8c7bce736a}\label{classLiveDataWindow_a82885dca25d6ac9048f26c8c7bce736a} 
+std::\+vector$<$ std::\+string $>$ {\bfseries m\+\_\+sensor\+Names}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+GUI object that displays sensor readings in a table that updates in real time. 
+
+\doxylink{classLiveDataWindow}{Live\+Data\+Window} class displays live data during acquisition. Each run is shown in its OWN tab. Format:\+ time :\+ v1, v2, v3 ... vn wx\+Text\+Ctrl is used to display values in a multi-\/line form. 
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+include/\+daq\+\_\+capstone/\+data/\+Live\+Data\+Window.\+h\item 
+src/\+data/\+Live\+Data\+Window.\+cpp\end{DoxyCompactItemize}

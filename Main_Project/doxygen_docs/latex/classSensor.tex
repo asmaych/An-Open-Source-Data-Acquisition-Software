@@ -1,0 +1,78 @@
+\doxysection{Sensor Class Reference}
+\hypertarget{classSensor}{}\label{classSensor}\index{Sensor@{Sensor}}
+
+
+Virtual sensor used to reflect the real-\/world state of a single physical sensor.  
+
+
+
+
+{\ttfamily \+\#include $<$Sensor.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classSensor_a2cd9cce372c92266be973fd0ecc66763}\label{classSensor_a2cd9cce372c92266be973fd0ecc66763} 
+{\bfseries Sensor} (const std::\+string \&name, int pin)
+\item 
+\Hypertarget{classSensor_a49f503c7a03a6b26703c6244bc0d9128}\label{classSensor_a49f503c7a03a6b26703c6244bc0d9128} 
+std::\+string {\bfseries get\+Name} () const
+\item 
+\Hypertarget{classSensor_ad0c3d8fbcca6caf20e4cb9bc3022889e}\label{classSensor_ad0c3d8fbcca6caf20e4cb9bc3022889e} 
+int {\bfseries get\+Pin} () const
+\item 
+\Hypertarget{classSensor_a88f6522d5247f947d9c687c2c4a8a29f}\label{classSensor_a88f6522d5247f947d9c687c2c4a8a29f} 
+std::\+atomic$<$ double $>$ {\bfseries get\+Reading} () const
+\item 
+\Hypertarget{classSensor_a8733015049d830dea10e9ffb86efae39}\label{classSensor_a8733015049d830dea10e9ffb86efae39} 
+void {\bfseries set\+Reading\+Strategy} (std::\+unique\+\_\+ptr$<$ \doxymbox{\hyperlink{classReadingStrategy}{Reading\+Strategy}} $>$ reading\+Strategy)
+\item 
+\Hypertarget{classSensor_ad38b2256f4e9f9eb5bf634cb3df16c47}\label{classSensor_ad38b2256f4e9f9eb5bf634cb3df16c47} 
+void {\bfseries set\+Calibrator} (std::\+unique\+\_\+ptr$<$ \doxymbox{\hyperlink{classCalibrator}{Calibrator}} $>$ calibrator)
+\item 
+\Hypertarget{classSensor_a97d3b9cd8b84906e90460cb82a2ee622}\label{classSensor_a97d3b9cd8b84906e90460cb82a2ee622} 
+std::\+vector$<$ \doxymbox{\hyperlink{structCalibrationPoint}{Calibration\+Point}} $>$ const \texorpdfstring{$\ast$}{*} {\bfseries get\+Calibration} () const
+\item 
+\Hypertarget{classSensor_a93deec93d62b70ac22f740b66203e086}\label{classSensor_a93deec93d62b70ac22f740b66203e086} 
+void {\bfseries set\+Reading} (int raw\+\_\+value)
+\item 
+\Hypertarget{classSensor_a64aa546754651eec3aeb1d7cd2aa01e8}\label{classSensor_a64aa546754651eec3aeb1d7cd2aa01e8} 
+void {\bfseries set\+Selected} (bool sel)
+\item 
+\Hypertarget{classSensor_ace4b20617abef8fab26df057d4d93940}\label{classSensor_ace4b20617abef8fab26df057d4d93940} 
+bool {\bfseries is\+Selected} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classSensor_a364a2c3d5e77d1af61f2532a130c2836}\label{classSensor_a364a2c3d5e77d1af61f2532a130c2836} 
+std::\+string {\bfseries m\+\_\+name}
+\item 
+\Hypertarget{classSensor_a22d2afe6215fa44ecfb3b4f457c7c237}\label{classSensor_a22d2afe6215fa44ecfb3b4f457c7c237} 
+int {\bfseries m\+\_\+pin}
+\item 
+\Hypertarget{classSensor_a0fb370489fc84f36e7233fd34c31a722}\label{classSensor_a0fb370489fc84f36e7233fd34c31a722} 
+bool {\bfseries m\+\_\+selected} = true
+\item 
+\Hypertarget{classSensor_a2e9a03e067cce00cc81a789ff1f63f3f}\label{classSensor_a2e9a03e067cce00cc81a789ff1f63f3f} 
+std::\+unique\+\_\+ptr$<$ \doxymbox{\hyperlink{classCalibrator}{Calibrator}} $>$ {\bfseries m\+\_\+calibrator}
+\item 
+\Hypertarget{classSensor_a5ad7492f65c208a6fcc8c9c4cf299ff1}\label{classSensor_a5ad7492f65c208a6fcc8c9c4cf299ff1} 
+\doxymbox{\hyperlink{structReadingPacket}{Reading\+Packet}} {\bfseries m\+\_\+reading\+Packet}
+\item 
+\Hypertarget{classSensor_a670bf21c9328ffc93080d6d2083364a1}\label{classSensor_a670bf21c9328ffc93080d6d2083364a1} 
+std::\+unique\+\_\+ptr$<$ \doxymbox{\hyperlink{classReadingStrategy}{Reading\+Strategy}} $>$ {\bfseries m\+\_\+reading\+Strategy} = std::\+make\+\_\+unique$<$\doxymbox{\hyperlink{classMappedReader}{Mapped\+Reader}}$>$()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Virtual sensor used to reflect the real-\/world state of a single physical sensor. 
+
+For each sensor connected to the microcontroller, there will be one instance of \doxylink{classSensor}{Sensor}. Each sensor has its own set of readings, and exposes a public API that allows readings to be set, and retrieved from the \doxylink{classSensor}{Sensor}.
+
+Additionally, each \doxylink{classSensor}{Sensor} uses its own \doxylink{classCalibrator}{Calibrator} object, which modifies the behavior of the get\+Reading() method according to user-\/defined calibrations. If no calibration is specified, raw values are returned. Having each sensor own its own calibration allows for per-\/sensor calibration. 
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+include/\+daq\+\_\+capstone/\+sensor/\+Sensor.\+h\item 
+src/\+sensor/\+Sensor.\+cpp\end{DoxyCompactItemize}

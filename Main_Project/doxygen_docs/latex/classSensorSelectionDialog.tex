@@ -1,0 +1,46 @@
+\doxysection{Sensor\+Selection\+Dialog Class Reference}
+\hypertarget{classSensorSelectionDialog}{}\label{classSensorSelectionDialog}\index{SensorSelectionDialog@{SensorSelectionDialog}}
+
+
+GUI object that allows user to select active sensors.  
+
+
+
+
+{\ttfamily \+\#include $<$Sensor\+Selection\+Dialog.\+h$>$}
+
+Inheritance diagram for Sensor\+Selection\+Dialog:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classSensorSelectionDialog}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classSensorSelectionDialog_adea5ee93d93cd110c17ae335e1e83cdc}\label{classSensorSelectionDialog_adea5ee93d93cd110c17ae335e1e83cdc} 
+{\bfseries Sensor\+Selection\+Dialog} (wx\+Window \texorpdfstring{$\ast$}{*}parent, const std::\+vector$<$ std::\+string $>$ \&sensor\+Names)
+\item 
+\Hypertarget{classSensorSelectionDialog_a22c0258c9f468c7649525b50e4ba657c}\label{classSensorSelectionDialog_a22c0258c9f468c7649525b50e4ba657c} 
+std::\+vector$<$ int $>$ {\bfseries get\+Selected\+Indexes} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classSensorSelectionDialog_a89c1272b44f062bd1e5647f3371b15a7}\label{classSensorSelectionDialog_a89c1272b44f062bd1e5647f3371b15a7} 
+wx\+Check\+List\+Box \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+check\+List}
+\item 
+\Hypertarget{classSensorSelectionDialog_a758e98d3ba2fd42373da79e3ecdfd28a}\label{classSensorSelectionDialog_a758e98d3ba2fd42373da79e3ecdfd28a} 
+std::\+vector$<$ int $>$ {\bfseries m\+\_\+selected\+Indexes}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+GUI object that allows user to select active sensors. 
+
+This is a dialog window that allows the user to select which sensors to collect from in a \doxylink{classRun}{Run}. It displays a checklist of all sensors in the project. It returns the selected sensor indexes. 
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+include/\+daq\+\_\+capstone/\+ui/\+Sensor\+Selection\+Dialog.\+h\item 
+src/\+ui/\+Sensor\+Selection\+Dialog.\+cpp\end{DoxyCompactItemize}

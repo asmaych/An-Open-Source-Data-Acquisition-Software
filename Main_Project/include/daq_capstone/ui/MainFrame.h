@@ -8,17 +8,25 @@
 #include "Toolbar.h"
 #include "MainFrame.h"
 
-/* MainFrame class is the main application window, it contains:
-   A toolbar with features like Start, Stop, Collect, Sensor and Graph, 
-   that are disabled unless a project is open, and where actions like start/
-   stop/collect/graph won't run unless a sensor is selected.
-   A sidebar is  on the left with New Project & Load Project.
-   A project space uses wxAUINotebook with ProjectPanel tabs.
-*/
 class ProjectPanel;
 class Sidebar;
 class Toolbar;
 
+/**
+ *	@brief Main GUI page used to launch into projects
+ *
+ * MainFrame class is the main application window. It contains:
+ *
+ *	-	A toolbar with features like Start, Stop, Collect, Sensor and Graph,
+ *		that are disabled unless a project is open, and where actions like start/
+ *		stop/collect/graph won't run unless a sensor is selected.
+ *
+ *	-	A sidebar on the left with New Project, Load Project, Connect, Sensors, and other user options.
+ *
+ *	-	A central Display window for showing ProjectPanel instances.
+ *
+ *	Each ProjectPanel instance is wrapped into a wxAUINotebook with switchable tabs.
+*/
 class MainFrame : public wxFrame
 {
 	public:

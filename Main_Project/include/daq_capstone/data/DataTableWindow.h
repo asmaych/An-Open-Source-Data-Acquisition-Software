@@ -11,12 +11,13 @@ class ProjectPanel;
 class Run;
 enum class Theme;
 
-/* DataTableWindow is a single table window that displays collected sensor values in a table
-   After an experiment, we can show all values collected for a sensor in a structured table (wxGrid) where each value appears
-   in a seperate row
-   It supports dynamic update (append/remove columns as needed)
+/**
+ * @brief GUI object that displays values in a table
+ *
+ * DataTableWindow is a single table window that displays collected sensor values in a table.
+ * After an experiment, we can show all values collected for a sensor in a structured table (wxGrid)
+ * where each value appears in a separate row. It supports dynamic update (append/remove columns as needed)
 */
-
 class DataTableWindow : public wxPanel
 {
 	public:

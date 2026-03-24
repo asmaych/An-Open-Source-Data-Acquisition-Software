@@ -1,0 +1,55 @@
+\doxysection{Data\+Collector Class Reference}
+\hypertarget{classDataCollector}{}\label{classDataCollector}\index{DataCollector@{DataCollector}}
+
+
+A lightweight helper class for the different methods of recording sensor values.  
+
+
+
+
+{\ttfamily \+\#include $<$Data\+Collector.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classDataCollector_abd72007abff323d20a17f12a1c665a92}\label{classDataCollector_abd72007abff323d20a17f12a1c665a92} 
+void {\bfseries set\+Mode} (Collection\+Mode m)
+\item 
+\Hypertarget{classDataCollector_a0e6cd01ba1fceef3779e9a434394bcb1}\label{classDataCollector_a0e6cd01ba1fceef3779e9a434394bcb1} 
+Collection\+Mode {\bfseries get\+Mode} () const
+\item 
+\Hypertarget{classDataCollector_a819b644d2d84e716f1a99ea0ddae6cd3}\label{classDataCollector_a819b644d2d84e716f1a99ea0ddae6cd3} 
+void {\bfseries collect\+Last\+Value\+All} (std::\+vector$<$ std::\+unique\+\_\+ptr$<$ \doxymbox{\hyperlink{classDataSession}{Data\+Session}} $>$ $>$ \&sessions, const std::\+vector$<$ int $>$ \&latest\+Values)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classDataCollector_ac45f17ed42e05457d45a507d3a77e7d5}\label{classDataCollector_ac45f17ed42e05457d45a507d3a77e7d5} 
+static void {\bfseries collect\+Continuous} (std::\+vector$<$ std::\+unique\+\_\+ptr$<$ \doxymbox{\hyperlink{classDataSession}{Data\+Session}} $>$ $>$ \&sessions, size\+\_\+t index, double value)
+\item 
+\Hypertarget{classDataCollector_a0b61ba4e5b097efd0e00ca37d77f1f44}\label{classDataCollector_a0b61ba4e5b097efd0e00ca37d77f1f44} 
+static void {\bfseries collect\+Last\+Value} (std::\+vector$<$ std::\+unique\+\_\+ptr$<$ \doxymbox{\hyperlink{classDataSession}{Data\+Session}} $>$ $>$ \&sessions, const std::\+vector$<$ size\+\_\+t $>$ \&indices, const std::\+vector$<$ int $>$ \&last\+Values)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classDataCollector_a5286847357677bc119db6b4d0a9d6184}\label{classDataCollector_a5286847357677bc119db6b4d0a9d6184} 
+Collection\+Mode {\bfseries m\+\_\+mode} = Collection\+Mode::\+\+Continuous
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A lightweight helper class for the different methods of recording sensor values. 
+
+\doxylink{classDataCollector}{Data\+Collector} is a lightweight helper for the 2 different methods of collecting that we have:\+
+\begin{DoxyEnumerate}
+\item continuous-\/collect that continuously appends incoming sensor readings into the current session until stopped
+\item collect-\/last-\/value that appends only the last set of values received once per invocation
+\end{DoxyEnumerate}
+
+This class provides two methods that the GUI can call. it does not own sessions. 
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+include/\+daq\+\_\+capstone/\+controllers/\+Data\+Collector.\+h\item 
+src/\+controllers/\+Data\+Collector.\+cpp\end{DoxyCompactItemize}

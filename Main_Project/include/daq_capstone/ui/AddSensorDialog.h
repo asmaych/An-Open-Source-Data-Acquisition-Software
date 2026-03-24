@@ -6,6 +6,13 @@
 #include "sensor/SensorDatabase.h"
 #include <string>
 
+/**
+ * @brief GUI object used to allow user-entry of new Sensor parameters.
+ *
+ * This class is used to provide a GUI to the user that allows them to manually enter details related to the new sensor
+ * they wish to configure. Additionally, the user is able to select an option that saves the sensor to the global
+ * database of sensors for easier reuse.
+ */
 class AddSensorDialog : public wxDialog
 {
 	public:

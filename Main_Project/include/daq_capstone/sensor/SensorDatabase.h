@@ -8,12 +8,14 @@
 
 class Sensor;
 
-/* SensorDatabase is the class responsible for saving and loading sensors to and from an SQLite database file.
-   We are using the database to store the sensors, cause without it they disappear as soon as the app closes.
-   This class creates a database file if it doesn't exist, and a sensors table that will be saved in the db and loaded
-   back into memory.
-*/
-
+/**
+ * @brief Class used to represent the global database of Sensor objects, along with their configurations
+ *
+ * SensorDatabase is the class responsible for saving and loading sensors to and from an SQLite database file.
+ * We are using the database to store the sensors, because without it, they disappear as soon as the app closes.
+ * This class creates a database file if it doesn't exist, and a sensors table that will be saved in the db and loaded
+ * back into memory.
+ */
 class SensorDatabase
 {
 	public:

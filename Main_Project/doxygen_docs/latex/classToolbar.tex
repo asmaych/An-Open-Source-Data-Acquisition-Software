@@ -1,0 +1,142 @@
+\doxysection{Toolbar Class Reference}
+\hypertarget{classToolbar}{}\label{classToolbar}\index{Toolbar@{Toolbar}}
+
+
+GUI object that encapsulates all \doxylink{classToolbar}{Toolbar} controls into one class.  
+
+
+
+
+{\ttfamily \+\#include $<$Toolbar.\+h$>$}
+
+Inheritance diagram for Toolbar:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classToolbar}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classToolbar_a99ee1190ce205f4990e6e37c3c61fba3}\label{classToolbar_a99ee1190ce205f4990e6e37c3c61fba3} 
+enum {\bfseries Tool\+ID} \{ \newline
+{\bfseries ID\+\_\+\+Start\+Stop} = wx\+ID\+\_\+\+HIGHEST + 100
+, {\bfseries ID\+\_\+\+Toggle\+Table}
+, {\bfseries ID\+\_\+\+Toggle\+Graph}
+, {\bfseries ID\+\_\+\+Reset}
+, \newline
+{\bfseries ID\+\_\+\+Collect\+Now}
+, {\bfseries ID\+\_\+\+Export}
+, {\bfseries ID\+\_\+\+Config}
+, {\bfseries ID\+\_\+\+Config\+\_\+\+Toggle\+Theme}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classToolbar_a32a9eb50f9a1f3c31a98aadbd91d4d2c}\label{classToolbar_a32a9eb50f9a1f3c31a98aadbd91d4d2c} 
+{\bfseries Toolbar} (wx\+Frame \texorpdfstring{$\ast$}{*}parent)
+\item 
+\Hypertarget{classToolbar_a63e3be949417ca038100a887bebd543f}\label{classToolbar_a63e3be949417ca038100a887bebd543f} 
+void {\bfseries bind\+Events} (wx\+Frame \texorpdfstring{$\ast$}{*}parent)
+\item 
+\Hypertarget{classToolbar_aba21d29bdbed459758865d65dd4c9842}\label{classToolbar_aba21d29bdbed459758865d65dd4c9842} 
+void {\bfseries set\+Running} (bool running)
+\item 
+\Hypertarget{classToolbar_a23b8787fca94e90debbd603ac48df9ba}\label{classToolbar_a23b8787fca94e90debbd603ac48df9ba} 
+void {\bfseries apply\+Theme} (Theme theme)
+\item 
+\Hypertarget{classToolbar_a841aa4bdc0093fd70348142ffcc03dd3}\label{classToolbar_a841aa4bdc0093fd70348142ffcc03dd3} 
+void {\bfseries set\+Current\+Project} (\doxymbox{\hyperlink{classProjectPanel}{Project\+Panel}} \texorpdfstring{$\ast$}{*}panel)
+\item 
+\Hypertarget{classToolbar_a4a448ad552c1de962678cb7c45a36f27}\label{classToolbar_a4a448ad552c1de962678cb7c45a36f27} 
+wx\+Tool\+Bar \texorpdfstring{$\ast$}{*} {\bfseries get} ()
+\item 
+\Hypertarget{classToolbar_a62e58980bd07a5204896b00bc5f23b27}\label{classToolbar_a62e58980bd07a5204896b00bc5f23b27} 
+wx\+Static\+Text \texorpdfstring{$\ast$}{*} {\bfseries get\+Timer\+Display} ()
+\item 
+\Hypertarget{classToolbar_a610f7da5665d697fb104905e33ec7884}\label{classToolbar_a610f7da5665d697fb104905e33ec7884} 
+void {\bfseries start\+Timer} ()
+\item 
+\Hypertarget{classToolbar_a7188cfe0d88cf24457c8ba49275b4d6f}\label{classToolbar_a7188cfe0d88cf24457c8ba49275b4d6f} 
+void {\bfseries stop\+Timer} ()
+\item 
+\Hypertarget{classToolbar_a05076c2f0b62a9cfc23847d9e7de6822}\label{classToolbar_a05076c2f0b62a9cfc23847d9e7de6822} 
+void {\bfseries on\+Timer} (wx\+Timer\+Event \&evt)
+\item 
+\Hypertarget{classToolbar_ae7061ba1fcc219ceadc6cd50bc5d103e}\label{classToolbar_ae7061ba1fcc219ceadc6cd50bc5d103e} 
+void {\bfseries toggle\+Table} ()
+\item 
+\Hypertarget{classToolbar_aa86cc317c7046d656e7cccfe1dd27266}\label{classToolbar_aa86cc317c7046d656e7cccfe1dd27266} 
+void {\bfseries toggle\+Graph} ()
+\item 
+\Hypertarget{classToolbar_ad04969185330ed6664b5d72e48d207d6}\label{classToolbar_ad04969185330ed6664b5d72e48d207d6} 
+void {\bfseries toggle\+Collect\+Now} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classToolbar_ab12cddcf899bce1206ebcbda90182108}\label{classToolbar_ab12cddcf899bce1206ebcbda90182108} 
+std::\+function$<$ void()$>$ {\bfseries on\+Start\+Stop}
+\item 
+\Hypertarget{classToolbar_ae8bb6f7fc9849e7457dec7882855cc8a}\label{classToolbar_ae8bb6f7fc9849e7457dec7882855cc8a} 
+std::\+function$<$ void()$>$ {\bfseries on\+Reset}
+\item 
+\Hypertarget{classToolbar_ac8e851380e91180c0cd1701b713cc38c}\label{classToolbar_ac8e851380e91180c0cd1701b713cc38c} 
+std::\+function$<$ void()$>$ {\bfseries on\+Collect\+Now}
+\item 
+\Hypertarget{classToolbar_a28983eeeb2a115ded3c7c35123c49e1e}\label{classToolbar_a28983eeeb2a115ded3c7c35123c49e1e} 
+std::\+function$<$ void()$>$ {\bfseries on\+Export}
+\item 
+\Hypertarget{classToolbar_a47426bf6f30c20cd2a398cf44326a8f6}\label{classToolbar_a47426bf6f30c20cd2a398cf44326a8f6} 
+std::\+function$<$ void()$>$ {\bfseries on\+Config}
+\item 
+\Hypertarget{classToolbar_a4f09572c7d67022f31c395e5e7c15c1f}\label{classToolbar_a4f09572c7d67022f31c395e5e7c15c1f} 
+std::\+function$<$ void()$>$ {\bfseries on\+Toggle\+Theme}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classToolbar_a0d0666cf05f69caa7d0e4970b63b1daa}\label{classToolbar_a0d0666cf05f69caa7d0e4970b63b1daa} 
+wx\+Tool\+Bar \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+toolbar} = nullptr
+\item 
+\Hypertarget{classToolbar_a45329a005669792ec76acdc35e79f2e1}\label{classToolbar_a45329a005669792ec76acdc35e79f2e1} 
+wx\+Static\+Text \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+timer\+Display} = nullptr
+\item 
+\Hypertarget{classToolbar_a0d6ed0718bd81e793ad492d536036b9e}\label{classToolbar_a0d6ed0718bd81e793ad492d536036b9e} 
+bool {\bfseries m\+\_\+is\+Running} = false
+\item 
+\Hypertarget{classToolbar_a75187565d0546a0ecc0b73f030a7b9ea}\label{classToolbar_a75187565d0546a0ecc0b73f030a7b9ea} 
+wx\+Timer {\bfseries m\+\_\+timer}
+\item 
+\Hypertarget{classToolbar_a95be39cb7c83d97a6bb546ca2ff275cb}\label{classToolbar_a95be39cb7c83d97a6bb546ca2ff275cb} 
+int {\bfseries m\+\_\+elapsed\+Seconds} = 0
+\item 
+\Hypertarget{classToolbar_a6b9cd27f14946ce23afdf526f6f430ee}\label{classToolbar_a6b9cd27f14946ce23afdf526f6f430ee} 
+\doxymbox{\hyperlink{classProjectPanel}{Project\+Panel}} \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+current\+Project} = nullptr
+\item 
+\Hypertarget{classToolbar_a0f4c740940a0a395e59d34bffca10679}\label{classToolbar_a0f4c740940a0a395e59d34bffca10679} 
+Theme {\bfseries m\+\_\+theme}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+GUI object that encapsulates all \doxylink{classToolbar}{Toolbar} controls into one class. 
+
+The \doxylink{classToolbar}{Toolbar} currently includes controls for:\+
+\begin{DoxyItemize}
+\item Start/\+\+Stop \doxylink{classRun}{Run}
+\item Table Display Toggle
+\item Graph Display Toggle
+\item Reset \doxylink{classRun}{Run}
+\item On Demand Toggle
+\item Export Data
+\item Project\+Config Launcher
+\end{DoxyItemize}
+
+Callbacks are used extensively in this class to affect the in-\/focus \doxylink{classProjectPanel}{Project\+Panel} via \doxylink{classMainFrame}{Main\+Frame} 
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+include/\+daq\+\_\+capstone/\+ui/\+Toolbar.\+h\item 
+src/\+ui/\+Toolbar.\+cpp\end{DoxyCompactItemize}

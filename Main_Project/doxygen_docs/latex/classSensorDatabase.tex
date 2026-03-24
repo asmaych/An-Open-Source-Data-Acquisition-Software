@@ -1,0 +1,49 @@
+\doxysection{Sensor\+Database Class Reference}
+\hypertarget{classSensorDatabase}{}\label{classSensorDatabase}\index{SensorDatabase@{SensorDatabase}}
+
+
+Class used to represent the global database of \doxylink{classSensor}{Sensor} objects, along with their configurations.  
+
+
+
+
+{\ttfamily \+\#include $<$Sensor\+Database.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classSensorDatabase_ad7ae7b74b839245c8df507aaa0c95e0a}\label{classSensorDatabase_ad7ae7b74b839245c8df507aaa0c95e0a} 
+bool {\bfseries open} (const std::\+string \&path)
+\item 
+\Hypertarget{classSensorDatabase_aecbafef92c120bfb58742bf01ac002cd}\label{classSensorDatabase_aecbafef92c120bfb58742bf01ac002cd} 
+void {\bfseries close} ()
+\item 
+\Hypertarget{classSensorDatabase_a78580aa6578a88ac7efbd229903a179e}\label{classSensorDatabase_a78580aa6578a88ac7efbd229903a179e} 
+bool {\bfseries save\+Sensors} (const std::\+string \&name)
+\item 
+\Hypertarget{classSensorDatabase_a53dec0b6bfce174885c702393f21b8c9}\label{classSensorDatabase_a53dec0b6bfce174885c702393f21b8c9} 
+void {\bfseries load\+Sensors} (std::\+vector$<$ std::\+string $>$ \&names)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classSensorDatabase_a9248607ae28b00858ec603c70b2a6444}\label{classSensorDatabase_a9248607ae28b00858ec603c70b2a6444} 
+void {\bfseries create\+Tables} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classSensorDatabase_a32ddcd70fc7fcb571236ee3c0942251f}\label{classSensorDatabase_a32ddcd70fc7fcb571236ee3c0942251f} 
+sqlite3 \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+db} = nullptr
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Class used to represent the global database of \doxylink{classSensor}{Sensor} objects, along with their configurations. 
+
+\doxylink{classSensorDatabase}{Sensor\+Database} is the class responsible for saving and loading sensors to and from an SQLite database file. We are using the database to store the sensors, because without it, they disappear as soon as the app closes. This class creates a database file if it doesn\textquotesingle{}t exist, and a sensors table that will be saved in the db and loaded back into memory. 
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+include/\+daq\+\_\+capstone/\+sensor/\+Sensor\+Database.\+h\item 
+src/\+sensor/\+Sensor\+Database.\+cpp\end{DoxyCompactItemize}

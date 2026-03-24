@@ -1,0 +1,79 @@
+\doxysection{Data\+Table\+Window Class Reference}
+\hypertarget{classDataTableWindow}{}\label{classDataTableWindow}\index{DataTableWindow@{DataTableWindow}}
+
+
+GUI object that displays values in a table.  
+
+
+
+
+{\ttfamily \+\#include $<$Data\+Table\+Window.\+h$>$}
+
+Inheritance diagram for Data\+Table\+Window:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classDataTableWindow}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classDataTableWindow_a506408a4c01680ad564982fa80a498eb}\label{classDataTableWindow_a506408a4c01680ad564982fa80a498eb} 
+{\bfseries Data\+Table\+Window} (wx\+Window \texorpdfstring{$\ast$}{*}parent, const std::\+vector$<$ std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{classDataSession}{Data\+Session}} $>$ $>$ \&sessions, std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{classRun}{Run}} $>$ run=nullptr)
+\item 
+\Hypertarget{classDataTableWindow_af3d7fdfd130b5a1122b1e3c483211584}\label{classDataTableWindow_af3d7fdfd130b5a1122b1e3c483211584} 
+void {\bfseries update\+Table} ()
+\item 
+\Hypertarget{classDataTableWindow_a3afc4820e22703a0ee6702be236bb67a}\label{classDataTableWindow_a3afc4820e22703a0ee6702be236bb67a} 
+void {\bfseries set\+Selected\+Sessions} (const std::\+vector$<$ std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{classDataSession}{Data\+Session}} $>$ $>$ \&sessions)
+\item 
+\Hypertarget{classDataTableWindow_acefd51c55e2cf8ef1468eab0108f165e}\label{classDataTableWindow_acefd51c55e2cf8ef1468eab0108f165e} 
+void {\bfseries append\+Row} (const std::\+vector$<$ double $>$ \&row\+Values)
+\item 
+\Hypertarget{classDataTableWindow_a0238594f1f3a68dc328d6a621299c227}\label{classDataTableWindow_a0238594f1f3a68dc328d6a621299c227} 
+void {\bfseries apply\+Theme} (Theme theme)
+\item 
+\Hypertarget{classDataTableWindow_a19b454ecdcfc83409d5d04bf4498bfe3}\label{classDataTableWindow_a19b454ecdcfc83409d5d04bf4498bfe3} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{classRun}{Run}} $>$ {\bfseries get\+Associated\+Run} () const
+\item 
+\Hypertarget{classDataTableWindow_abe8e972d2e32e67e2cd2de81bd76565a}\label{classDataTableWindow_abe8e972d2e32e67e2cd2de81bd76565a} 
+const std::\+vector$<$ double $>$ \& {\bfseries get\+Times} () const
+\item 
+\Hypertarget{classDataTableWindow_a5005aec8affd7308cde13c7231f903d6}\label{classDataTableWindow_a5005aec8affd7308cde13c7231f903d6} 
+const std::\+vector$<$ std::\+vector$<$ double $>$ $>$ \& {\bfseries get\+Values} () const
+\item 
+\Hypertarget{classDataTableWindow_ad52d6ca9eaa330e5da2a25176103b980}\label{classDataTableWindow_ad52d6ca9eaa330e5da2a25176103b980} 
+wx\+Grid \texorpdfstring{$\ast$}{*} {\bfseries get\+Grid} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classDataTableWindow_a59f628d6beb923dad32c69d4007b469d}\label{classDataTableWindow_a59f628d6beb923dad32c69d4007b469d} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{classRun}{Run}} $>$ {\bfseries m\+\_\+associated\+Run}
+\item 
+\Hypertarget{classDataTableWindow_a1110c9bfa88f200ce50743f971505e99}\label{classDataTableWindow_a1110c9bfa88f200ce50743f971505e99} 
+std::\+vector$<$ std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{classDataSession}{Data\+Session}} $>$ $>$ {\bfseries m\+\_\+sessions}
+\item 
+\Hypertarget{classDataTableWindow_a447b89f95c097925c549049ce3f33fd9}\label{classDataTableWindow_a447b89f95c097925c549049ce3f33fd9} 
+std::\+vector$<$ double $>$ {\bfseries m\+\_\+times}
+\item 
+\Hypertarget{classDataTableWindow_a9d63f0ab7612429eb8d1df8b8fcbed8d}\label{classDataTableWindow_a9d63f0ab7612429eb8d1df8b8fcbed8d} 
+std::\+vector$<$ std::\+vector$<$ double $>$ $>$ {\bfseries m\+\_\+values}
+\item 
+\Hypertarget{classDataTableWindow_aaa931604b1c866b0c61a95c92057f67f}\label{classDataTableWindow_aaa931604b1c866b0c61a95c92057f67f} 
+wx\+Grid \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+grid}
+\item 
+\Hypertarget{classDataTableWindow_a03d2a93bb7510f35d90afa5279a90089}\label{classDataTableWindow_a03d2a93bb7510f35d90afa5279a90089} 
+wx\+Button \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+collect\+\_\+button}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+GUI object that displays values in a table. 
+
+\doxylink{classDataTableWindow}{Data\+Table\+Window} is a single table window that displays collected sensor values in a table. After an experiment, we can show all values collected for a sensor in a structured table (wx\+Grid) where each value appears in a separate row. It supports dynamic update (append/\+remove columns as needed) 
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+include/\+daq\+\_\+capstone/\+data/\+Data\+Table\+Window.\+h\item 
+src/\+data/\+Data\+Table\+Window.\+cpp\end{DoxyCompactItemize}

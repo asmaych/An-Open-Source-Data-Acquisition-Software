@@ -1,0 +1,46 @@
+\doxysection{Calibration\+Table\+Dialog.\+h}
+\hypertarget{CalibrationTableDialog_8h_source}{}\label{CalibrationTableDialog_8h_source}\index{include/daq\_capstone/ui/CalibrationTableDialog.h@{include/daq\_capstone/ui/CalibrationTableDialog.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <wx/wx.h>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <wx/grid.h>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}CalibrationPoint.h"{}}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ "{}SensorManager.h"{}}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00020\ \textcolor{keyword}{class\ }CalibrationTableDialog\ :\ \textcolor{keyword}{public}\ wxDialog}
+\DoxyCodeLine{00021\ \{}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ CalibrationTableDialog(}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ wxWindow*\ parent,\ }
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classSensorManager}{SensorManager}}*\ sensorManager,\ }
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{long}\ sensor\_index);}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \textcolor{comment}{//helper\ function\ to\ convert\ the\ data\ from\ the\ table\ into\ a\ vector}}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ getCalibrationPoints();}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ loadCalibrationPoints(\textcolor{keyword}{const}\ std::vector<CalibrationPoint>\ \&table);}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ onCellEdited(wxGridEvent\ \&evt);}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ onEnterPressed(wxKeyEvent\ \&evt);}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ wxGrid*\ m\_grid;}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{long}\ m\_sensor\_index;}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classSensorManager}{SensorManager}}*\ m\_sensorManager;}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ std::unique\_ptr<std::vector<CalibrationPoint>>\ m\_table;}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ std::unique\_ptr<Interpolator>\ m\_interpolator;}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ onOkPressed(wxCommandEvent\&\ evt);}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ std::vector<CalibrationPoint>\ \textcolor{keyword}{const}\ *\ m\_calibrationPoints\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00050\ \};}
+
+\end{DoxyCode}

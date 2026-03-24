@@ -15,6 +15,7 @@
 //initialize the global set of port names
 std::set<std::string> SerialComm::g_ports_in_use;
 
+
 SerialComm::SerialComm()
 {
         //the first thing we need to do is determine which, if any, ports are available. We want to query this
@@ -24,26 +25,24 @@ SerialComm::SerialComm()
         //set the default config for port communication:
 
         //allocate memory for the default_config:
-        check(sp_new_config(&default_config));
+        check(sp_new_config(&m_default_config));
 
         //setting the port parameters for default_config
-        check(sp_set_config_baudrate(default_config, 115200));
-        check(sp_set_config_bits(default_config, 8));
-        check(sp_set_config_parity(default_config, SP_PARITY_NONE));
-        check(sp_set_config_stopbits(default_config, 1));
-        check(sp_set_config_flowcontrol(default_config, SP_FLOWCONTROL_NONE));
+        check(sp_set_config_baudrate(m_default_config, 115200));
+        check(sp_set_config_bits(m_default_config, 8));
+        check(sp_set_config_parity(m_default_config, SP_PARITY_NONE));
+        check(sp_set_config_stopbits(m_default_config, 1));
+        check(sp_set_config_flowcontrol(m_default_config, SP_FLOWCONTROL_NONE));
 
 }
-
 SerialComm::~SerialComm()
 {
-	std::cout << "we get to the destructor of the serialcomm class\n";
         //we can run these first commands, because they run automatically on constructor
-        sp_free_port_list(port_list);
-        sp_free_config(default_config);
+        sp_free_port_list(m_port_list);
+        sp_free_config(m_default_config);
 
         //but for this one, we only need it if the pointer port has been assigned
-        if (port != nullptr)
+        if (m_port != nullptr)
                 cleanPort();
 
 }
@@ -52,7 +51,7 @@ void SerialComm::scanPorts()
 {
         /* Call sp_list_ports() to get the ports. The port_list
          * pointer will be updated to refer to the array created. */
-        enum sp_return result = sp_list_ports(&port_list);
+		sp_return result = sp_list_ports(&m_port_list);
 
         //if there was some kind of error listing ports, we will throw an exception:
         if (result != SP_OK)
@@ -61,17 +60,9 @@ void SerialComm::scanPorts()
         }
 }
 
-/*This function takes no parameters, but returns a read-only reference to the internal vector containing
- * the names of all available serial ports.
- */
-const std::vector<std::string>& SerialComm::getPortNames() const
-{
-        return port_name_list;
-}
-
 struct sp_port ** SerialComm::getPortList() const
 {
-        return port_list;
+        return m_port_list;
 }
 
 bool SerialComm::handshake(std::string portname)
@@ -117,27 +108,27 @@ bool SerialComm::handshake(std::string portname)
 	//---------------------------------------------------------------------------------------------------
 	
 	//get the port struct object using libserialport function
-	check(sp_get_port_by_name(c_portname, &port));
+	check(sp_get_port_by_name(c_portname, &m_port));
 
 	//try to open the port for reading and writing
-	check(sp_open(port, SP_MODE_READ_WRITE));
+	check(sp_open(m_port, SP_MODE_READ_WRITE));
 	//if there are no problems and we get to this point, set the port flag to OPEN
-	port_status = PORT_OPEN;
+	m_port_status = PORT_OPEN;
 
 	//load the default configuration into the port
-	check(sp_set_config(port, default_config));
+	check(sp_set_config(m_port, m_default_config));
 
 	//---------------------------------------------------------------------------------------------------
 	//CLEAR ANYTHING THAT MAY HAVE BEEN IN THE INCOMING BUFFER
 	//---------------------------------------------------------------------------------------------------
-	sp_flush(port, static_cast<sp_buffer>(SP_BUF_INPUT));
+	sp_flush(m_port, static_cast<sp_buffer>(SP_BUF_INPUT));
 
 	//---------------------------------------------------------------------------------------------------
 	//TRY TO SEND THE "ping\n" PACKET
 	//---------------------------------------------------------------------------------------------------
 	
 	//result will store the number of bytes written
-	result = check(sp_blocking_write(port, send, size, timout));
+	result = check(sp_blocking_write(m_port, send, size, timout));
 	
 	//quick check to ensure all data was sent:
 	if (result == strlen(send))
@@ -164,7 +155,7 @@ bool SerialComm::handshake(std::string portname)
 	{
 		//for each index of the char buffer, read a byte into
 		//that index
-		int n = sp_blocking_read(port, &buffer[pos], 1, 1000);
+		int n = sp_blocking_read(m_port, &buffer[pos], 1, 1000);
 
 		//break if the read ever returns an error
 		if (n <= 0)
@@ -213,10 +204,10 @@ bool SerialComm::handshake(std::string portname)
 
 void SerialComm::flush()
 {
-        if (port_status == PORT_OPEN)
+        if (m_port_status == PORT_OPEN)
         {
-                sp_flush(port, SP_BUF_INPUT);
-                sp_flush(port, SP_BUF_OUTPUT);
+                sp_flush(m_port, SP_BUF_INPUT);
+                sp_flush(m_port, SP_BUF_OUTPUT);
         }
 }
 
@@ -227,7 +218,7 @@ void SerialComm::adjustPollingRate(float rate) const {
 	 */
 
 	//first, check to make sure the port is open
-	if(port_status == PORT_CLOSED)
+	if(m_port_status == PORT_CLOSED)
 	{
 		throw std::runtime_error("Error: Attempt to send command over closed port");
 	}
@@ -236,7 +227,7 @@ void SerialComm::adjustPollingRate(float rate) const {
 	std::string adjust_command = "adjust," + std::to_string(rate) + "\n";
 
 	//send the command
-	(void) sp_blocking_write(port, adjust_command.c_str(), adjust_command.size(), 1000);
+	(void) sp_blocking_write(m_port, adjust_command.c_str(), adjust_command.size(), 1000);
 
 }
 
@@ -248,7 +239,7 @@ void SerialComm::removeSensor(const std::string& sensorName)
 	 */
 
 	//first check to make sure the port is open
-	if (port_status == PORT_CLOSED)
+	if (m_port_status == PORT_CLOSED)
 	{
 		throw std::runtime_error("Error: Attempt to send command over closed port");
 	}
@@ -257,7 +248,7 @@ void SerialComm::removeSensor(const std::string& sensorName)
 	std::string remove_command = "remove," + sensorName + "\n";
 
 	//send the command
-	(void) sp_blocking_write(port, remove_command.c_str(), remove_command.size(), 1000);
+	(void) sp_blocking_write(m_port, remove_command.c_str(), remove_command.size(), 1000);
 }
 
 void SerialComm::addSensor(const std::string& sensorName, int pin)
@@ -269,7 +260,7 @@ void SerialComm::addSensor(const std::string& sensorName, int pin)
 
 	std::cout << "oh boyyy we are trying to add with the arduinoo\n";
 	//first make sure the port is open
-	if (port_status == PORT_CLOSED)
+	if (m_port_status == PORT_CLOSED)
 	{
 		throw std::runtime_error("Error: Attempt to send command over closed port");
 	}
@@ -278,11 +269,11 @@ void SerialComm::addSensor(const std::string& sensorName, int pin)
 	std::string add_command = "add," + sensorName + "," + std::to_string(pin) + "\n";
 
 	//send the command
-	(void) check(sp_blocking_write(port,add_command.c_str(), add_command.size(), 1000));
+	(void) check(sp_blocking_write(m_port,add_command.c_str(), add_command.size(), 1000));
 
 }
 
-void SerialComm::readDataFrame(std::vector<std::unique_ptr<Sensor>>& sensors, std::string* rawFrame)
+void SerialComm::readDataFrame(std::vector<std::unique_ptr<Sensor>>& sensors)
 {
 	 /* \brief       This function takes a reference to the vector of sensors
          *              owned by Project, reads a data-frame from the connected 
@@ -300,7 +291,7 @@ void SerialComm::readDataFrame(std::vector<std::unique_ptr<Sensor>>& sensors, st
 
 
         //quick check to make sure the port is opened for communication
-	if (port_status == PORT_CLOSED)
+	if (m_port_status == PORT_CLOSED)
         	throw std::runtime_error("Error: Attempt to poll data from closed port");
 
 	//---------------------------------------------------------------------------------------------------
@@ -320,32 +311,8 @@ void SerialComm::readDataFrame(std::vector<std::unique_ptr<Sensor>>& sensors, st
 	char buffer[64];
 	int pos = 0;
 
-	//---------------
-	//OLD VERSION
-	//---------------
-	//
-	// // - timeout is 100 ms
-	// int n = sp_blocking_read(port, buffer, sizeof(buffer) - 1, 100);
-	//
-	// // If no bytes were read, exit early
-	// if (n <= 0)
-	// 	return;
-	//
-	// std::cout << buffer << std::endl;
-	//
-	// // null-terminate the received data so it can be treated as a C-string
-	// buffer[n] = '\0';
-
-	//read the contents into the buffer. Terminate the read when we reach a newline.
-	//since the maximum size of a dataframe is 49 characters, we will always have
-	//enough space with 64.
-
-	//----------------
-	//NEW VERSION
-	//----------------
-
 	while (pos < sizeof(buffer)-1) {
-		int n = sp_blocking_read(port, &buffer[pos], 1, 1000);
+		int n = sp_blocking_read(m_port, &buffer[pos], 1, 1000);
 		if (n <= 0) {return;}
 		if (buffer[pos] == '\n') {break;}
 		pos++;
@@ -390,8 +357,6 @@ void SerialComm::readDataFrame(std::vector<std::unique_ptr<Sensor>>& sensors, st
 		//move ptr forward once in all cases.
 		ptr++;
 	}
-	// optionally return the raw frame string to the caller if requested
-	if (rawFrame) {*rawFrame = buffer;}
 
 }
 
@@ -409,7 +374,7 @@ void SerialComm::reset()
 
 	std::cout << "oh boyyy we are resettingg the arduinooo\n";
 	//first make sure the port is open
-	if (port_status == PORT_CLOSED)
+	if (m_port_status == PORT_CLOSED)
 	{
 		std::cout << "port is already closed, so the reset cannot be conducted\n";
 		
@@ -420,22 +385,25 @@ void SerialComm::reset()
 	std::string reset_command = "reset\n";
 
 	//send the command
-	(void) check(sp_blocking_write(port,reset_command.c_str(), reset_command.size(), 1000));
+	(void) check(sp_blocking_write(m_port,reset_command.c_str(), reset_command.size(), 1000));
 }
 
 bool SerialComm::writeString(const std::string& str)
 {
-    if (!port) return false;       // port is your opened serial port
+    if (!m_port) return false;       // port is your opened serial port
     std::string s = str + "\n";    // append newline if your ESP32 expects it
-    int written = sp_blocking_write(port, s.c_str(), s.size(), 1000);
+    int written = sp_blocking_write(m_port, s.c_str(), s.size(), 1000);
     return written == (int)s.size();
 }
 
 void SerialComm::cleanPort()
 {
-                sp_flush(port, static_cast<sp_buffer>(SP_BUF_INPUT | SP_BUF_OUTPUT));
-                check(sp_close(port));
-		sp_free_port(port);
+	//do nothing if there is no active port to clean
+	if (m_port_status == PORT_CLOSED) return;
+
+                sp_flush(m_port, static_cast<sp_buffer>(SP_BUF_INPUT | SP_BUF_OUTPUT));
+                check(sp_close(m_port));
+		sp_free_port(m_port);
 
 		//free the name of the port from the global list
 		g_ports_in_use.erase(m_portName);
@@ -443,18 +411,18 @@ void SerialComm::cleanPort()
 
 		//reset member attributes, because this instance might yet be used for 
 		//a new port with a different configuration.
-		port = nullptr;
-                port_status = PORT_CLOSED;
+		m_port = nullptr;
+                m_port_status = PORT_CLOSED;
 		m_portName.clear();
 }
 
 /* Helper function for error handling. */
-int SerialComm::check(enum sp_return result)
+int SerialComm::check(const enum sp_return result)
 {
         std::string error_message = sp_last_error_message();
         switch (result) {
         case SP_ERR_ARG:
-                throw std::runtime_error("Error: Invalid argument fuck you.\n");
+                throw std::runtime_error("Error: Invalid argument, fuck you.\n");
         case SP_ERR_FAIL:
                 throw std::runtime_error(std::format("Error: Failed: {}", error_message));
         case SP_ERR_SUPP:

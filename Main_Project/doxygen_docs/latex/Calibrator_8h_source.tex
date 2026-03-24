@@ -1,0 +1,17 @@
+\doxysection{Calibrator.\+h}
+\hypertarget{Calibrator_8h_source}{}\label{Calibrator_8h_source}\index{include/daq\_capstone/sensor/Calibrator.h@{include/daq\_capstone/sensor/Calibrator.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}CalibrationPoint.h"{}}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00022\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classCalibrator}{Calibrator}}}
+\DoxyCodeLine{00023\ \{}
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \doxymbox{\hyperlink{classCalibrator}{\string~Calibrator}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{double}\ evaluate(\textcolor{keywordtype}{double}\ raw)\ \textcolor{keyword}{const}\ =\ 0;}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ std::vector<CalibrationPoint>\ \textcolor{keyword}{const}\ *\ getCalibrationTable()\ \textcolor{keyword}{const}\ =0;}
+\DoxyCodeLine{00028\ \};}
+
+\end{DoxyCode}

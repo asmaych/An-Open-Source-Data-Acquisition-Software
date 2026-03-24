@@ -1,0 +1,33 @@
+\doxysection{Reading\+Packet Struct Reference}
+\hypertarget{structReadingPacket}{}\label{structReadingPacket}\index{ReadingPacket@{ReadingPacket}}
+
+
+Owned by \doxylink{classSensor}{Sensor}, and used to store a packet of Raw, Voltage, and mapped readings.  
+
+
+
+
+{\ttfamily \+\#include $<$Sensor.\+h$>$}
+
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structReadingPacket_a24972907d822805554f6c8fdcb3be201}\label{structReadingPacket_a24972907d822805554f6c8fdcb3be201} 
+std::\+atomic$<$ double $>$ {\bfseries Raw}
+\item 
+\Hypertarget{structReadingPacket_aeca9f03a38a0efd01c69ca1b595e306e}\label{structReadingPacket_aeca9f03a38a0efd01c69ca1b595e306e} 
+std::\+atomic$<$ double $>$ {\bfseries Voltage}
+\item 
+\Hypertarget{structReadingPacket_a3e82bae1f93fdd3ac1463d8f8741eaf6}\label{structReadingPacket_a3e82bae1f93fdd3ac1463d8f8741eaf6} 
+std::\+atomic$<$ double $>$ {\bfseries Mapped}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Owned by \doxylink{classSensor}{Sensor}, and used to store a packet of Raw, Voltage, and mapped readings. 
+
+This struct is critical in the \doxylink{classReadingStrategy}{Reading\+Strategy} Design Pattern. It is passed by reference to the \doxylink{classReadingStrategy}{Reading\+Strategy} implementation, allowing one of the three values to be returned. 
+
+The documentation for this struct was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+include/\+daq\+\_\+capstone/\+sensor/\+Sensor.\+h\end{DoxyCompactItemize}

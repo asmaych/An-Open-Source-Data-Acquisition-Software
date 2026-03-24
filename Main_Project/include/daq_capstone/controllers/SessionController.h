@@ -18,6 +18,14 @@ class DataSession;
 class DataCollector;
 class Sensor;
 
+/**
+ * @brief Manages the polling thread m_thread, and handles clearing data from each Sensor DataSession
+ *
+ * SessionController is responsible for start/stop/reset lifecycle handling.
+ * It doesn't itself poll the serial port. It creates a background thread that makes timed calls to SerialComm for that.
+ * Instead, it manages the "running" state flag, reset logic (cleaning sessions), and exposes a polling rate adjustment
+ * API for the thread, which will run at the specified rate.
+ */
 class SessionController {
 
 	public:
@@ -33,6 +41,13 @@ class SessionController {
 		//Stop the experiment (set running false), returns true if stopped.
 		bool stop();
 
+		/**
+		 * @param rate The time in milliseconds that m_thread will sleep for each execution cycle.
+		 *
+		 * @note Please note that the rate parameter is NOT Hertz(Hz). It is simply used to specify a millisecond delay.
+		 * If a certain Hz is desired, it must be converted to the appropriate delay first. For instance, a delay of
+		 * 50 milliseconds corresponds to a polling rate of 20Hz.
+		 */
 		void setInterval(float rate);
 
 		//toggle start/stop 

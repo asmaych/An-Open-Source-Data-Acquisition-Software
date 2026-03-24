@@ -5,11 +5,16 @@
 #include <mutex>
 #include <chrono>
 
-/* DataSession is a simple container that stores the collected data for a single sensor. 
-   Each sensor has its own DataSession object to hold all the values that we read from the sensor which keeps data organized per     
-   sensor. 
+/**
+ * @brief Stores a single run of data for one sensor, and exposes an API to add, clear, and retrieve stored data.
+ *
+ * DataSession is a simple container that stores the collected data for a single sensor.
+ * Each sensor has its own DataSession object to hold all the values that we read from it.
+ * This allows a direct associate of data to each Sensor.
+ *
+ * @note There is no class ownership relationship between Sensor and DataSession.
+ * A DataSession is associated in name only with a specific sensor.
 */
-
 class DataSession{
         
         public:
@@ -28,14 +33,16 @@ class DataSession{
 		void clear();
 	
 	private:
-		std::string m_sensorName; //Name of the sensor, used in displau and reference
+		//Name of the sensor, used in display and reference
+		std::string m_sensorName;
 		
 		//STILL NOT SURE ABOUT THIS PART
-		//mutable allows us to modify even data members that belong to a const object and it's used here to protect m_values
-		//across threads.
+		//mutable allows us to modify even data members that belong to a const object.
+		//It's used here to protect m_value across threads.
 		mutable std::mutex m_mutex;
-		
-		std::vector<double> m_values; //List of the values collected
+
+		//List of the values collected
+		std::vector<double> m_values;
 
 		std::vector<double> m_timestamps;
 		std::chrono::steady_clock::time_point m_startTime;

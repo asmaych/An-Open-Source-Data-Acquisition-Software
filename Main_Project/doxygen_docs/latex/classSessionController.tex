@@ -1,0 +1,91 @@
+\doxysection{Session\+Controller Class Reference}
+\hypertarget{classSessionController}{}\label{classSessionController}\index{SessionController@{SessionController}}
+
+
+Manages the polling thread m\+\_\+thread, and handles clearing data from each \doxylink{classSensor}{Sensor} \doxylink{classDataSession}{Data\+Session}.  
+
+
+
+
+{\ttfamily \+\#include $<$Session\+Controller.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classSessionController_a0c0a0ca0a4be5d120cb49c8e90e6287c}\label{classSessionController_a0c0a0ca0a4be5d120cb49c8e90e6287c} 
+{\bfseries Session\+Controller} (\doxymbox{\hyperlink{classSerialComm}{Serial\+Comm}} \texorpdfstring{$\ast$}{*}serial, std::\+vector$<$ std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{classRun}{Run}} $>$ $>$ \texorpdfstring{$\ast$}{*}runs, \doxymbox{\hyperlink{classProjectPanel}{Project\+Panel}} \texorpdfstring{$\ast$}{*}panel, std::\+vector$<$ std::\+unique\+\_\+ptr$<$ \doxymbox{\hyperlink{classSensor}{Sensor}} $>$ $>$ \texorpdfstring{$\ast$}{*}sensors)
+\item 
+\Hypertarget{classSessionController_a9daa58472508a89d02cc0516d4f20db8}\label{classSessionController_a9daa58472508a89d02cc0516d4f20db8} 
+bool {\bfseries start} ()
+\item 
+\Hypertarget{classSessionController_af7716cd66f912baec5aa715a3a17fa70}\label{classSessionController_af7716cd66f912baec5aa715a3a17fa70} 
+bool {\bfseries stop} ()
+\item 
+void \doxymbox{\hyperlink{classSessionController_a05e182755424790d75438eae04102461}{set\+Interval}} (float rate)
+\item 
+\Hypertarget{classSessionController_a8b81c89ec247e20e7f40b8fe9496e80c}\label{classSessionController_a8b81c89ec247e20e7f40b8fe9496e80c} 
+bool {\bfseries toggle} ()
+\item 
+\Hypertarget{classSessionController_a370c16449e19373442794ebfedfdf4ef}\label{classSessionController_a370c16449e19373442794ebfedfdf4ef} 
+void {\bfseries reset} (std::\+vector$<$ std::\+unique\+\_\+ptr$<$ \doxymbox{\hyperlink{classDataSession}{Data\+Session}} $>$ $>$ \&sessions)
+\item 
+\Hypertarget{classSessionController_a25f37be192ec8aeff7c44e61abf39ccb}\label{classSessionController_a25f37be192ec8aeff7c44e61abf39ccb} 
+bool {\bfseries is\+Running} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classSessionController_aad40a726c6d48f0a84eb6954ef59c4ba}\label{classSessionController_aad40a726c6d48f0a84eb6954ef59c4ba} 
+\doxymbox{\hyperlink{classSerialComm}{Serial\+Comm}} \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+serial} = nullptr
+\item 
+\Hypertarget{classSessionController_ade0d1b629725743069ff7f9fbc75d382}\label{classSessionController_ade0d1b629725743069ff7f9fbc75d382} 
+std::\+vector$<$ std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{classRun}{Run}} $>$ $>$ \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+runs} = nullptr
+\item 
+\Hypertarget{classSessionController_a7f593f9affef3591f815ce6e17e776d9}\label{classSessionController_a7f593f9affef3591f815ce6e17e776d9} 
+\doxymbox{\hyperlink{classProjectPanel}{Project\+Panel}} \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+panel} = nullptr
+\item 
+\Hypertarget{classSessionController_ab69167c178679dd25813a244a0bfda73}\label{classSessionController_ab69167c178679dd25813a244a0bfda73} 
+std::\+vector$<$ std::\+unique\+\_\+ptr$<$ \doxymbox{\hyperlink{classSensor}{Sensor}} $>$ $>$ \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+sensors} = nullptr
+\item 
+\Hypertarget{classSessionController_adf63d57c95e63bffffc710d64a982c51}\label{classSessionController_adf63d57c95e63bffffc710d64a982c51} 
+std::\+atomic$<$ bool $>$ {\bfseries m\+\_\+running}
+\item 
+\Hypertarget{classSessionController_a492f47d0acdd8f8f5ee3b8c50967e8ac}\label{classSessionController_a492f47d0acdd8f8f5ee3b8c50967e8ac} 
+std::\+thread {\bfseries m\+\_\+thread}
+\item 
+\Hypertarget{classSessionController_a42508c162723458a746aee5070caf3b4}\label{classSessionController_a42508c162723458a746aee5070caf3b4} 
+std::\+mutex {\bfseries m\+\_\+mutex}
+\item 
+\Hypertarget{classSessionController_a4f63fd8b40264cead5d6e554b7de9949}\label{classSessionController_a4f63fd8b40264cead5d6e554b7de9949} 
+std::\+atomic$<$ float $>$ {\bfseries m\+\_\+sample\+Rate} \{50\}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Manages the polling thread m\+\_\+thread, and handles clearing data from each \doxylink{classSensor}{Sensor} \doxylink{classDataSession}{Data\+Session}. 
+
+\doxylink{classSessionController}{Session\+Controller} is responsible for start/\+stop/\+reset lifecycle handling. It doesn\textquotesingle{}t itself poll the serial port. It creates a background thread that makes timed calls to \doxylink{classSerialComm}{Serial\+Comm} for that. Instead, it manages the "{}running"{} state flag, reset logic (cleaning sessions), and exposes a polling rate adjustment API for the thread, which will run at the specified rate. 
+
+\label{doc-func-members}
+\Hypertarget{classSessionController_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classSessionController_a05e182755424790d75438eae04102461}\index{SessionController@{SessionController}!setInterval@{setInterval}}
+\index{setInterval@{setInterval}!SessionController@{SessionController}}
+\doxysubsubsection{\texorpdfstring{setInterval()}{setInterval()}}
+{\footnotesize\ttfamily \label{classSessionController_a05e182755424790d75438eae04102461} 
+void Session\+Controller::\+set\+Interval (\begin{DoxyParamCaption}\item[{float}]{rate}{}\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em rate} & The time in milliseconds that m\+\_\+thread will sleep for each execution cycle.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+Please note that the rate parameter is NOT Hertz(\+Hz). It is simply used to specify a millisecond delay. If a certain Hz is desired, it must be converted to the appropriate delay first. For instance, a delay of 50 milliseconds corresponds to a polling rate of 20Hz. 
+\end{DoxyNote}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+include/\+daq\+\_\+capstone/\+controllers/\+Session\+Controller.\+h\item 
+src/\+controllers/\+Session\+Controller.\+cpp\end{DoxyCompactItemize}

@@ -1,0 +1,50 @@
+\doxysection{Project\+Config\+Dialog.\+h}
+\hypertarget{ProjectConfigDialog_8h_source}{}\label{ProjectConfigDialog_8h_source}\index{include/daq\_capstone/ui/ProjectConfigDialog.h@{include/daq\_capstone/ui/ProjectConfigDialog.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <wx/wx.h>}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}MainFrame.h"{}}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classProjectPanel}{ProjectPanel}};}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00015\ \textcolor{keyword}{class\ }ProjectConfigDialog\ :\ \textcolor{keyword}{public}\ wxDialog}
+\DoxyCodeLine{00016\ \{}
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00018\ \ \ \ \ ProjectConfigDialog(wxWindow*\ parent,\ \doxymbox{\hyperlink{classProjectPanel}{ProjectPanel}}*\ project,\ \doxymbox{\hyperlink{classMainFrame}{MainFrame}}*\ mainFrame);}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{keywordtype}{void}\ onChangeReadStrategy(wxCommandEvent\ \&event);}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00023\ \ \ \ \ \doxymbox{\hyperlink{classProjectPanel}{ProjectPanel}}*\ m\_project\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{comment}{//control\ for\ theme}}
+\DoxyCodeLine{00026\ \ \ \ \ wxButton*\ m\_theme\_button\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{comment}{//text\ control\ field\ for\ entering\ sensor\ sample\ rate}}
+\DoxyCodeLine{00029\ \ \ \ \ wxTextCtrl*\ sample\_rate\_field;}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \ \ \ \ \textcolor{comment}{//button\ for\ setting\ and\ updating\ sensor\ sample\ rate}}
+\DoxyCodeLine{00032\ \ \ \ \ wxButton*\ sample\_rate\_confirm;}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{comment}{//selection\ box\ for\ choosing\ which\ sensor\ getter\ method\ to\ use\ (raw,voltage,mapped)}}
+\DoxyCodeLine{00036\ \ \ \ \ wxComboBox*\ getterSelection;}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{comment}{//button\ for\ confirming\ changes\ to\ getter\ method\ selection}}
+\DoxyCodeLine{00039\ \ \ \ \ wxButton*\ confirm\_getter;}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \ \ \ \ \textcolor{keywordtype}{bool}\ m\_darkmode\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keywordtype}{void}\ onNewSampleRate(wxCommandEvent\ \&evt);}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keywordtype}{void}\ onToggleTheme(wxCommandEvent\&\ evt);}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \ \ \ \ \doxymbox{\hyperlink{classMainFrame}{MainFrame}}*\ m\_mainFrame;}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \ \ \ \ \doxymbox{\hyperlink{classSensorManager}{SensorManager}}\ *\ m\_sensorManager\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \};}
+
+\end{DoxyCode}

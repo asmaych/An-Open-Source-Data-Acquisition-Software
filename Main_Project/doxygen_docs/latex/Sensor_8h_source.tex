@@ -1,0 +1,99 @@
+\doxysection{Sensor.\+h}
+\hypertarget{Sensor_8h_source}{}\label{Sensor_8h_source}\index{include/daq\_capstone/sensor/Sensor.h@{include/daq\_capstone/sensor/Sensor.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <atomic>}\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <iosfwd>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <mutex>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <bits/stl\_vector.h>}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ "{}CalibrationPoint.h"{}}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ "{}Calibrator.h"{}}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ "{}ReadingStrategy.h"{}}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ "{}MappedReader.h"{}}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{comment}{/*\ \#include\ <atomic>:\ for\ thread-\/safe\ reading,\ it\ ensures\ that\ }}
+\DoxyCodeLine{00016\ \textcolor{comment}{\ *\ operations\ on\ a\ variable\ are\ performed\ atomically\ }}
+\DoxyCodeLine{00017\ \textcolor{comment}{\ *\ (uninterruptible\ and\ safe\ for\ multithreaded\ environments).}}
+\DoxyCodeLine{00018\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00019\ \textcolor{comment}{\ *\ \#include\ <mutex>:\ provides\ us\ with\ a\ sychronization\ primitive\ }}
+\DoxyCodeLine{00020\ \textcolor{comment}{\ *\ that\ is\ used\ to\ protect\ the\ shared\ data\ from\ being\ accessed\ }}
+\DoxyCodeLine{00021\ \textcolor{comment}{\ *\ by\ multiple\ threads\ simultaneously.}}
+\DoxyCodeLine{00022\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00030\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{structReadingPacket}{ReadingPacket}}\ \{}
+\DoxyCodeLine{00031\ \ \ \ \ std::atomic<double>\ Raw;}
+\DoxyCodeLine{00032\ \ \ \ \ std::atomic<double>\ Voltage;}
+\DoxyCodeLine{00033\ \ \ \ \ std::atomic<double>\ Mapped;}
+\DoxyCodeLine{00034\ \};}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00047\ \textcolor{keyword}{class\ }Sensor}
+\DoxyCodeLine{00048\ \{}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \textcolor{keyword}{public}:\ }
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \ \ \ \ \textcolor{comment}{//Constructor:\ initializes\ a\ sensor\ with\ a\ name\ and\ a\ pin\ number}}
+\DoxyCodeLine{00053\ \ \ \ \ Sensor(\textcolor{keyword}{const}\ std::string\&\ name,\ \textcolor{keywordtype}{int}\ pin);}
+\DoxyCodeLine{00054\ \ \ \ \ }
+\DoxyCodeLine{00055\ \ \ \ \ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{comment}{//GETTERS}}
+\DoxyCodeLine{00057\ \ \ \ \ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00058\ \ \ \ \ }
+\DoxyCodeLine{00059\ \ \ \ \ std::string\ getName()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{keywordtype}{int}\ getPin()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{comment}{/*\ This\ is\ a\ function\ that\ uses\ the\ owned\ ReadingStrategy\ derived}}
+\DoxyCodeLine{00063\ \textcolor{comment}{\ \ \ \ \ *\ class\ to\ return\ the\ value\ from\ the\ struct\ ReadingPacket\ that}}
+\DoxyCodeLine{00064\ \textcolor{comment}{\ \ \ \ \ *\ corresponds\ to\ the\ derived\ class:}}
+\DoxyCodeLine{00065\ \textcolor{comment}{\ \ \ \ \ *\ \ -\/\ VoltageReader\ \ \ \ \ -\/>\ returns\ ReadingPacket.Voltage}}
+\DoxyCodeLine{00066\ \textcolor{comment}{\ \ \ \ \ *\ \ -\/\ RawReader\ \ \ \ \ \ \ \ \ -\/>\ returns\ ReadingPacket.Raw}}
+\DoxyCodeLine{00067\ \textcolor{comment}{\ \ \ \ \ *\ \ -\/\ MappedReader\ \ \ \ \ \ -\/>\ returns\ ReadingPacket.Mapped}}
+\DoxyCodeLine{00068\ \textcolor{comment}{\ \ \ \ \ *}}
+\DoxyCodeLine{00069\ \textcolor{comment}{\ \ \ \ \ *\ The\ reason\ for\ implementing\ the\ getter\ in\ this\ way\ is\ to\ allow}}
+\DoxyCodeLine{00070\ \textcolor{comment}{\ \ \ \ \ *\ for\ runtime\ polymorphism,\ where\ the\ user\ can\ choose\ which\ of\ the}}
+\DoxyCodeLine{00071\ \textcolor{comment}{\ \ \ \ \ *\ three\ values\ to\ collect\ during\ runtime.}}
+\DoxyCodeLine{00072\ \textcolor{comment}{\ \ \ \ \ */}}
+\DoxyCodeLine{00073\ \ \ \ \ std::atomic<double>\ getReading()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{keywordtype}{void}\ setReadingStrategy(std::unique\_ptr<ReadingStrategy>\ readingStrategy);}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \ \ \ \ \textcolor{comment}{/*\ this\ is\ a\ function\ that\ is\ used\ to\ assign\ a\ Calibrator\ object}}
+\DoxyCodeLine{00078\ \textcolor{comment}{\ \ \ \ \ *\ to\ this\ sensor\ instance.\ The\ calibrator\ will\ be\ configured\ by}}
+\DoxyCodeLine{00079\ \textcolor{comment}{\ \ \ \ \ *\ the\ user\ in\ a\ GUI,\ SensorManager\ will\ handle\ the\ backend\ config,}}
+\DoxyCodeLine{00080\ \textcolor{comment}{\ \ \ \ \ *\ and\ then\ it\ will\ send\ it\ to\ this\ sensor\ using\ this\ method}}
+\DoxyCodeLine{00081\ \textcolor{comment}{\ \ \ \ \ */}}
+\DoxyCodeLine{00082\ \ \ \ \ \textcolor{keywordtype}{void}\ setCalibrator(std::unique\_ptr<Calibrator>\ calibrator);}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00084\ \ \ \ \ std::vector<CalibrationPoint>\ \textcolor{keyword}{const}\ *getCalibration()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00087\ \ \ \ \ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00088\ \ \ \ \ \textcolor{comment}{//SETTERS}}
+\DoxyCodeLine{00089\ \ \ \ \ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \ \ \ \ \textcolor{comment}{//\ a\ setter\ for\ current\ reading\ (again\ thread-\/safe)}}
+\DoxyCodeLine{00092\ \ \ \ \ \textcolor{keywordtype}{void}\ setReading(\textcolor{keywordtype}{int}\ raw\_value);}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{keywordtype}{void}\ setSelected(\textcolor{keywordtype}{bool}\ sel)\ \{\ m\_selected\ =\ sel;\ \}}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ isSelected()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ m\_selected;\ \}}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00098\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00099\ \ \ \ \ }
+\DoxyCodeLine{00100\ \ \ \ \ std::string\ m\_name;}
+\DoxyCodeLine{00101\ \ \ \ \ \textcolor{keywordtype}{int}\ m\_pin;}
+\DoxyCodeLine{00102\ \ \ \ \ \textcolor{keywordtype}{bool}\ m\_selected\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00103\ \ \ \ \ std::unique\_ptr<Calibrator>\ m\_calibrator;\ \ \ \textcolor{comment}{//pointer\ to\ a\ calibrator\ object}}
+\DoxyCodeLine{00104\ \ \ \ \ \doxymbox{\hyperlink{structReadingPacket}{ReadingPacket}}\ m\_readingPacket;\ \ \textcolor{comment}{//struct\ containing\ thread\ safe\ raw,\ voltage,\ and\ mapped\ values}}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \ \ \ \ \textcolor{comment}{//set\ the\ default\ behavior\ for\ the\ reading\ strategy\ to\ the\ derived\ class\ MappedReader}}
+\DoxyCodeLine{00107\ \ \ \ \ std::unique\_ptr<ReadingStrategy>\ m\_readingStrategy\ =\ std::make\_unique<MappedReader>();}
+\DoxyCodeLine{00108\ }
+\DoxyCodeLine{00109\ \};}
+
+\end{DoxyCode}

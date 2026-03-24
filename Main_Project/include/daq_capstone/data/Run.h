@@ -1,10 +1,15 @@
 #pragma once
 #include <vector>
 
-/* Run represents One Continuous acquisition session.
-	- Each run has many time stamped frames where each frame contains values from all sensors.
+/**
+ * @brief Holds all timestamped sensor readings from all sensors for one run of data collection.
+ *
+ * When the user presses the Toolbar Start button, A run of data will begin - as long as there is at least one sensor.
+ * Sensor Values will be recorded and stored together in timestamped frames.
+ *
+ * When the user presses the Toolbar Stop button, the run will end, and subsequently pressing the Start button again
+ * will result in a different, new run.
 */
-
 class Run
 {
 

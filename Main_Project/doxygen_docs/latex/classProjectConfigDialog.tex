@@ -1,0 +1,76 @@
+\doxysection{Project\+Config\+Dialog Class Reference}
+\hypertarget{classProjectConfigDialog}{}\label{classProjectConfigDialog}\index{ProjectConfigDialog@{ProjectConfigDialog}}
+
+
+Gui object used to modify Application and Project Parameters at runtime.  
+
+
+
+
+{\ttfamily \+\#include $<$Project\+Config\+Dialog.\+h$>$}
+
+Inheritance diagram for Project\+Config\+Dialog:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classProjectConfigDialog}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classProjectConfigDialog_aa64697ff07cd404acc65c937fe34b1bc}\label{classProjectConfigDialog_aa64697ff07cd404acc65c937fe34b1bc} 
+{\bfseries Project\+Config\+Dialog} (wx\+Window \texorpdfstring{$\ast$}{*}parent, \doxymbox{\hyperlink{classProjectPanel}{Project\+Panel}} \texorpdfstring{$\ast$}{*}project, \doxymbox{\hyperlink{classMainFrame}{Main\+Frame}} \texorpdfstring{$\ast$}{*}main\+Frame)
+\item 
+\Hypertarget{classProjectConfigDialog_af0f8b0f4aad617f9cfcda23cdcf87af6}\label{classProjectConfigDialog_af0f8b0f4aad617f9cfcda23cdcf87af6} 
+void {\bfseries on\+Change\+Read\+Strategy} (wx\+Command\+Event \&event)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classProjectConfigDialog_ad5518a854632ffff50b4b52a716da148}\label{classProjectConfigDialog_ad5518a854632ffff50b4b52a716da148} 
+void {\bfseries on\+New\+Sample\+Rate} (wx\+Command\+Event \&evt)
+\item 
+\Hypertarget{classProjectConfigDialog_acb57917c7ba35c47d18dc6d45c34a769}\label{classProjectConfigDialog_acb57917c7ba35c47d18dc6d45c34a769} 
+void {\bfseries on\+Toggle\+Theme} (wx\+Command\+Event \&evt)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classProjectConfigDialog_a44439e1d09b5a0a0cf2fcc7f906b7319}\label{classProjectConfigDialog_a44439e1d09b5a0a0cf2fcc7f906b7319} 
+\doxymbox{\hyperlink{classProjectPanel}{Project\+Panel}} \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+project} = nullptr
+\item 
+\Hypertarget{classProjectConfigDialog_a171b4f2f0bc251b37a7193d5b9c99961}\label{classProjectConfigDialog_a171b4f2f0bc251b37a7193d5b9c99961} 
+wx\+Button \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+theme\+\_\+button} = nullptr
+\item 
+\Hypertarget{classProjectConfigDialog_a944b06c8ed8c60fc99368478f3c3b946}\label{classProjectConfigDialog_a944b06c8ed8c60fc99368478f3c3b946} 
+wx\+Text\+Ctrl \texorpdfstring{$\ast$}{*} {\bfseries sample\+\_\+rate\+\_\+field}
+\item 
+\Hypertarget{classProjectConfigDialog_ab34abb1f712d76513498e5ff45464dfa}\label{classProjectConfigDialog_ab34abb1f712d76513498e5ff45464dfa} 
+wx\+Button \texorpdfstring{$\ast$}{*} {\bfseries sample\+\_\+rate\+\_\+confirm}
+\item 
+\Hypertarget{classProjectConfigDialog_afe8b77f73c3b40ed7771c59173157de2}\label{classProjectConfigDialog_afe8b77f73c3b40ed7771c59173157de2} 
+wx\+Combo\+Box \texorpdfstring{$\ast$}{*} {\bfseries getter\+Selection}
+\item 
+\Hypertarget{classProjectConfigDialog_a4245e4074098a2cff6c6f46d2c243c1c}\label{classProjectConfigDialog_a4245e4074098a2cff6c6f46d2c243c1c} 
+wx\+Button \texorpdfstring{$\ast$}{*} {\bfseries confirm\+\_\+getter}
+\item 
+\Hypertarget{classProjectConfigDialog_a63b810c664895f2933a649e2a340ab06}\label{classProjectConfigDialog_a63b810c664895f2933a649e2a340ab06} 
+bool {\bfseries m\+\_\+darkmode} = false
+\item 
+\Hypertarget{classProjectConfigDialog_a5559caa364ddc473218761afe5f00f39}\label{classProjectConfigDialog_a5559caa364ddc473218761afe5f00f39} 
+\doxymbox{\hyperlink{classMainFrame}{Main\+Frame}} \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+main\+Frame}
+\item 
+\Hypertarget{classProjectConfigDialog_a900d961ec48dfb6bdbb41386c32804e0}\label{classProjectConfigDialog_a900d961ec48dfb6bdbb41386c32804e0} 
+\doxymbox{\hyperlink{classSensorManager}{Sensor\+Manager}} \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+sensor\+Manager} = nullptr
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Gui object used to modify Application and Project Parameters at runtime. 
+
+This is a dialog that allows the user to switch between light and dark mode, select polling rate, and choose between what type of sensor reading to capture. In the future, any additional configuration requirements will be implemented on the front-\/end here. 
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+include/\+daq\+\_\+capstone/\+ui/\+Project\+Config\+Dialog.\+h\item 
+src/\+ui/\+Project\+Config\+Dialog.\+cpp\end{DoxyCompactItemize}

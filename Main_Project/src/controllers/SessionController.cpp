@@ -33,7 +33,7 @@ SessionController::~SessionController()
 
 bool SessionController::start()
 {
-	//we expected the m_running to be false, since we can only start when its not running
+	//we expected the m_running to be false, since we can only start when it's not running
 	bool expected = false;
 
 	//atomic compare_change: checks if m_running == expected(false), we set m_running to true else false
@@ -42,18 +42,12 @@ bool SessionController::start()
 			while(m_running.load()){
 
 				if(m_serial && m_sensors){
-					std::string rawFrame;
 					//read from serial and update sensor readings
-					m_serial -> readDataFrame(*m_sensors, &rawFrame);
+					m_serial -> readDataFrame(*m_sensors);
 
-					//send raw frame to a project panel's live window and run storage
-					if(!rawFrame.empty() && m_panel){
-						auto frameCopy = rawFrame;  // important: copy data
-
-						m_panel->CallAfter([this, frameCopy]() {
-							m_panel->onNewDataFrame(frameCopy);
-						});
-					}
+					m_panel->CallAfter([this]() {
+						m_panel->onNewDataFrame();
+					});
 				}
 				//read sensor data
 				std::this_thread::sleep_for(std::chrono::duration<float, std::milli>(m_sampleRate.load()));
@@ -78,7 +72,6 @@ bool SessionController::stop()
 void SessionController::setInterval(const float rate)
 {
 	m_sampleRate.store(rate);
-	std::cout << "Setting rate to " << rate << std::endl;
 }
 
 bool SessionController::toggle()
@@ -90,8 +83,8 @@ bool SessionController::toggle()
 	else
 		return start();
 	
-//RIght now since we are using one microprocessor we wont face a problem with toggle, but if in the future we jump to receiving
-// real time data from multiple sensors on more than one device = multi-threads, the the compare and fetch could interfere.
+// Right now since we are using one microprocessor we won't face a problem with toggle, but if in the future we jump to receiving
+// real time data from multiple sensors on more than one device = multi-threads, the compare and fetch could interfere.
 }
 
 void SessionController::reset(std::vector<std::unique_ptr<DataSession>>& sessions)

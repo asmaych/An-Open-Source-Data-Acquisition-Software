@@ -6,11 +6,22 @@
 #include "Theme.h"
 #include "ProjectPanel.h"
 
-/*
-	Toolbar is a UI component that owns buttons and visual state and that calls back to Mainframe
-*/
 class ProjectPanel;
 
+/**
+ * @brief GUI object that encapsulates all Toolbar controls into one class.
+ *
+ * The Toolbar currently includes controls for:
+ *	-	Start/Stop Run
+ *	-	Table Display Toggle
+ *	-	Graph Display Toggle
+ *	-	Reset Run
+ *	-	On Demand Toggle
+ *	-	Export Data
+ *	-	ProjectConfig Launcher
+ *
+ *	Callbacks are used extensively in this class to affect the in-focus ProjectPanel via MainFrame
+ */
 class Toolbar : public wxEvtHandler
 {
 	public:

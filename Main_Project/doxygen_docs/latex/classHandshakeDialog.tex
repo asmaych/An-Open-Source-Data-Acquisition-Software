@@ -1,0 +1,64 @@
+\doxysection{Handshake\+Dialog Class Reference}
+\hypertarget{classHandshakeDialog}{}\label{classHandshakeDialog}\index{HandshakeDialog@{HandshakeDialog}}
+
+
+GUI object used to allow the user to browse and select a microcontroller to connect to.  
+
+
+
+
+{\ttfamily \+\#include $<$Handshake\+Dialog.\+h$>$}
+
+Inheritance diagram for Handshake\+Dialog:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classHandshakeDialog}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classHandshakeDialog_aa3524e49a0e3c2f0a68e229f74fc2c63}\label{classHandshakeDialog_aa3524e49a0e3c2f0a68e229f74fc2c63} 
+{\bfseries Handshake\+Dialog} (wx\+Window \texorpdfstring{$\ast$}{*}parent, const wx\+String \&title, \doxymbox{\hyperlink{classSerialComm}{Serial\+Comm}} \texorpdfstring{$\ast$}{*}serial\+Comm)
+\item 
+\Hypertarget{classHandshakeDialog_a5f596bb53deb055174a2f81fd4ff6d57}\label{classHandshakeDialog_a5f596bb53deb055174a2f81fd4ff6d57} 
+void {\bfseries load\+Ports} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classHandshakeDialog_a397851479b3b048e9f3f7e6bcbc1d8c3}\label{classHandshakeDialog_a397851479b3b048e9f3f7e6bcbc1d8c3} 
+void {\bfseries on\+Port\+Chosen} (wx\+Command\+Event \&event)
+\item 
+\Hypertarget{classHandshakeDialog_a5ed5aa0838ec4c18df434c7d57238e4b}\label{classHandshakeDialog_a5ed5aa0838ec4c18df434c7d57238e4b} 
+void {\bfseries on\+Refresh\+Ports} (wx\+Command\+Event \&event)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classHandshakeDialog_a2432fee4994599673157a0a2e0340640}\label{classHandshakeDialog_a2432fee4994599673157a0a2e0340640} 
+\doxymbox{\hyperlink{classSerialComm}{Serial\+Comm}} \texorpdfstring{$\ast$}{*} {\bfseries serial\+Comm}
+\item 
+\Hypertarget{classHandshakeDialog_a4c25e3801d7eb2e09256cf86d4ce3dfd}\label{classHandshakeDialog_a4c25e3801d7eb2e09256cf86d4ce3dfd} 
+std::\+unordered\+\_\+map$<$ std::\+string, std::\+string $>$ {\bfseries m\+\_\+port\+Map}
+\item 
+\Hypertarget{classHandshakeDialog_a026302fdf391845031b7cb50bc9f471b}\label{classHandshakeDialog_a026302fdf391845031b7cb50bc9f471b} 
+wx\+Combo\+Box \texorpdfstring{$\ast$}{*} {\bfseries port\+Choice}
+\item 
+\Hypertarget{classHandshakeDialog_a58c122d9af0de6105be457936fd033de}\label{classHandshakeDialog_a58c122d9af0de6105be457936fd033de} 
+wx\+Static\+Text \texorpdfstring{$\ast$}{*} {\bfseries status}
+\item 
+\Hypertarget{classHandshakeDialog_a78d2a93e507c962e55d632e4a75d42e6}\label{classHandshakeDialog_a78d2a93e507c962e55d632e4a75d42e6} 
+bool {\bfseries handshakecompleted} = false
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+GUI object used to allow the user to browse and select a microcontroller to connect to. 
+
+When this dialog is launched, it will display a drop-\/down menu to the user, which is populated by a scan of all serial ports by \doxylink{classSerialComm}{Serial\+Comm}. The user can select and option, and click a button to connect to the microcontroller at that port. Additionally, the user is given a refresh button, which uses \doxylink{classSerialComm}{Serial\+Comm} to re-\/scan the ports, and generates an updated drop-\/down menu for the user. 
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+include/\+daq\+\_\+capstone/\+ui/\+Handshake\+Dialog.\+h\item 
+src/\+ui/\+Handshake\+Dialog.\+cpp\end{DoxyCompactItemize}

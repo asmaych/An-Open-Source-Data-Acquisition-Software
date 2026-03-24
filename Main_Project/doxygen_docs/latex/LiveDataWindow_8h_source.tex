@@ -1,0 +1,48 @@
+\doxysection{Live\+Data\+Window.\+h}
+\hypertarget{LiveDataWindow_8h_source}{}\label{LiveDataWindow_8h_source}\index{include/daq\_capstone/data/LiveDataWindow.h@{include/daq\_capstone/data/LiveDataWindow.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <wx/wx.h>}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <wx/notebook.h>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <wx/grid.h>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}data/Run.h"{}}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ "{}sensor/Sensor.h"{}}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ "{}ui/Theme.h"{}}}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classRun}{Run}};}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00021\ \textcolor{keyword}{class\ }LiveDataWindow\ :\ \textcolor{keyword}{public}\ wxPanel}
+\DoxyCodeLine{00022\ \{}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \textcolor{comment}{/*Constructor}}
+\DoxyCodeLine{00025\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ \ \ -\/\ parent\ is\ the\ parent\ window\ (the\ Mainframe).}}
+\DoxyCodeLine{00026\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ \ \ -\/\ explicit\ is\ used\ to\ protect\ the\ compiler\ from\ passing\ a\ pointer\ by\ accident\ and\ convert\ it}}
+\DoxyCodeLine{00027\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ \ \ into\ a\ LiveDataWindow\ without\ meaning\ to(do\ not\ create\ this\ object\ automatically).}}
+\DoxyCodeLine{00028\ \textcolor{comment}{\ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ LiveDataWindow(wxWindow*\ parent);}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \textcolor{comment}{//called\ when\ Start\ pressed}}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ startNewRun(std::shared\_ptr<Run>\ run,\ \textcolor{keyword}{const}\ std::vector<std::unique\_ptr<Sensor>>\&\ sensors);}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \textcolor{comment}{//called\ when\ Stop\ is\ pressed}}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ stopRun();}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \textcolor{comment}{//called\ for\ every\ incoming\ frame}}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ addFrame(\textcolor{keywordtype}{double}\ time,\ \textcolor{keyword}{const}\ std::vector<double>\&\ values);}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \textcolor{comment}{//clear\ all\ liveWIndow}}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ clearAll();}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \textcolor{comment}{//theme}}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ applyTheme(Theme\ theme);}
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ wxNotebook*\ m\_notebook\ =\ \textcolor{keyword}{nullptr};;\ \textcolor{comment}{//notebook\ to\ create\ tabs}}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ wxGrid*\ m\_activeGrid\ =\ \textcolor{keyword}{nullptr};\ \textcolor{comment}{//grid\ in\ current\ tab\ to\ display\ real-\/time\ values}}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ std::shared\_ptr<Run>\ m\_activeRun;\ \textcolor{comment}{//currently\ active/open\ run}}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ std::vector<std::string>\ m\_sensorNames;\ \textcolor{comment}{//Store\ sensor\ names\ for\ grid\ header}}
+\DoxyCodeLine{00050\ \};}
+
+\end{DoxyCode}

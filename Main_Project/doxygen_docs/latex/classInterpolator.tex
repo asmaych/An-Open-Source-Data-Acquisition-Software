@@ -1,0 +1,76 @@
+\doxysection{Interpolator Class Reference}
+\hypertarget{classInterpolator}{}\label{classInterpolator}\index{Interpolator@{Interpolator}}
+
+
+A specific implementation of the \doxylink{classCalibrator}{Calibrator} Interface -\/ Used to map raw sensor values to meaningful units.  
+
+
+
+
+{\ttfamily \+\#include $<$Interpolator.\+h$>$}
+
+Inheritance diagram for Interpolator:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classInterpolator}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classInterpolator_a91f95f307d864fe0fe6b924ddc6e6d5c}\label{classInterpolator_a91f95f307d864fe0fe6b924ddc6e6d5c} 
+{\bfseries Interpolator} (std::\+unique\+\_\+ptr$<$ std::\+vector$<$ \doxymbox{\hyperlink{structCalibrationPoint}{Calibration\+Point}} $>$ $>$ table)
+\item 
+std::\+vector$<$ \doxymbox{\hyperlink{structCalibrationPoint}{Calibration\+Point}} $>$ const \texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{classInterpolator_aa0e464491f950a3a6c49c833e22e4e98}{get\+Calibration\+Table}} () const override
+\item 
+double \doxymbox{\hyperlink{classInterpolator_a7e9dd4171ce4fc27b478db9a56e2111f}{evaluate}} (double raw) const override
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classInterpolator_ab673002d48089b188dcc5349f14d3385}\label{classInterpolator_ab673002d48089b188dcc5349f14d3385} 
+std::\+unique\+\_\+ptr$<$ std::\+vector$<$ \doxymbox{\hyperlink{structCalibrationPoint}{Calibration\+Point}} $>$ $>$ {\bfseries m\+\_\+table}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A specific implementation of the \doxylink{classCalibrator}{Calibrator} Interface -\/ Used to map raw sensor values to meaningful units. 
+
+This class overrides all virtual methods enforced via inheritance from \doxylink{classCalibrator}{Calibrator}. This specific implementation uses a user-\/defined table of raw-\/mapped reading pairs, stored as a vector of \doxylink{structCalibrationPoint}{Calibration\+Point}. A minimum of two \doxylink{structCalibrationPoint}{Calibration\+Point} objects are required for this method to properly function. This condition is enforced in the GUI data entry point.
+
+This implementation takes the defined table, and uses it to map new incoming raw values to mapped ones, using linear interpolation between the low and high bound of the table, and extrapolation outside the bounds.
+
+\begin{DoxyNote}{Note}
+The table accepts and arbitrarily high number of \doxylink{structCalibrationPoint}{Calibration\+Point} objects, meaning that while the interpolation is linear, it can be made to approximate any curve within its bounds. However, the extrapolation will always be linear, so care must be taken to avoid situations where the recorded readings are far outside the bounds -\/ there can be no guarantee about their accuracy. 
+\end{DoxyNote}
+
+
+\label{doc-func-members}
+\Hypertarget{classInterpolator_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classInterpolator_a7e9dd4171ce4fc27b478db9a56e2111f}\index{Interpolator@{Interpolator}!evaluate@{evaluate}}
+\index{evaluate@{evaluate}!Interpolator@{Interpolator}}
+\doxysubsubsection{\texorpdfstring{evaluate()}{evaluate()}}
+{\footnotesize\ttfamily \label{classInterpolator_a7e9dd4171ce4fc27b478db9a56e2111f} 
+double Interpolator::\+evaluate (\begin{DoxyParamCaption}\item[{double}]{raw}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \doxymbox{\hyperlink{classCalibrator}{Calibrator}}.
+
+\Hypertarget{classInterpolator_aa0e464491f950a3a6c49c833e22e4e98}\index{Interpolator@{Interpolator}!getCalibrationTable@{getCalibrationTable}}
+\index{getCalibrationTable@{getCalibrationTable}!Interpolator@{Interpolator}}
+\doxysubsubsection{\texorpdfstring{getCalibrationTable()}{getCalibrationTable()}}
+{\footnotesize\ttfamily \label{classInterpolator_aa0e464491f950a3a6c49c833e22e4e98} 
+std::\+vector$<$ \doxymbox{\hyperlink{structCalibrationPoint}{Calibration\+Point}} $>$ const  \texorpdfstring{$\ast$}{*} Interpolator::\+get\+Calibration\+Table (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \doxymbox{\hyperlink{classCalibrator}{Calibrator}}.
+
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+include/\+daq\+\_\+capstone/\+sensor/\+Interpolator.\+h\item 
+src/\+sensor/\+Interpolator.\+cpp\end{DoxyCompactItemize}

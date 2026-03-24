@@ -21,13 +21,30 @@
  * by multiple threads simultaneously.
  */
 
+/**
+ * @brief Owned by Sensor, and used to store a packet of Raw, Voltage, and mapped readings.
+ *
+ * This struct is critical in the ReadingStrategy Design Pattern. It is passed by reference to the ReadingStrategy
+ * implementation, allowing one of the three values to be returned.
+ */
 struct ReadingPacket {
 	std::atomic<double> Raw;
 	std::atomic<double> Voltage;
 	std::atomic<double> Mapped;
 };
 
-class Sensor 
+
+/**
+ * @brief Virtual sensor used to reflect the real-world state of a single physical sensor
+ *
+ * For each sensor connected to the microcontroller, there will be one instance of Sensor. Each sensor has its own
+ * set of readings, and exposes a public API that allows readings to be set, and retrieved from the Sensor.
+ *
+ * Additionally, each Sensor uses its own Calibrator object, which modifies the behavior of the getReading() method
+ * according to user-defined calibrations. If no calibration is specified, raw values are returned. Having each
+ * sensor own its own calibration allows for per-sensor calibration.
+ */
+class Sensor
 {
 
 public: 

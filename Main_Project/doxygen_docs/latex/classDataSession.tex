@@ -1,0 +1,66 @@
+\doxysection{Data\+Session Class Reference}
+\hypertarget{classDataSession}{}\label{classDataSession}\index{DataSession@{DataSession}}
+
+
+Stores a single run of data for one sensor, and exposes an API to add, clear, and retrieve stored data.  
+
+
+
+
+{\ttfamily \+\#include $<$Data\+Session.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classDataSession_aaf8fa08792e794e730040b3cbaf84e61}\label{classDataSession_aaf8fa08792e794e730040b3cbaf84e61} 
+{\bfseries Data\+Session} (const std::\+string \&sensor\+Name)
+\item 
+\Hypertarget{classDataSession_a94157e3ca1645db4a6bfecf5bc225370}\label{classDataSession_a94157e3ca1645db4a6bfecf5bc225370} 
+void {\bfseries add\+Value} (double value)
+\item 
+\Hypertarget{classDataSession_aaf90163f377c221fd1274b3d5155cccd}\label{classDataSession_aaf90163f377c221fd1274b3d5155cccd} 
+std::\+vector$<$ double $>$ {\bfseries get\+Values} () const
+\item 
+\Hypertarget{classDataSession_a0ea60248f53e7c38e4df16d18f45da52}\label{classDataSession_a0ea60248f53e7c38e4df16d18f45da52} 
+std::\+string {\bfseries get\+Sensor\+Name} () const
+\item 
+\Hypertarget{classDataSession_aaa4edec087a4b01864d09906dcbe0722}\label{classDataSession_aaa4edec087a4b01864d09906dcbe0722} 
+std::\+vector$<$ double $>$ {\bfseries get\+Timestamps} () const
+\item 
+\Hypertarget{classDataSession_a197a75c894050909f6f970ae95881bb0}\label{classDataSession_a197a75c894050909f6f970ae95881bb0} 
+void {\bfseries clear} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classDataSession_a4c09f8e694a6eb19ae87ab196e643f93}\label{classDataSession_a4c09f8e694a6eb19ae87ab196e643f93} 
+std::\+string {\bfseries m\+\_\+sensor\+Name}
+\item 
+\Hypertarget{classDataSession_ae9c6c69a7467cd7ce4404fd0b5d2bfb6}\label{classDataSession_ae9c6c69a7467cd7ce4404fd0b5d2bfb6} 
+std::\+mutex {\bfseries m\+\_\+mutex}
+\item 
+\Hypertarget{classDataSession_a4c518307e00f37562b205679a8b6e355}\label{classDataSession_a4c518307e00f37562b205679a8b6e355} 
+std::\+vector$<$ double $>$ {\bfseries m\+\_\+values}
+\item 
+\Hypertarget{classDataSession_a55ec87c0f84da1782e188ff9f458b1d5}\label{classDataSession_a55ec87c0f84da1782e188ff9f458b1d5} 
+std::\+vector$<$ double $>$ {\bfseries m\+\_\+timestamps}
+\item 
+\Hypertarget{classDataSession_aca6003493d76f75ad6858d3064aa5be8}\label{classDataSession_aca6003493d76f75ad6858d3064aa5be8} 
+std::\+chrono::\+steady\+\_\+clock::\+time\+\_\+point {\bfseries m\+\_\+start\+Time}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Stores a single run of data for one sensor, and exposes an API to add, clear, and retrieve stored data. 
+
+\doxylink{classDataSession}{Data\+Session} is a simple container that stores the collected data for a single sensor. Each sensor has its own \doxylink{classDataSession}{Data\+Session} object to hold all the values that we read from it. This allows a direct associate of data to each \doxylink{classSensor}{Sensor}.
+
+\begin{DoxyNote}{Note}
+There is no class ownership relationship between \doxylink{classSensor}{Sensor} and \doxylink{classDataSession}{Data\+Session}. A \doxylink{classDataSession}{Data\+Session} is associated in name only with a specific sensor. 
+\end{DoxyNote}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+include/\+daq\+\_\+capstone/\+data/\+Data\+Session.\+h\item 
+src/\+data/\+Data\+Session.\+cpp\end{DoxyCompactItemize}

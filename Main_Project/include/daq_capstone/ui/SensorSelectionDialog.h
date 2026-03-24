@@ -4,12 +4,13 @@
 #include <vector>
 #include <string>
 
-/*
-   SensorSelectionDialog is a dialog window that allows the user to select which sensors to collect.
-   It displays a checklist of all sensors in the project.
-   It returns the selected sensor indexes.
+/**
+ * @brief GUI object that allows user to select active sensors
+ *
+ * This is a dialog window that allows the user to select which sensors to collect from in a Run.
+ * It displays a checklist of all sensors in the project.
+ * It returns the selected sensor indexes.
 */
-
 class SensorSelectionDialog : public wxDialog
 {
 	public:

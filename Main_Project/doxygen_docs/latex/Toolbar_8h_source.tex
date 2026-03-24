@@ -1,0 +1,79 @@
+\doxysection{Toolbar.\+h}
+\hypertarget{Toolbar_8h_source}{}\label{Toolbar_8h_source}\index{include/daq\_capstone/ui/Toolbar.h@{include/daq\_capstone/ui/Toolbar.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <wx/wx.h>}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <wx/toolbar.h>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <functional>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <wx/timer.h>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}Theme.h"{}}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}ProjectPanel.h"{}}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classProjectPanel}{ProjectPanel}};}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00025\ \textcolor{keyword}{class\ }Toolbar\ :\ \textcolor{keyword}{public}\ wxEvtHandler}
+\DoxyCodeLine{00026\ \{}
+\DoxyCodeLine{00027\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum}\ ToolID\ \{}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ID\_StartStop\ =\ wxID\_HIGHEST\ +\ 100,}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ID\_ToggleTable,}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ID\_ToggleGraph,}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ID\_Reset,}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ID\_CollectNow,}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ID\_Export,}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//ID\_Theme,}}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ID\_Config,}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ menu-\/only\ IDs\ (not\ toolbar\ tools)}}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \ \ \ \ ID\_Config\_ToggleTheme,}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ Toolbar(wxFrame*\ parent);}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \textcolor{comment}{//callbacks}}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ std::function<void()>\ onStartStop;}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ std::function<void()>\ onReset;}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ std::function<void()>\ onCollectNow;}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ std::function<void()>\ onExport;}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ std::function<void()>\ onConfig;}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ std::function<void()>\ onToggleTheme;}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \textcolor{comment}{//visual\ state}}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ bindEvents(wxFrame*\ parent);}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setRunning(\textcolor{keywordtype}{bool}\ running);}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ applyTheme(Theme\ theme);}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \textcolor{comment}{//show/hide\ control}}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setCurrentProject(\doxymbox{\hyperlink{classProjectPanel}{ProjectPanel}}*\ panel)\ \{\ m\_currentProject\ =\ panel;\ \}}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \textcolor{comment}{//getters}}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ wxToolBar*\ get()\ \{\ \textcolor{keywordflow}{return}\ m\_toolbar;\ \}}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ wxStaticText*\ getTimerDisplay()\ \{\ \textcolor{keywordflow}{return}\ m\_timerDisplay;\ \}\ \textcolor{comment}{//getter\ for\ timer}}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \textcolor{comment}{//private\ helpers}}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ startTimer();}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ stopTimer();}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ onTimer(wxTimerEvent\&\ evt);}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ toggleTable();}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ toggleGraph();}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ toggleCollectNow();}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ wxToolBar*\ m\_toolbar\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ wxStaticText*\ m\_timerDisplay\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ m\_isRunning\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \textcolor{comment}{//timer\ state}}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ wxTimer\ m\_timer;}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ m\_elapsedSeconds\ =\ 0;}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classProjectPanel}{ProjectPanel}}*\ m\_currentProject\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ Theme\ m\_theme;}
+\DoxyCodeLine{00087\ \};}
+
+\end{DoxyCode}

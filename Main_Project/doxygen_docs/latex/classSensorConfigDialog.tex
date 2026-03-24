@@ -1,0 +1,82 @@
+\doxysection{Sensor\+Config\+Dialog Class Reference}
+\hypertarget{classSensorConfigDialog}{}\label{classSensorConfigDialog}\index{SensorConfigDialog@{SensorConfigDialog}}
+
+
+GUI that provides users with a top-\/level view of all \doxylink{classSensor}{Sensor} Objects and interfaces to modify them.  
+
+
+
+
+{\ttfamily \+\#include $<$Sensor\+Config\+Dialog.\+h$>$}
+
+Inheritance diagram for Sensor\+Config\+Dialog:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classSensorConfigDialog}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classSensorConfigDialog_a1fcafc6d44257b0634c37314ff451b75}\label{classSensorConfigDialog_a1fcafc6d44257b0634c37314ff451b75} 
+{\bfseries Sensor\+Config\+Dialog} (wx\+Window \texorpdfstring{$\ast$}{*}parent, const wx\+String \&title, \doxymbox{\hyperlink{classSerialComm}{Serial\+Comm}} \texorpdfstring{$\ast$}{*}serial\+Comm, \doxymbox{\hyperlink{classSensorManager}{Sensor\+Manager}} \texorpdfstring{$\ast$}{*}sensor\+Manager, \doxymbox{\hyperlink{classSensorDatabase}{Sensor\+Database}} \texorpdfstring{$\ast$}{*}sensor\+Database, std::\+vector$<$ std::\+unique\+\_\+ptr$<$ \doxymbox{\hyperlink{classSensor}{Sensor}} $>$ $>$ \&sensors)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classSensorConfigDialog_ac2eb31138ade1b670d9cd469c1397e43}\label{classSensorConfigDialog_ac2eb31138ade1b670d9cd469c1397e43} 
+void {\bfseries populate\+Table} ()
+\item 
+\Hypertarget{classSensorConfigDialog_a95f620bb9cc6cb6af6feb8a34623f037}\label{classSensorConfigDialog_a95f620bb9cc6cb6af6feb8a34623f037} 
+void {\bfseries on\+Add\+Sensor\+Pressed} (wx\+Command\+Event \&evt)
+\item 
+\Hypertarget{classSensorConfigDialog_a79ce45de07a1359e3fd5b2cf4726f040}\label{classSensorConfigDialog_a79ce45de07a1359e3fd5b2cf4726f040} 
+void {\bfseries on\+Remove\+Sensor\+Pressed} (wx\+Command\+Event \&evt)
+\item 
+\Hypertarget{classSensorConfigDialog_a0c6af5d4a726361633424f25ec010f3e}\label{classSensorConfigDialog_a0c6af5d4a726361633424f25ec010f3e} 
+void {\bfseries on\+Calibrate\+Pressed} (wx\+Command\+Event \&evt)
+\item 
+\Hypertarget{classSensorConfigDialog_a41b0a0406ec63231784b0ecf5fe474e4}\label{classSensorConfigDialog_a41b0a0406ec63231784b0ecf5fe474e4} 
+void {\bfseries on\+Load\+From\+Database\+Pressed} (wx\+Command\+Event \&evt)
+\item 
+\Hypertarget{classSensorConfigDialog_a60cb50f3ddf2d6884ddf5a955875ed0e}\label{classSensorConfigDialog_a60cb50f3ddf2d6884ddf5a955875ed0e} 
+int {\bfseries ask\+User\+For\+Pin} (const std::\+string \&name)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classSensorConfigDialog_a5db331bc5eb03e9b0c43b77422fcd512}\label{classSensorConfigDialog_a5db331bc5eb03e9b0c43b77422fcd512} 
+\doxymbox{\hyperlink{classSerialComm}{Serial\+Comm}} \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+serial\+Comm}
+\item 
+\Hypertarget{classSensorConfigDialog_a1ed88366279e452f6645e64bdd4c6b15}\label{classSensorConfigDialog_a1ed88366279e452f6645e64bdd4c6b15} 
+\doxymbox{\hyperlink{classSensorDatabase}{Sensor\+Database}} \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+sensor\+Database}
+\item 
+\Hypertarget{classSensorConfigDialog_a3c52dff0248073d199af154f69349223}\label{classSensorConfigDialog_a3c52dff0248073d199af154f69349223} 
+\doxymbox{\hyperlink{classSensorManager}{Sensor\+Manager}} \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+sensor\+Manager}
+\item 
+\Hypertarget{classSensorConfigDialog_a1e4d7b4e5431bcb4054af28c3f5b12fc}\label{classSensorConfigDialog_a1e4d7b4e5431bcb4054af28c3f5b12fc} 
+wx\+Button \texorpdfstring{$\ast$}{*} {\bfseries add\+\_\+sensor}
+\item 
+\Hypertarget{classSensorConfigDialog_a139e7ef3a2d0741fc2169d4d0ea0f371}\label{classSensorConfigDialog_a139e7ef3a2d0741fc2169d4d0ea0f371} 
+wx\+Button \texorpdfstring{$\ast$}{*} {\bfseries remove\+\_\+sensor}
+\item 
+\Hypertarget{classSensorConfigDialog_a3dcfe7a9b5def3dc25c88f24799e040d}\label{classSensorConfigDialog_a3dcfe7a9b5def3dc25c88f24799e040d} 
+wx\+Button \texorpdfstring{$\ast$}{*} {\bfseries calibrate\+\_\+sensor}
+\item 
+\Hypertarget{classSensorConfigDialog_a5de5e185aaa391c89841c56e6bb7a768}\label{classSensorConfigDialog_a5de5e185aaa391c89841c56e6bb7a768} 
+wx\+List\+Ctrl \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+list}
+\item 
+\Hypertarget{classSensorConfigDialog_acfcfdbde1bfa91cfd4e3ff6a328b49ad}\label{classSensorConfigDialog_acfcfdbde1bfa91cfd4e3ff6a328b49ad} 
+std::\+vector$<$ std::\+unique\+\_\+ptr$<$ \doxymbox{\hyperlink{classSensor}{Sensor}} $>$ $>$ \& {\bfseries m\+\_\+sensors}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+GUI that provides users with a top-\/level view of all \doxylink{classSensor}{Sensor} Objects and interfaces to modify them. 
+
+This is a dialog that shows users a list of all \doxylink{classSensor}{Sensor} objects currently configured in the project. It displays sensors by name in a table, and above that table, it displays buttons that allow the user to add a new \doxylink{classSensor}{Sensor}, remove or calibrate a selected \doxylink{classSensor}{Sensor}, and load a sensor from the sensor database. 
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+include/\+daq\+\_\+capstone/\+ui/\+Sensor\+Config\+Dialog.\+h\item 
+src/\+ui/\+Sensor\+Config\+Dialog.\+cpp\end{DoxyCompactItemize}

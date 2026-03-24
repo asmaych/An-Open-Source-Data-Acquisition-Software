@@ -1,0 +1,347 @@
+\doxysection{Serial\+Comm Class Reference}
+\hypertarget{classSerialComm}{}\label{classSerialComm}\index{SerialComm@{SerialComm}}
+
+
+This is the class used for all serial-\/related operations in the application.  
+
+
+
+
+{\ttfamily \+\#include $<$Serial\+Comm.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{classSerialComm_af27895c3ecb34eec66a963a50c05d1cd}{Serial\+Comm}} ()
+\begin{DoxyCompactList}\small\item\em Conducts initial scan of available connections, and creates a default port configuration. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{classSerialComm_a078cdbc5a4f8fb081e164948b2afda08}{\texorpdfstring{$\sim$}{\string~}\+Serial\+Comm}} ()
+\begin{DoxyCompactList}\small\item\em Necessary for freeing allocated libserialport objects. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{classSerialComm_ae34ca1dca48f4dd153f27f90886f6c2e}{scan\+Ports}} ()
+\begin{DoxyCompactList}\small\item\em atomic method for updating a list of serial connections \end{DoxyCompactList}\item 
+struct sp\+\_\+port \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{classSerialComm_ac599d67ce83f5f59f2b3d3e3fea37e00}{get\+Port\+List}} () const
+\begin{DoxyCompactList}\small\item\em getter method to return a null-\/terminated array of port structs \end{DoxyCompactList}\item 
+bool \doxymbox{\hyperlink{classSerialComm_a1676d33f795579aa7f743afd2582c16f}{handshake}} (std::\+string portname)
+\begin{DoxyCompactList}\small\item\em Performs a handshake with a device over a serial port. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{classSerialComm_a68619b82d777575192a519e87caeb6e6}{add\+Sensor}} (const std::\+string \&sensor\+Name, int pin)
+\begin{DoxyCompactList}\small\item\em This function is used to add a sensor to the microcontroller\textquotesingle{}s polling routine. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{classSerialComm_ae41fa41318c05b57117e3b9be861703b}{remove\+Sensor}} (const std::\+string \&sensor\+Name)
+\begin{DoxyCompactList}\small\item\em This function is used to remove a sensor from the microcontroller\textquotesingle{}s polling routine. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{classSerialComm_aa3c4dd96035ab4334f470fbfdaae7770}{adjust\+Polling\+Rate}} (float rate) const
+\begin{DoxyCompactList}\small\item\em This function sends a command to the microcontroller that adjusts its sensor polling rate. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{classSerialComm_aea12aaa19a5d51dea718de6ca958d109}{reset}} ()
+\begin{DoxyCompactList}\small\item\em This function sends a command to the microcontroller that hard-\/resets the microcontroller. \end{DoxyCompactList}\item 
+bool \doxymbox{\hyperlink{classSerialComm_ac0b31280eff4617795480f173f8854b9}{write\+String}} (const std::\+string \&str)
+\item 
+void \doxymbox{\hyperlink{classSerialComm_a53abb44196987dff0b12709ee244f59a}{read\+Data\+Frame}} (std::\+vector$<$ std::\+unique\+\_\+ptr$<$ \doxymbox{\hyperlink{classSensor}{Sensor}} $>$ $>$ \&sensors)
+\begin{DoxyCompactList}\small\item\em This function reads a single dataframe, parses it, and assigns readings to \doxylink{classSensor}{Sensor} objects. \end{DoxyCompactList}\item 
+\Hypertarget{classSerialComm_a49335bd844798ce814f8b10d14da4bdf}\label{classSerialComm_a49335bd844798ce814f8b10d14da4bdf} 
+void {\bfseries flush} ()
+\begin{DoxyCompactList}\small\item\em This function flushes the input and output serial buffers for the currently opened serial port. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static int \doxymbox{\hyperlink{classSerialComm_a4d8f499c9fb4271240bb4758152c9225}{check}} (enum sp\+\_\+return result)
+\begin{DoxyCompactList}\small\item\em this is a helper function that is used to catch and handle errors in libserialport function calls \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classSerialComm_a1228cf902a5c7ea907099a2d6c097542}\label{classSerialComm_a1228cf902a5c7ea907099a2d6c097542} 
+bool {\bfseries handshakeresult} = false
+\begin{DoxyCompactList}\small\item\em This is used by outside classes to check whether \doxylink{classSerialComm}{Serial\+Comm} is connected to a microcontroller. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \doxymbox{\hyperlink{classSerialComm_aa78bdb936b8006de97ed36f398f7680f}{clean\+Port}} ()
+\begin{DoxyCompactList}\small\item\em this is a helper function used to help wrap memory cleaning operations \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classSerialComm_abdc63039c8b337801cbc3db2f721d1d7}\label{classSerialComm_abdc63039c8b337801cbc3db2f721d1d7} 
+struct sp\+\_\+port \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+port\+\_\+list}
+\begin{DoxyCompactList}\small\item\em This is used to hold pointers to the port structs generated by libserialport.\+sp\+\_\+list\+\_\+ports(). \end{DoxyCompactList}\item 
+\Hypertarget{classSerialComm_a19e90afe4499406d1cb495e7ed352ea7}\label{classSerialComm_a19e90afe4499406d1cb495e7ed352ea7} 
+std::\+vector$<$ std::\+string $>$ {\bfseries m\+\_\+port\+\_\+name\+\_\+list}
+\begin{DoxyCompactList}\small\item\em This is used to store a more accessable form of port identifiers for use in GUI applications. \end{DoxyCompactList}\item 
+\Hypertarget{classSerialComm_afe9e75764581074e91dadeb683e57902}\label{classSerialComm_afe9e75764581074e91dadeb683e57902} 
+struct sp\+\_\+port\+\_\+config \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+default\+\_\+config}
+\begin{DoxyCompactList}\small\item\em This struct is for a default configuration for serial connections. It is configured in the constructor. \end{DoxyCompactList}\item 
+\Hypertarget{classSerialComm_ae7f32325137affe428425a773bd12b7b}\label{classSerialComm_ae7f32325137affe428425a773bd12b7b} 
+struct sp\+\_\+port \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+port} = nullptr
+\begin{DoxyCompactList}\small\item\em This is used across the class to point to the single serial connection that is open for a \doxylink{classProjectPanel}{Project\+Panel}. \end{DoxyCompactList}\item 
+\Hypertarget{classSerialComm_ae211a784cb59b4c45ec59905d1355119}\label{classSerialComm_ae211a784cb59b4c45ec59905d1355119} 
+PORT\+\_\+\+STATUS {\bfseries m\+\_\+port\+\_\+status} = PORT\+\_\+\+CLOSED
+\begin{DoxyCompactList}\small\item\em This is used only internally to make sure that operations aren\textquotesingle{}t attempted on a closed port. \end{DoxyCompactList}\item 
+\Hypertarget{classSerialComm_a16bd88ec01adf0bd0e38ad33223981fd}\label{classSerialComm_a16bd88ec01adf0bd0e38ad33223981fd} 
+std::\+string {\bfseries m\+\_\+port\+Name}
+\begin{DoxyCompactList}\small\item\em Used to add and remove the name of the port from the global set g\+\_\+ports\+\_\+in\+\_\+use. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classSerialComm_a37cfe2c3a0480052a184aece4cfaeedd}\label{classSerialComm_a37cfe2c3a0480052a184aece4cfaeedd} 
+static std::\+set$<$ std::\+string $>$ {\bfseries g\+\_\+ports\+\_\+in\+\_\+use}
+\begin{DoxyCompactList}\small\item\em set of port names to avoid port conflicts between instances of \doxylink{classSerialComm}{Serial\+Comm} \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+This is the class used for all serial-\/related operations in the application. 
+
+This is the Class that is used solely and exclusively by the application for any and all operations involving serial read, serial write, or any serial configuration. It is the single point of access that all other entities should use for any serial operations.
+
+This class specifically, handles configuring, opening, and closing serial ports, and exposes public methods for sending commands to the microcontroller to modify its runtime behavior. 
+
+\label{doc-constructors}
+\Hypertarget{classSerialComm_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classSerialComm_af27895c3ecb34eec66a963a50c05d1cd}\index{SerialComm@{SerialComm}!SerialComm@{SerialComm}}
+\index{SerialComm@{SerialComm}!SerialComm@{SerialComm}}
+\doxysubsubsection{\texorpdfstring{SerialComm()}{SerialComm()}}
+{\footnotesize\ttfamily \label{classSerialComm_af27895c3ecb34eec66a963a50c05d1cd} 
+Serial\+Comm::\+\+Serial\+Comm (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Conducts initial scan of available connections, and creates a default port configuration. 
+
+When run, this constructor will create a port configuration struct defined by the libserialport library. This struct contains the parameters under which a serial port will be opened. By default, the baud rate is set to 115,200.
+
+The function \doxylink{classSerialComm_ae34ca1dca48f4dd153f27f90886f6c2e}{Serial\+Comm::\+scan\+Ports} will also be called, and will load an initial list of available serial connections \Hypertarget{classSerialComm_a078cdbc5a4f8fb081e164948b2afda08}\index{SerialComm@{SerialComm}!````~SerialComm@{\texorpdfstring{$\sim$}{\string~}SerialComm}}
+\index{````~SerialComm@{\texorpdfstring{$\sim$}{\string~}SerialComm}!SerialComm@{SerialComm}}
+\doxysubsubsection{\texorpdfstring{\texorpdfstring{$\sim$}{\string~}SerialComm()}{\string~SerialComm()}}
+{\footnotesize\ttfamily \label{classSerialComm_a078cdbc5a4f8fb081e164948b2afda08} 
+Serial\+Comm::\+\texorpdfstring{$\sim$}{\string~}\+Serial\+Comm (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Necessary for freeing allocated libserialport objects. 
+
+When run, this destructor will free the memory that was allocated for structs defined by the libserialport library to hold port-\/related information. If these resources are not freed, the port channel will be left open, and no other entities will be able to access it. 
+
+\label{doc-func-members}
+\Hypertarget{classSerialComm_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classSerialComm_a68619b82d777575192a519e87caeb6e6}\index{SerialComm@{SerialComm}!addSensor@{addSensor}}
+\index{addSensor@{addSensor}!SerialComm@{SerialComm}}
+\doxysubsubsection{\texorpdfstring{addSensor()}{addSensor()}}
+{\footnotesize\ttfamily \label{classSerialComm_a68619b82d777575192a519e87caeb6e6} 
+void Serial\+Comm::\+add\+Sensor (\begin{DoxyParamCaption}\item[{const std::\+string \&}]{sensor\+Name}{, }\item[{int}]{pin}{}\end{DoxyParamCaption})}
+
+
+
+This function is used to add a sensor to the microcontroller\textquotesingle{}s polling routine. 
+
+This function will confirm if a serial port connection is opened, and if so, will generate and send a command over the opened port to the microcontroller. This command modifies the runtime behavior of the microcontroller by adding a new pin from which readings are polled.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\doxymbox{\texttt{in}}  & {\em sensor\+Name} & This is the name corresponding to the sensor we wish to add. It is needed here because the microcontroller maintains a vector of sensor names, whose order is the same as the actual vector of \doxylink{classSensor}{Sensor} objects owned by each instance of \doxylink{classProjectPanel}{Project\+Panel}. Each name is associated with a pin from which the Microcontroller polls on a scheduled routine. By maintaining this ordered vector, dataframes can be generated in an indexed fashion, and this makes the parsing of dataframes much easier.\\
+\hline
+\doxymbox{\texttt{in}}  & {\em pin} & This is the pin from which the microcontroller will begin to read after receiving the add command.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+Currently, the only entity that should be interacting with this method is the \doxylink{classSensorManager}{Sensor\+Manager} class. Any and all sensor-\/related additions, removals, or modifications, should be done through \doxylink{classSensorManager}{Sensor\+Manager}.
+\end{DoxyNote}
+\begin{DoxyWarning}{Warning}
+This function writes a blind command to the serial output buffer. There is no built-\/in parameter validation, or any safety logic. Undefined behavior may result if this method is invoked without care. For instance, a pin may be specified that does not physically exist on the microcontroller, or a name may be specified two times, with different pins. 
+\end{DoxyWarning}
+\Hypertarget{classSerialComm_aa3c4dd96035ab4334f470fbfdaae7770}\index{SerialComm@{SerialComm}!adjustPollingRate@{adjustPollingRate}}
+\index{adjustPollingRate@{adjustPollingRate}!SerialComm@{SerialComm}}
+\doxysubsubsection{\texorpdfstring{adjustPollingRate()}{adjustPollingRate()}}
+{\footnotesize\ttfamily \label{classSerialComm_aa3c4dd96035ab4334f470fbfdaae7770} 
+void Serial\+Comm::\+adjust\+Polling\+Rate (\begin{DoxyParamCaption}\item[{float}]{rate}{}\end{DoxyParamCaption}) const}
+
+
+
+This function sends a command to the microcontroller that adjusts its sensor polling rate. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em rate} & This is the number that specifies to the microcontroller how many milliseconds to delay \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classSerialComm_a4d8f499c9fb4271240bb4758152c9225}\index{SerialComm@{SerialComm}!check@{check}}
+\index{check@{check}!SerialComm@{SerialComm}}
+\doxysubsubsection{\texorpdfstring{check()}{check()}}
+{\footnotesize\ttfamily \label{classSerialComm_a4d8f499c9fb4271240bb4758152c9225} 
+int Serial\+Comm::\+check (\begin{DoxyParamCaption}\item[{enum sp\+\_\+return}]{result}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+this is a helper function that is used to catch and handle errors in libserialport function calls 
+
+All libserialport function calls return an enum value, based on the result of the function. For instance, if there are no errors, then the enum value returned is SP\+\_\+\+OK. If there is an error of some kind, the enum value will reflect that.
+
+This function is used to wrap around libserialport function calls, and it specifically looks for any error related enum return values, and then handles them -\/ if they occur -\/ inside a switch block. If the enum value is SP\+\_\+\+OK, the function simply returns, and the execution will continue after the function call as normal. \Hypertarget{classSerialComm_aa78bdb936b8006de97ed36f398f7680f}\index{SerialComm@{SerialComm}!cleanPort@{cleanPort}}
+\index{cleanPort@{cleanPort}!SerialComm@{SerialComm}}
+\doxysubsubsection{\texorpdfstring{cleanPort()}{cleanPort()}}
+{\footnotesize\ttfamily \label{classSerialComm_aa78bdb936b8006de97ed36f398f7680f} 
+void Serial\+Comm::\+clean\+Port (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+this is a helper function used to help wrap memory cleaning operations 
+
+This function flushes the incoming and outgoing serial buffers, closes the serial connection to the serial port pointed to by port, and frees the port name for use by other instances of \doxylink{classSerialComm}{Serial\+Comm} by removing the name of the port from the global attribute set g\+\_\+ports\+\_\+in\+\_\+use
+
+
+\begin{DoxyParams}[1]{Parameters}
+\doxymbox{\texttt{out}}  & {\em port} & The private class member pointer to a port struct defined by libserialport \\
+\hline
+\doxymbox{\texttt{out}}  & {\em \doxylink{classSerialComm_a37cfe2c3a0480052a184aece4cfaeedd}{g\+\_\+ports\+\_\+in\+\_\+use}} & The global set of names used by \doxylink{classSerialComm}{Serial\+Comm} instances to check if a port is in use\\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+As a built-\/in safety measure, this function includes a check before anything, that immediately returns if there is not opened port to clean up. This shouldn\textquotesingle{}t be an issue in general, but it doesn\textquotesingle{}t hurt to have redundancy. 
+\end{DoxyNote}
+\Hypertarget{classSerialComm_ac599d67ce83f5f59f2b3d3e3fea37e00}\index{SerialComm@{SerialComm}!getPortList@{getPortList}}
+\index{getPortList@{getPortList}!SerialComm@{SerialComm}}
+\doxysubsubsection{\texorpdfstring{getPortList()}{getPortList()}}
+{\footnotesize\ttfamily \label{classSerialComm_ac599d67ce83f5f59f2b3d3e3fea37e00} 
+struct sp\+\_\+port \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*} Serial\+Comm::\+get\+Port\+List (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+
+
+getter method to return a null-\/terminated array of port structs 
+
+\begin{DoxyReturn}{Returns}
+\+[sp\+\_\+port \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*} port\+\_\+list]\+ 
+\end{DoxyReturn}
+\Hypertarget{classSerialComm_a1676d33f795579aa7f743afd2582c16f}\index{SerialComm@{SerialComm}!handshake@{handshake}}
+\index{handshake@{handshake}!SerialComm@{SerialComm}}
+\doxysubsubsection{\texorpdfstring{handshake()}{handshake()}}
+{\footnotesize\ttfamily \label{classSerialComm_a1676d33f795579aa7f743afd2582c16f} 
+bool Serial\+Comm::\+handshake (\begin{DoxyParamCaption}\item[{std::\+string}]{portname}{}\end{DoxyParamCaption})}
+
+
+
+Performs a handshake with a device over a serial port. 
+
+This function attempts to establish communication with a device connected to the specified serial port by sending a "{}ping\textbackslash{}n"{} message and waiting for a "{}pong\textbackslash{}n"{} response.
+
+The function will:\+
+\begin{DoxyItemize}
+\item Open the specified serial port
+\item Send a "{}ping\textbackslash{}n"{} message
+\item Wait (with timeout) for a response
+\item Read incoming data until a newline character is encountered
+\item Compare the received message against the expected "{}pong"{}
+\end{DoxyItemize}
+
+If the expected response is received, the handshake is considered successful.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\doxymbox{\texttt{in}}  & {\em portname} & The name of the serial port to connect to. \\
+\hline
+\doxymbox{\texttt{out}}  & {\em port} & The private class member pointer to a port struct defined by libserialport\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true If the device responds with "{}pong"{} 
+
+false If the response is incorrect or a timeout/\+error occurs
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em std::\+runtime\+\_\+error} & If the specified port is already in use by another instance\\
+\hline
+\end{DoxyExceptions}
+\begin{DoxyNote}{Note}
+The port is marked as "{}in use"{} upon successful handshake to prevent multiple instances from accessing the same port.
+\end{DoxyNote}
+\begin{DoxyWarning}{Warning}
+This function performs blocking I/\+O operations and may take up to the timeout duration to return. 
+\end{DoxyWarning}
+\Hypertarget{classSerialComm_a53abb44196987dff0b12709ee244f59a}\index{SerialComm@{SerialComm}!readDataFrame@{readDataFrame}}
+\index{readDataFrame@{readDataFrame}!SerialComm@{SerialComm}}
+\doxysubsubsection{\texorpdfstring{readDataFrame()}{readDataFrame()}}
+{\footnotesize\ttfamily \label{classSerialComm_a53abb44196987dff0b12709ee244f59a} 
+void Serial\+Comm::\+read\+Data\+Frame (\begin{DoxyParamCaption}\item[{std::\+vector$<$ std::\+unique\+\_\+ptr$<$ \doxymbox{\hyperlink{classSensor}{Sensor}} $>$ $>$ \&}]{sensors}{}\end{DoxyParamCaption})}
+
+
+
+This function reads a single dataframe, parses it, and assigns readings to \doxylink{classSensor}{Sensor} objects. 
+
+When this function is called, it reads from the serial input buffer exactly one dataframe, which is demarcated by a newline character. The dataframe coming from the microcontroller contains comma separated values, which are indexed according the order of \doxylink{classSensor}{Sensor} objects stored in the vector in \doxylink{classProjectPanel}{Project\+Panel}.
+
+The dataframe is parsed, and each \doxylink{classSensor}{Sensor} is assigned its corresponding reading.
+
+This method is designed to run at a rapid rate on a background polling thread. It simply reads a dataframe, parses it, and assigns values to each \doxylink{classSensor}{Sensor} that has been configured in a project. It does not care what is done with those readings -\/ it simply updates them.
+
+
+\begin{DoxyParams}{Parameters}
+{\em sensors} & This is a reference to an std::\+vector of smart pointers to \doxylink{classSensor}{Sensor} objects owned by \doxylink{classProjectPanel}{Project\+Panel}. It is used to load parsed readings into each \doxylink{classSensor}{Sensor}, using its Sensor::\+set\+Reading() method. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classSerialComm_ae41fa41318c05b57117e3b9be861703b}\index{SerialComm@{SerialComm}!removeSensor@{removeSensor}}
+\index{removeSensor@{removeSensor}!SerialComm@{SerialComm}}
+\doxysubsubsection{\texorpdfstring{removeSensor()}{removeSensor()}}
+{\footnotesize\ttfamily \label{classSerialComm_ae41fa41318c05b57117e3b9be861703b} 
+void Serial\+Comm::\+remove\+Sensor (\begin{DoxyParamCaption}\item[{const std::\+string \&}]{sensor\+Name}{}\end{DoxyParamCaption})}
+
+
+
+This function is used to remove a sensor from the microcontroller\textquotesingle{}s polling routine. 
+
+This function will confirm if a serial port connection is opened, and if so, will generate and send a command over the opened port to the microcontroller. This command modifies the runtime behavior of the microcontroller by removing the specified name from the vector, and its associated pin, from the microcontroller memory.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\doxymbox{\texttt{in}}  & {\em sensor\+Name} & This is the name corresponding to the sensor we wish to Remove. When the microcontroller receives this command, it will remove the entry corresponding to sensor\+Name from the internal vector of names. Additionally, it will clear the mapped entry between sensor\+Name, and its associated pin, from which readings are polled.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+Currently, the only entity that should be interacting with this method is the \doxylink{classSensorManager}{Sensor\+Manager} class. Any and all sensor-\/related additions, removals, or modifications, should be done through \doxylink{classSensorManager}{Sensor\+Manager}.
+\end{DoxyNote}
+\begin{DoxyWarning}{Warning}
+This function writes a blind command to the serial output buffer. There is no built-\/in parameter validation, or any safety logic. Undefined behavior may result if this method is invoked without care. 
+\end{DoxyWarning}
+\Hypertarget{classSerialComm_aea12aaa19a5d51dea718de6ca958d109}\index{SerialComm@{SerialComm}!reset@{reset}}
+\index{reset@{reset}!SerialComm@{SerialComm}}
+\doxysubsubsection{\texorpdfstring{reset()}{reset()}}
+{\footnotesize\ttfamily \label{classSerialComm_aea12aaa19a5d51dea718de6ca958d109} 
+void Serial\+Comm::\+reset (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+This function sends a command to the microcontroller that hard-\/resets the microcontroller. 
+
+This function is necessary, because otherwise, when a \doxylink{classProjectPanel}{Project\+Panel} instance is closed, the microcontroller will continue to stream data according to its last runtime configuration. This constant stream of data will pollute the incoming serial buffer, making future handshake attempts fail.
+
+By invoking this function, the microcontroller clears all runtime-\/configured variables and data, and begins awaiting another handshake command. \Hypertarget{classSerialComm_ae34ca1dca48f4dd153f27f90886f6c2e}\index{SerialComm@{SerialComm}!scanPorts@{scanPorts}}
+\index{scanPorts@{scanPorts}!SerialComm@{SerialComm}}
+\doxysubsubsection{\texorpdfstring{scanPorts()}{scanPorts()}}
+{\footnotesize\ttfamily \label{classSerialComm_ae34ca1dca48f4dd153f27f90886f6c2e} 
+void Serial\+Comm::\+scan\+Ports (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+atomic method for updating a list of serial connections 
+
+When called, this method uses the libserialport sp\+\_\+list\+\_\+ports() to populate the private class member port\+\_\+list with available connections. Port list is a null terminated array of structs defined by libserialport that represent available port connections.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\doxymbox{\texttt{out}}  & {\em port\+\_\+list} & This private member attribute will be updated on each scan. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classSerialComm_ac0b31280eff4617795480f173f8854b9}\index{SerialComm@{SerialComm}!writeString@{writeString}}
+\index{writeString@{writeString}!SerialComm@{SerialComm}}
+\doxysubsubsection{\texorpdfstring{writeString()}{writeString()}}
+{\footnotesize\ttfamily \label{classSerialComm_ac0b31280eff4617795480f173f8854b9} 
+bool Serial\+Comm::\+write\+String (\begin{DoxyParamCaption}\item[{const std::\+string \&}]{str}{}\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em str} & uuuuuuhhh \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+hmmmmmmm 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+include/\+daq\+\_\+capstone/\+serial/\+Serial\+Comm.\+h\item 
+src/\+serial/\+Serial\+Comm.\+cpp\end{DoxyCompactItemize}

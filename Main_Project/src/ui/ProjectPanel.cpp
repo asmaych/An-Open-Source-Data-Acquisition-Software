@@ -27,8 +27,8 @@ ProjectPanel::ProjectPanel(wxWindow* parent, const wxString& title)
 	SetSizer(sizer);
 
 	// ================ serial + sensor ===========
-        //Create SerialComm instance for this project (not connected yet)
-        m_serial = std::make_unique<SerialComm>();
+	//Create SerialComm instance for this project (not connected yet)
+	m_serial = std::make_unique<SerialComm>();
 
 	//create a SensorManager class and point m_sensorManager to it
 	//Note that the sensorManager is given the address of the class
@@ -43,10 +43,9 @@ ProjectPanel::ProjectPanel(wxWindow* parent, const wxString& title)
         }
 
 	//Bind events
-        Bind(wxEVT_SERIAL_UPDATE, &ProjectPanel::onSerialUpdate, this);
-        Bind(wxEVT_HANDSHAKE, &ProjectPanel::onHandshakeSuccess, this);
+	Bind(wxEVT_SERIAL_UPDATE, &ProjectPanel::onSerialUpdate, this);
+	Bind(wxEVT_HANDSHAKE, &ProjectPanel::onHandshakeSuccess, this);
 	Bind(wxEVT_COLLECT_NOW_POINT, &ProjectPanel::onCollectNowGraphPoint, this);
-	std::cout << "333333PP event bound\n";
 
 	//create splitter (graph on top, bottom area below)
 	m_splitter = std::make_unique<wxSplitterWindow>(this, wxID_ANY);
@@ -79,14 +78,6 @@ ProjectPanel::ProjectPanel(wxWindow* parent, const wxString& title)
 
 ProjectPanel::~ProjectPanel()
 {
-	/* \brief	This destructor is explicitly implemented so that:
-	 *
-	 * 		- Threads created during runtime get shut down properly
-	 *
-	 * 		- m_serial SerialComm object can reset the connected
-	 * 		microcontroller configuration so that it can be used
-	 * 		again without problems.
-	 */
 
 	//make sure no run is left active when panel is destroyed
 	m_sensorDB.close();
@@ -864,32 +855,8 @@ void ProjectPanel::exportRun(const std::shared_ptr<Run>& run, const wxString& pa
 
 // ========================== UI ==========================
 
-//helper to parse a csv string from serial frame meaning to go from "23.4,50.1,1013" to vector <double> {23.4, 50.1, 1013}
-std::vector<double> ProjectPanel::parseSerialFrame(const std::string& frame)
-{
-	std::vector<double> values;
-	std::stringstream ss(frame);
-	std::string item;
-
-	//split by comma
-	while (std::getline(ss, item, ','))
-	{
-		try{
-			//convert to double
-			values.push_back(std::stod(item));
-		}
-
-		catch (const std::exception& e){
-			//if parsing fails, store 0.0
-			values.push_back(0.0);
-		}
-	}
-
-	return values;
-}
-
 //only needed if sessionController wants to push raw string frames
-void ProjectPanel::onNewDataFrame(const std::string& frame) {
+void ProjectPanel::onNewDataFrame() {
 	//ignore if run hasn't started
 	if(!m_isRunning || !m_currentRun)
 		return;

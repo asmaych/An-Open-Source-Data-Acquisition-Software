@@ -6,6 +6,13 @@
 #include "string"
 #include "CalibrationTableDialog.h"
 
+/**
+ * @brief GUI object used to allow user to select which Calibrator implementation to configure for a selected Sensor
+ *
+ * When this GUI dialog is created, it displays a list of options to the user.
+ * Each option represents a calibration method that the user can choose.
+ * The calibration method chosen is applied to the sensor which is selected by the user prior to dialog launch.
+ */
 class CalibrateSensorDialog : public wxDialog
 {
 	public: 

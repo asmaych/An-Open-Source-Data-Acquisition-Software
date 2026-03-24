@@ -1,0 +1,77 @@
+\doxysection{Sensor\+Manager Class Reference}
+\hypertarget{classSensorManager}{}\label{classSensorManager}\index{SensorManager@{SensorManager}}
+
+
+Manages all \doxylink{classSensor}{Sensor} related modifications in a single \doxylink{classProjectPanel}{Project\+Panel}.  
+
+
+
+
+{\ttfamily \+\#include $<$Sensor\+Manager.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classSensorManager_a8266f955e6af89c547b85f2218d550b2}\label{classSensorManager_a8266f955e6af89c547b85f2218d550b2} 
+{\bfseries Sensor\+Manager} (std::\+vector$<$ std::\+unique\+\_\+ptr$<$ \doxymbox{\hyperlink{classSensor}{Sensor}} $>$ $>$ \&sensors, \doxymbox{\hyperlink{classSerialComm}{Serial\+Comm}} \texorpdfstring{$\ast$}{*}serial\+Comm)
+\item 
+\Hypertarget{classSensorManager_a00b271f483b2fc70d37823e99d59d2b2}\label{classSensorManager_a00b271f483b2fc70d37823e99d59d2b2} 
+bool {\bfseries add\+Sensor} (std::\+unique\+\_\+ptr$<$ \doxymbox{\hyperlink{classSensor}{Sensor}} $>$ s)
+\item 
+\Hypertarget{classSensorManager_afdea96e353cb709d76a800b360f77a0c}\label{classSensorManager_afdea96e353cb709d76a800b360f77a0c} 
+bool {\bfseries remove\+Sensor} (const std::\+string \&sensor\+Name)
+\item 
+\Hypertarget{classSensorManager_a6d67ac0ef9136f75e8e8115e304982ef}\label{classSensorManager_a6d67ac0ef9136f75e8e8115e304982ef} 
+bool {\bfseries name\+Exists} (const std::\+string \&name)
+\item 
+\Hypertarget{classSensorManager_a29f5e3722968324e3a731f18d85d5de5}\label{classSensorManager_a29f5e3722968324e3a731f18d85d5de5} 
+bool {\bfseries pin\+Exists} (int pin) const
+\item 
+\Hypertarget{classSensorManager_aef899d0195dc1b2b54eafcfba5f5a4ec}\label{classSensorManager_aef899d0195dc1b2b54eafcfba5f5a4ec} 
+void {\bfseries set\+All\+Reading\+Strategy} (const std::\+string \&reading\+\_\+strategy)
+\item 
+\Hypertarget{classSensorManager_ae0de803aeb95e0c1b71278890ade3ec2}\label{classSensorManager_ae0de803aeb95e0c1b71278890ade3ec2} 
+void {\bfseries set\+Reading\+Strategy} (long sensor\+\_\+index, const std::\+string \&reading\+\_\+strategy)
+\item 
+\Hypertarget{classSensorManager_a0f487831d54304e5d84382d69d8ac597}\label{classSensorManager_a0f487831d54304e5d84382d69d8ac597} 
+void {\bfseries set\+Calibration} (long sensor\+\_\+index, std::\+unique\+\_\+ptr$<$ \doxymbox{\hyperlink{classCalibrator}{Calibrator}} $>$ calibrator)
+\item 
+\Hypertarget{classSensorManager_ad1d4e7b80e3e85afaf44556ec1f12de5}\label{classSensorManager_ad1d4e7b80e3e85afaf44556ec1f12de5} 
+std::\+vector$<$ \doxymbox{\hyperlink{structCalibrationPoint}{Calibration\+Point}} $>$ const \texorpdfstring{$\ast$}{*} {\bfseries get\+Sensor\+Calibration} (long sensor\+\_\+index) const
+\item 
+\Hypertarget{classSensorManager_a70a1f604531fbba4b5df8fbe87298b9c}\label{classSensorManager_a70a1f604531fbba4b5df8fbe87298b9c} 
+std::\+vector$<$ \doxymbox{\hyperlink{classSensor}{Sensor}} \texorpdfstring{$\ast$}{*} $>$ {\bfseries get\+Selected\+Sensors} () const
+\item 
+\Hypertarget{classSensorManager_a10c88a1af359e2a73f4a89f7fd6ba5df}\label{classSensorManager_a10c88a1af359e2a73f4a89f7fd6ba5df} 
+void {\bfseries set\+On\+Change\+Callback} (std::\+function$<$ void()$>$ cb)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classSensorManager_a4456ee4a7443872bb3ad7988d2d62c41}\label{classSensorManager_a4456ee4a7443872bb3ad7988d2d62c41} 
+std::\+vector$<$ std::\+unique\+\_\+ptr$<$ \doxymbox{\hyperlink{classSensor}{Sensor}} $>$ $>$ \& {\bfseries m\+\_\+sensors}
+\item 
+\Hypertarget{classSensorManager_ab60fbb9ef7f0dfc5a2cd0127ea0d6b9d}\label{classSensorManager_ab60fbb9ef7f0dfc5a2cd0127ea0d6b9d} 
+\doxymbox{\hyperlink{classSerialComm}{Serial\+Comm}} \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+serial\+Comm}
+\item 
+\Hypertarget{classSensorManager_a9320a8305d1d58e1eb452d2e72446b5f}\label{classSensorManager_a9320a8305d1d58e1eb452d2e72446b5f} 
+std::\+function$<$ void()$>$ {\bfseries m\+\_\+on\+Change}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Manages all \doxylink{classSensor}{Sensor} related modifications in a single \doxylink{classProjectPanel}{Project\+Panel}. 
+
+There is exactly one \doxylink{classSensorManager}{Sensor\+Manager} per project. \doxylink{classSensor}{Sensor} Objects are stored in a vector, owned by \doxylink{classProjectPanel}{Project\+Panel}, and whenever a sensor itself is modified -\/ added, removed, calibrated, etc -\/ the \doxylink{classSensorManager}{Sensor\+Manager} is used to handle this.
+
+\doxylink{classSensorManager}{Sensor\+Manager} performs intermediate logical operations, like parameter validation. It will not allow the vector of \doxylink{classSensor}{Sensor} objects to be modified under erroneous parameters.
+
+\begin{DoxyNote}{Note}
+While modifications to the vector of \doxylink{classSensor}{Sensor} Objects is strictly controlled by \doxylink{classSensorManager}{Sensor\+Manager}, access to the individual \doxylink{classSensor}{Sensor} objects themselves is allowed from anywhere in the application. Typically, this is accomplished by passing raw pointers to the vector -\/ which is owned by \doxylink{classProjectPanel}{Project\+Panel} via unique\+\_\+pointer -\/ to anywhere that needs to actually use a \doxylink{classSensor}{Sensor}. 
+\end{DoxyNote}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+include/\+daq\+\_\+capstone/\+sensor/\+Sensor\+Manager.\+h\item 
+src/\+sensor/\+Sensor\+Manager.\+cpp\end{DoxyCompactItemize}
