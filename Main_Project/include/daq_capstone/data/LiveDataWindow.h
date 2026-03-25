@@ -39,6 +39,10 @@ class LiveDataWindow : public wxPanel
 
 		//theme
 		void applyTheme(Theme theme);
+
+		//replays a complete historical run into the notebook as a read-only tab
+                void addHistoricalRun(std::shared_ptr<Run> run, const std::vector<std::unique_ptr<Sensor>>& sensors);
+
 	private:
 		wxNotebook* m_notebook = nullptr;; //notebook to create tabs
 		wxGrid* m_activeGrid = nullptr; //grid in current tab to display real-time values

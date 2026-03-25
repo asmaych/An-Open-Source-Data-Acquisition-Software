@@ -6,7 +6,7 @@
 #include "HandshakeDialog.h"
 #include "Theme.h"
 #include "Toolbar.h"
-#include "MainFrame.h"
+#include "db/DatabaseManager.h"
 
 /* MainFrame class is the main application window, it contains:
    A toolbar with features like Start, Stop, Collect, Sensor and Graph, 
@@ -24,6 +24,7 @@ class MainFrame : public wxFrame
 	public:
 
 		MainFrame(const wxString& title);
+		~MainFrame();
 
 		//----------------------------------------------------
                 //      PROJECT ACTIONS
@@ -33,6 +34,7 @@ class MainFrame : public wxFrame
 
 		void applyThemeToAll(Theme theme);
 
+		void onPageClose(wxAuiNotebookEvent& evt);
 		//----------------------------------------------------
                 //      HELPER: returns currently selected ProjectPanel
                 //----------------------------------------------------
@@ -52,6 +54,9 @@ class MainFrame : public wxFrame
 
 		//declare the sidebar
 		Sidebar* sidebar = nullptr;
+
+		//db
+		DatabaseManager m_DB;
 
 		//Toolbar pointer (new) = stores a pointer to the toolbar so u can access it later 
 		Toolbar* toolbar = nullptr;

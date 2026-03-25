@@ -53,7 +53,9 @@ bool SensorManager::addSensor(std::unique_ptr<Sensor> s)
 	m_sensors.push_back(std::move(s));
 	std::cout << "successfully put the new sensor in the vector!\n";
 	
-	if(m_onChange) m_onChange();
+	//notify the system to refresh since sensors were added
+	if(m_onChange) 
+		m_onChange();
 	//and terminate the function with true
 	return true;
 }
@@ -109,7 +111,7 @@ bool SensorManager::nameExists(const std::string& name)
 bool SensorManager::pinExists(int pin) const
 {
 	/* \brief	This function takes an int pin as a parameter, and
-	 * 		returns true if no other sensor is already using the
+	 * 		returns true if another sensor is already using the
 	 * 		pin passed as a parameter, otherwise it returns false
 	 */
 
@@ -127,9 +129,14 @@ void SensorManager::setCalibration(long sensor_index, std::unique_ptr<Calibrator
 std::vector<Sensor*> SensorManager::getSelectedSensors() const {
 	std::vector<Sensor*> selected;
 	for (auto& s : m_sensors) {
-		if (s->isSelected()) {
-			 selected.push_back(s.get());
-        	}
+		selected.push_back(s.get());
     	}
     	return selected;
+}
+
+
+//used to clear sensors (was added after integrating db)
+void SensorManager::clearSensors()
+{
+	m_sensors.clear();
 }

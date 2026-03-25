@@ -140,3 +140,56 @@ void LiveDataWindow::applyTheme(Theme theme)
     	Layout();
     	Refresh();
 }
+
+
+/*
+        replays a complete historical run into the notebook as a read only tab
+*/
+void LiveDataWindow::addHistoricalRun(std::shared_ptr<Run> run, const std::vector<std::unique_ptr<Sensor>>& sensors)
+{
+        if(!run || run->getFrames().empty())
+                return;
+
+        //build sensor name list for column headers
+        std::vector<std::string> names;
+        for(auto& s : sensors)
+                names.push_back(s->getName());
+
+        //create the grid for this run
+        wxGrid* grid = new wxGrid(m_notebook, wxID_ANY);
+        grid->SetMinSize(wxSize(200, 150));
+        grid->CreateGrid(0, static_cast<int>(names.size() + 1)); // +1 for time
+        grid->EnableEditing(false);
+        grid->SetRowLabelSize(40);
+
+        wxFont font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+        grid->SetDefaultCellFont(font);
+        grid->SetLabelFont(font);
+
+        grid->SetColLabelValue(0, "Time (s)");
+        for(size_t i = 0; i < names.size(); ++i)
+                grid->SetColLabelValue(i + 1, names[i]);
+
+        //add tab to notebook — NOT set as m_activeGrid
+        wxString title = wxString::Format("Run %zu", run->getRunNumber());
+        m_notebook->AddPage(grid, title, false); // false = don't select this tab
+
+        //fill every row directly into this grid
+        const auto& times  = run->getTimes();
+        const auto& frames = run->getFrames();
+
+        for(size_t i = 0; i < times.size(); ++i){
+                int row = grid -> GetNumberRows();
+                grid->AppendRows(1);
+                grid->SetCellValue(row, 0, wxString::Format("%.3f", times[i]));
+
+                for(size_t j = 0; j < frames[i].size(); ++j)
+                        grid->SetCellValue(row, j + 1, wxString::Format("%.2f", frames[i][j]));
+        }
+
+        //autosize after all data is written
+        CallAfter([grid](){
+                if(grid)
+                        grid -> AutoSizeColumns();
+        });
+}

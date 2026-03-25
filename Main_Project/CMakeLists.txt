@@ -22,6 +22,7 @@ include_directories(
 	${PROJECT_SOURCE_DIR}/include/daq_capstone/serial
 	${PROJECT_SOURCE_DIR}/include/daq_capstone/sensor
 	${PROJECT_SOURCE_DIR}/include/daq_capstone/ui
+	${PROJECT_SOURCE_DIR}/include/daq_capstone/db
 	${PROJECT_SOURCE_DIR}/include/daq_capstone/processing
 
 )
@@ -32,7 +33,6 @@ add_executable(daq_capstone
 	src/sensor/Sensor.cpp
 	src/sensor/SensorManager.cpp
 	src/sensor/Interpolator.cpp
-	src/sensor/SensorDatabase.cpp
 	src/data/DataTableWindow.cpp
 	src/data/LiveDataWindow.cpp
 	src/data/GraphWindow.cpp
@@ -53,6 +53,7 @@ add_executable(daq_capstone
 	src/ui/CalibrateSensorDialog.cpp
 	src/ui/CalibrationTableDialog.cpp
 	src/ui/ProjectConfigDialog.cpp
+	src/db/DatabaseManager.cpp
 
 )
 

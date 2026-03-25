@@ -19,9 +19,12 @@
 #include "controllers/SessionController.h"
 #include "MainFrame.h"
 
-ProjectPanel::ProjectPanel(wxWindow* parent, const wxString& title)
+ProjectPanel::ProjectPanel(wxWindow* parent, const wxString& title, DatabaseManager* db)
 	: wxPanel(parent, wxID_ANY)
 {
+	m_projectName = title;
+	m_DB = db;
+
 	//one sizer for the entire panel
 	wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 	SetSizer(sizer);
@@ -36,17 +39,10 @@ ProjectPanel::ProjectPanel(wxWindow* parent, const wxString& title)
 	//project-specific instance of SerialComm to get readings.
 	m_sensorManager = std::make_unique<SensorManager>(m_sensors, m_serial.get());
 
-	// =============== sensor database ============
-        //open or create the sensor db
-        if(!m_sensorDB.open("sensors.db")){
-                wxMessageBox("Failed to open sensor db!", "Database Error");
-        }
-
 	//Bind events
         Bind(wxEVT_SERIAL_UPDATE, &ProjectPanel::onSerialUpdate, this);
         Bind(wxEVT_HANDSHAKE, &ProjectPanel::onHandshakeSuccess, this);
 	Bind(wxEVT_COLLECT_NOW_POINT, &ProjectPanel::onCollectNowGraphPoint, this);
-	std::cout << "333333PP event bound\n";
 
 	//create splitter (graph on top, bottom area below)
 	m_splitter = std::make_unique<wxSplitterWindow>(this, wxID_ANY);
@@ -88,8 +84,6 @@ ProjectPanel::~ProjectPanel()
 	 * 		again without problems.
 	 */
 
-	//make sure no run is left active when panel is destroyed
-	m_sensorDB.close();
 	stopRun();
 
 	//reset the connected arduino if it exists using the SerialComm instance
@@ -125,6 +119,15 @@ void ProjectPanel::onHandshakeSuccess(wxThreadEvent& evt)
 	handshakeComplete = true;
 
 	wxLogStatus("Handshake successful!");
+
+	//if project_sensors were loaded from DB before connecting, then we need to  register them with the microcontroller now
+	if(!m_sensors.empty()){
+        	std::cout << "Registering " << m_sensors.size() << " preloaded sensors with ESP32\n";
+        	for(const auto& sensor : m_sensors){
+            		m_serial->addSensor(sensor -> getName(), sensor -> getPin());
+            		std::cout << "  -> sent: " << sensor -> getName() << " pin " << sensor -> getPin() << "\n";
+        	}
+    	}
 
 	//Create the session controller
 	m_controller = std::make_unique<SessionController>(m_serial.get(), &m_runs, this, &m_sensors);
@@ -206,6 +209,18 @@ void ProjectPanel::startRun()
 	//start live display for this run
 	m_liveWindow -> startNewRun(m_currentRun, m_sensors);
 
+	//create run in db
+	if(m_saveProjectToDB && m_projectId >= 0){
+		m_currentRunId = m_DB -> createRun(m_projectId);
+		std::cout << "Run created in DB: runId=" << m_currentRunId << " for projectId=" << m_projectId <<"\n";
+	}
+
+	std::cout << "Sensors available for experiment: " << m_sensors.size()  << "\n";
+
+	for (auto& s : m_sensors) {
+    		std::cout << " -> " << s->getName() << " pin " << s->getPin() << std::endl;
+	}
+
 	Layout(); //force layout update
 }
 
@@ -220,6 +235,11 @@ void ProjectPanel::stopRun()
 	m_liveWindow -> stopRun();
 
 	m_isRunning = false;
+
+	//save UI state
+	if(m_saveProjectToDB && m_projectId >= 0){
+		m_DB -> saveUIState(m_projectId, graphVisible, liveVisible, collectNowVisible);
+	}
 }
 
 // ========================= DATA FLOW ==========================
@@ -233,6 +253,9 @@ void ProjectPanel::onSerialUpdate(wxThreadEvent& evt)
 
 	auto values = evt.GetPayload<std::vector<double>>(); //where each element is a sensor value
 
+	if(values.empty())
+		return;
+
 	//current OS time in seconds
 	double now = wxGetUTCTimeMillis().ToDouble() / 1000.0;
 
@@ -241,6 +264,22 @@ void ProjectPanel::onSerialUpdate(wxThreadEvent& evt)
 
 	//store permanently in the run object
 	m_currentRun -> addFrame(t, values);
+
+	//save frames to db
+	if(m_saveProjectToDB && m_currentRunId >= 0){
+		//create the frame first
+	 	int frameId = m_DB->createFrame(m_currentRunId, t);
+
+    		if(frameId >= 0){
+			for(size_t i = 0; i < values.size(); i++){
+		        	//use sensor ID instead of name
+            			int sensorId = m_DB -> getSensorID(m_sensors[i] -> getName());
+
+            			m_DB -> saveFrameValue(frameId, sensorId, values[i]);
+        		}
+
+    		}
+	}
 
 	//display it
 	m_liveWindow -> addFrame(t, values);
@@ -305,23 +344,27 @@ void ProjectPanel::updateLayout()
     	else if (!graphVisible && !liveVisible && collectNowVisible){
 		if(m_bottom_splitter -> IsSplit())
 			m_bottom_splitter -> Unsplit();
-		m_tableWindow -> Show();
-		m_bottom_splitter -> Initialize(m_tableWindow.get());
-		m_splitter -> Initialize(m_bottom_splitter.get());
-  	}
+		if(m_tableWindow){
+			m_tableWindow -> Show();
+			m_bottom_splitter -> Initialize(m_tableWindow.get());
+			m_splitter -> Initialize(m_bottom_splitter.get());
+  		}
+	}
 
 	 // ========= GRAPH + COLLECT =========
     	else if (graphVisible && !liveVisible && collectNowVisible){
  		if(m_bottom_splitter -> IsSplit())
                         m_bottom_splitter -> Unsplit();
 
-		m_tableWindow -> Show();
-		m_graphWindow -> Show();
+		if(m_tableWindow){
+			m_tableWindow -> Show();
+			m_graphWindow -> Show();
 
-		m_bottom_splitter -> Initialize(m_tableWindow.get());
-		m_splitter -> Initialize(m_graphWindow.get());
-		m_splitter->SplitHorizontally(m_graphWindow.get(), m_bottom_splitter.get(),GetSize().GetHeight() * 0.6);
-        }
+			m_bottom_splitter -> Initialize(m_tableWindow.get());
+			m_splitter -> Initialize(m_graphWindow.get());
+			m_splitter->SplitHorizontally(m_graphWindow.get(), m_bottom_splitter.get(),GetSize().GetHeight() * 0.6);
+        	}
+	}
 
     	// ========= LIVE + COLLECT =========
     	else if (!graphVisible && liveVisible && collectNowVisible){
@@ -329,12 +372,12 @@ void ProjectPanel::updateLayout()
                         m_bottom_splitter -> Unsplit();
 
 		m_liveWindow -> Show();
-	   	m_tableWindow -> Show();
-
-		m_bottom_splitter -> Initialize(m_liveWindow.get());
-	        m_bottom_splitter -> SplitVertically(m_liveWindow.get(), m_tableWindow.get());
-
-		m_splitter -> Initialize(m_bottom_splitter.get());
+		if(m_tableWindow){
+		   	m_tableWindow -> Show();
+			m_bottom_splitter -> Initialize(m_liveWindow.get());
+	        	m_bottom_splitter -> SplitVertically(m_liveWindow.get(), m_tableWindow.get());
+			m_splitter -> Initialize(m_bottom_splitter.get());
+		}
 	}
 
     	// ========= ALL THREE =========
@@ -344,11 +387,13 @@ void ProjectPanel::updateLayout()
 
 		m_graphWindow -> Show();
         	m_liveWindow -> Show();
-        	m_tableWindow -> Show();
+		if(m_tableWindow){
+	        	m_tableWindow -> Show();
 
-		//graph on top while table and collectNow are sidebyside
-		m_bottom_splitter -> Initialize(m_liveWindow.get());
-     		m_bottom_splitter -> SplitVertically(m_liveWindow.get(), m_tableWindow.get());
+			//graph on top while table and collectNow are sidebyside
+			m_bottom_splitter -> Initialize(m_liveWindow.get());
+     			m_bottom_splitter -> SplitVertically(m_liveWindow.get(), m_tableWindow.get());
+		}
 
 		m_splitter -> Initialize(m_graphWindow.get());
 		m_splitter -> SplitHorizontally(m_graphWindow.get(), m_bottom_splitter.get(), GetSize().GetHeight() * 0.6);
@@ -374,6 +419,7 @@ void ProjectPanel::collectCurrentValues()
 	//no values received
 	bool hasData = false;
         const auto& frames = m_currentRun -> getFrames();
+	const auto& times = m_currentRun -> getTimes();
         for (const auto& frame : frames){
                 if(!frame.empty()) {
                         hasData = true;
@@ -386,6 +432,10 @@ void ProjectPanel::collectCurrentValues()
                 return;
         }
 
+	//get the very last frame and timestamp recorded
+	const std::vector<double>& lastValues = frames.back();
+	double lastT = times.back();
+
 	if(!m_tableWindow){
 		std::vector<std::shared_ptr<DataSession>> sessions;
                 sessions.push_back(std::make_shared<DataSession>("Time")); //first column
@@ -393,7 +443,6 @@ void ProjectPanel::collectCurrentValues()
                         sessions.push_back(std::make_shared<DataSession>(s -> getName()));
 
                 m_tableWindow = std::make_unique<DataTableWindow>(m_bottom_splitter.get(), sessions, m_currentRun);
-//                m_tableWindow -> applyTheme(m_currentTheme); //inherit theme
 	}
 
 	updateLayout();
@@ -410,39 +459,60 @@ void ProjectPanel::onCollectNowGraphPoint(wxCommandEvent& evt)
 		return;
 
 	//get the row of data sent by DataTableWindow (time § sensor values)
-	//evt.GetClientData stores a pointer to std::vector<double>
+	//evt.GetClientData stores a pointer to std::vector<double> of format [time, sensor1_val, sensor2_val..]
 	auto row = static_cast<std::vector<double>*>(evt.GetClientData());
 
 	//if times & frames are empty
 	if(!row || row -> empty())
 		return;
 
+	//first element is always time (x-axis)
 	double time = (*row)[0];
 
-	//for each sensor value
-	for(size_t i = 1; i < row -> size(); ++i){
-		double value = (*row)[i];
+	// ============ DB ==============
+	/* we only save if:
+		- project saving is enabled
+		- a valid run is currently active
+		- each collected point is saved per sensor meaning: row[1] -> sensor 0, row [2] -> sensor 1
+	*/
+    	if(m_saveProjectToDB && m_currentRunId >= 0){
+        	for(size_t i = 1; i < row->size(); ++i){
+            		//ensure we don't go out of bounds
+			if(i - 1 < m_sensors.size()){
+				//get sensor name from current project sensor list then retrieve its global DB id
+                		int sensorId = m_DB -> getSensorID(m_sensors[i-1]->getName());
+				//save collected point into db to the right run, sensor, using the right timestamp & collected value
+                		m_DB -> saveCollectPoint(m_currentRunId, sensorId, time, (*row)[i]);
+            		}
+        	}
+        	std::cout << "Collect point saved at t = " << time << "\n";
+    	}
 
-		if(i - 1 < m_sensors.size()){
-			//generate the curve id exactly as used in addCurve()
-			size_t sensorIndex = i - 1;
-			size_t runNumber = m_currentRun -> getRunNumber();
-			std::string curveId = "run" + std::to_string(runNumber) + "_sensor" + std::to_string(sensorIndex);
-			//add the point to the graph
-			m_graphWindow -> addDemandPoint(curveId, time, value);
-		}
-	}
-	delete row;
+    	//draw the highlighted circle on the graph
+    	for(size_t i = 1; i < row->size(); ++i){
+        	double value = (*row)[i];
+
+        	if(i - 1 < m_sensors.size()){
+            		size_t sensorIndex = i - 1;
+			//each curve is identified by runX_sensorY which ensures multiple runs are seperated and multiple sensors are tracked per run
+            		size_t runNumber = m_currentRun -> getRunNumber();
+            		std::string curveId = "run" + std::to_string(runNumber) + "_sensor" + std::to_string(sensorIndex);
+            		m_graphWindow -> addDemandPoint(curveId, time, value);
+        	}
+    	}
+
+	//to avoid memory leaks we gotta delet the row vector manually
+    	delete row;
 }
+
 
 // ============================ RESET ============================
 
 //clears all runs and all live data, everything starts from scratch
 void ProjectPanel::resetSessionData()
 {
-	if(!m_currentRun){
-                //wxMessageBox("No active run to reset!", "Error", wxOK | wxICON_ERROR);
-                return;
+	if(!m_currentRun && m_runs.empty()){
+               	return;
         }
 
 	//clear live and graph
@@ -472,6 +542,20 @@ void ProjectPanel::resetSessionData()
 	if (m_splitter && m_splitter -> IsSplit())
         	m_splitter -> Unsplit();
 
+	// =========== DB CLEANUP ==========
+	//delete this session's runs from DB
+/*    	if(m_saveProjectToDB && m_projectId >= 0){
+        	for(auto& run : m_runs){
+            		//only delete runs that have a DB ID, loaded historical runs are in m_runs but we don't track their DB IDs here,
+            		// so we can only delete the current session's run so for now, delete the current run ID if it exists.
+        	}
+        	//delete the current run's frames and the run itself
+        	if(m_currentRunId >= 0){
+            		m_DB -> deleteRun(m_currentRunId);
+            		m_currentRunId = -1;
+        	}
+    	}
+*/
 	// Reset state flags
     	graphVisible = false;
     	liveVisible = false;
@@ -563,6 +647,9 @@ void ProjectPanel::graphRun(const std::shared_ptr<Run>& run)
 	auto& times = run -> getTimes();  //vector<double> of times
 	auto& frames = run -> getFrames(); // (vector<vector<double>>: rows = time, columns = sensors)
 
+	if(frames.empty() || frames[0].empty())
+		return;
+
 	size_t sensorCount = frames[0].size();
 	size_t runNumber = run -> getRunNumber();
 
@@ -624,27 +711,37 @@ const std::vector<std::unique_ptr<Sensor>>& ProjectPanel::getSensors() const
 	return m_sensors;
 }
 
+bool ProjectPanel::shouldSaveProject() const
+{
+	return m_saveProjectToDB;
+}
+
+int ProjectPanel::getProjectID() const
+{
+	return m_projectId;
+}
 
 // ======================== EXPORT ==========================
 void ProjectPanel::exportSessions(wxCommandEvent& evt)
 {
-	ProjectPanel* panel = this;
+	//allow export if we have either a current run or historical runs, cause when a project is loaded, m_currentRun is null but m_runs has data
+    	bool hasCurrent = (m_currentRun != nullptr);
+    	bool hasAny = (!m_runs.empty());
 
-	// =========== Error handling ============
-	if(!m_currentRun){
-		//wxMessageBox("No active run to export!", "Error", wxOK | wxICON_ERROR);
-		return;
-	}
+    	if(!hasCurrent && !hasAny)
+        	return;
 
-	//check if the current run actually contains any data
-	bool hasData = false;
-	const auto& frames = m_currentRun -> getFrames();
-	for (const auto& frame : frames){
-		if(!frame.empty()) {
-			hasData = true;
-			break;
-		}
-	}
+    	//for export purposes, use m_currentRun if it exists, otherwise fall back to the last loaded historical run
+    	std::shared_ptr<Run> runToExport = m_currentRun ? m_currentRun : m_runs.back();
+
+    	//check that the run actually contains data
+    	bool hasData = false;
+    	for(const auto& frame : runToExport -> getFrames()){
+        	if(!frame.empty()){
+        	    	hasData = true;
+            		break;
+        	}
+    	}
 
 	//abort export if run has no data
 	if(!hasData){
@@ -703,9 +800,9 @@ void ProjectPanel::exportSessions(wxCommandEvent& evt)
 	bool didExport = false;
 
 	//continuous run export to csv
-	if(cbContinuous -> IsChecked() && m_currentRun)
+	if(cbContinuous -> IsChecked() && runToExport)
 	{
-		exportRun(m_currentRun, path + "_collect_continuous.csv");
+		exportRun(runToExport, path + "_collect_continuous.csv");
 		didExport = true;
 	}
 
@@ -732,6 +829,7 @@ void ProjectPanel::exportSessions(wxCommandEvent& evt)
 
 	wxMessageBox("Export Complete!", "Info", wxOK | wxICON_INFORMATION);
 }
+
 
 // ===================== HELPERS TO EXPORT ==================
 wxString ProjectPanel::askSaveFile(wxWindow* parent)
@@ -913,6 +1011,22 @@ void ProjectPanel::onNewDataFrame(const std::string& frame) {
 	//store in the current run
 	m_currentRun -> addFrame(t, values);
 
+
+	// ========= SAVE TO DATABASE ========
+    	//write frames to the DB
+    	if(m_saveProjectToDB && m_currentRunId >= 0){
+        	//create the frame row first to get a frame ID
+        	int frameId = m_DB->createFrame(m_currentRunId, t);
+
+        	if(frameId >= 0){
+            		//save each sensor's value linked to this frame
+            		for(size_t i = 0; i < values.size(); i++){
+                		int sensorId = m_DB -> getSensorID(m_sensors[i] -> getName());
+                		m_DB -> saveFrameValue(frameId, sensorId, values[i]);
+            		}
+        	}
+    	}
+
 	//push this frame to the live graph window
 	if(m_liveWindow)
 		m_liveWindow -> addFrame(t, values);
@@ -926,8 +1040,178 @@ void ProjectPanel::onNewDataFrame(const std::string& frame) {
 void ProjectPanel::onSensors()
 {
 	//launch the SensorConfigDialog chain
-	SensorConfigDialog dlg(this, "Sensor Configuration", m_serial.get(), m_sensorManager.get(), &m_sensorDB, m_sensors);
+	SensorConfigDialog dlg(this, "Sensor Configuration", m_serial.get(), m_sensorManager.get(), m_DB, m_sensors);
 	dlg.ShowModal();
+}
+
+
+// ================== LOAD PROJECT FROM DB ==============
+void ProjectPanel::loadProjectFromDatabase()
+{
+	std::cout << "DEBUG load: m_projectId=" << m_projectId << "\n";
+
+	// ========= LOAD PROJECT_SENSORS ==========
+	//ensure that the pointer exists and a valid id has been assigned
+	if(!m_DB || m_projectId < 0)
+		return;
+
+	// ========== FULL RESET =========
+    	//clear all in-memory state before loading so that calling this function multiple times always produces a clean slate with no duplicate curves or tabs
+        if(m_isRunning)
+    	    stopRun();
+
+    	if(m_graphWindow)
+        	m_graphWindow -> clear();
+
+    	if(m_liveWindow)
+        	m_liveWindow -> clearAll();
+
+    	if(m_tableWindow){
+        	if(m_bottom_splitter && m_bottom_splitter -> IsSplit())
+            		m_bottom_splitter -> Unsplit();
+        	m_tableWindow.reset();
+    	}
+
+    	m_runs.clear();
+    	m_currentRun.reset();
+    	m_currentRunId  = -1;
+    	m_isRunning     = false;
+    	graphVisible      = false;
+    	liveVisible       = false;
+    	collectNowVisible = false;
+
+	//clear existing sensors before loding new ones
+	m_sensorManager -> clearSensors();
+	m_sensors.clear();
+
+	//we retrieve the sensors that were used in the project from the project_sensors table & save them in a vector <name, pin>
+	//each sensor is reconstructed as a sensor object and pushed into m_sensors. SensorManager sees them immediately through its refrence to m_sensors
+	std::vector<std::pair<std::string, int>> sensors;
+
+	m_DB -> loadProjectSensors(m_projectId, sensors);
+
+	std::cout << "Sensors retrieved from db: " << sensors.size() << std::endl;
+
+	if(sensors.empty())
+		return;
+
+	for(auto& [name, pin] : sensors){
+		//push the unique_ptr into m_sensors, SensorManager will see it immediately due to the refrence that it has to m_sensors
+		//no second registration step is needed cause there is exactly one unique_ptr per sensor object
+		m_sensors.push_back(std::make_unique<Sensor>(name, pin));
+	}
+
+	std::cout << "SensorManager now has: " << sensors.size() << " sensors\n";
+
+	//send loaded sensors to microcontroller if connected
+	if(m_serial && m_serial->handshakeresult){
+   		for(const auto& s : m_sensors)
+        		m_serial -> addSensor(s->getName(), s->getPin());
+	}
+
+	// ========= UI STATE ==========
+        //load user interface state cause the db stores which windows were visible when the project was last saved
+        //we load before populating so the user can see the historical data even without running new experiemnt
+	bool graph, live, collect;
+
+        m_DB -> loadUIState(m_projectId, graph, live, collect);
+
+        //apply the loaded visibility states to the project panel ones
+        graphVisible = graph;
+        liveVisible = live;
+        collectNowVisible = collect;
+
+
+	// ======== LOAD ALL PREVIOUS RUNS FROM DB ======
+	//(db_run_id, run_number)
+	std::vector<std::pair<int,int>> runRows;
+	m_DB -> loadProjectRuns(m_projectId, runRows);
+
+	std::cout << "Runs retrieved from db: " << runRows.size() << "\n";
+
+	for(auto& [dbRunId, runNumber] : runRows){
+		//create the run object with its original run number
+		auto run = std::make_shared<Run>(runNumber);
+
+		//load every frame that belongs to this run
+		std::vector<std::pair<double, std::vector<double>>> frames;
+		m_DB -> loadRunFrames(dbRunId, m_sensors, frames);
+
+		for(auto& [t, values] : frames)
+			run -> addFrame(t, values);
+
+		//store it in the project's run list
+		m_runs.push_back(run);
+
+		//draw it on the graph and display it if it has data
+		if(!run -> getFrames().empty()){
+			//restore the graph curves for this run
+        		graphRun(run);
+
+        		//restore the live data notebook tab for this run
+        		//startNewRun creates the tab and column headers, then we replay every frame row by row into the grid.
+        		m_liveWindow -> addHistoricalRun(run, m_sensors);
+    		}
+
+		std::cout << " Run " << runNumber << " loaded with " << run -> getFrames().size() << " frames\n";
+	}
+
+	// ========= UI STATE ==========
+	//if collect-now was visible, we need m_tableWindow to exist before updateLayout() tries to show it, otherwise the splitter has nothing to display and the layout silently does nothing
+    	if(collectNowVisible && !m_runs.empty()){
+        	std::vector<std::shared_ptr<DataSession>> sessions;
+        	sessions.push_back(std::make_shared<DataSession>("Time"));
+        	for(auto& sensor : m_sensors)
+            		sessions.push_back(std::make_shared<DataSession>(sensor -> getName()));
+
+		//associate the table with the last loaded run
+    	    	m_tableWindow = std::make_unique<DataTableWindow>(m_bottom_splitter.get(), sessions, m_runs.back());
+
+		if(!runRows.empty()){
+        		int lastDbRunId = runRows.back().first;
+
+        		std::vector<std::tuple<double,int,double>> points;
+       			m_DB -> loadCollectPoints(lastDbRunId, points);
+
+        		std::cout << "Collect points loaded: " << points.size() << "\n";
+
+        		//group by timestamp where one collect event creates one row per sensor
+        		std::map<double, std::vector<double>> rowMap;
+
+        		for(auto& [t, sensorId, value] : points)
+            			if(rowMap.find(t) == rowMap.end())
+                			rowMap[t] = std::vector<double>(m_sensors.size(), 0.0);
+
+        		for(auto& [t, sensorId, value] : points)
+            			for(size_t i = 0; i < m_sensors.size(); ++i)
+                			if(m_DB -> getSensorID(m_sensors[i] -> getName()) == sensorId){
+                    				rowMap[t][i] = value;
+                    				break;
+                			}
+
+			//restore table rows
+        		for(auto& [t, sensorValues] : rowMap){
+            			std::vector<double> row;
+            			row.push_back(t);
+            			row.insert(row.end(), sensorValues.begin(), sensorValues.end());
+            			m_tableWindow -> appendRow(row);
+        		}
+
+			//restore red circles on graph using the same curve ID
+        	       for(auto& [t, sensorValues] : rowMap){
+            			for(size_t i = 0; i < sensorValues.size(); ++i){
+		  	              std::string curveId = "run" + std::to_string(m_runs.back() -> getRunNumber()) + "_sensor" + std::to_string(i);
+
+                			m_graphWindow -> addDemandPoint(curveId, t, sensorValues[i]);
+            			}
+        		}
+
+        		std::cout << "Collect points restored: " << rowMap.size() << " rows\n";
+    		}
+	}
+
+	//update layout
+	CallAfter([this](){ updateLayout();});
 }
 
 
@@ -970,6 +1254,7 @@ void ProjectPanel::applyTheme(Theme theme)
     	//force the panel to redraw itself using the new colors
     	Refresh();
 }
+
 
 void ProjectPanel::adjustSampleRate(const float rate) const {
 	/* \brief	This function handles the event that the button for

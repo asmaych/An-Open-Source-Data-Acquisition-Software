@@ -4,7 +4,7 @@
 #include "SerialComm.h"
 #include "SensorManager.h"
 #include "SensorSelectionDialog.h"
-#include "sensor/SensorDatabase.h"
+#include "db/DatabaseManager.h"
 #include <wx/listctrl.h>
 #include <wx/wx.h>
 
@@ -15,7 +15,7 @@ class SensorConfigDialog : public wxDialog
 				const wxString& title,
 			       	SerialComm* serialComm,
 			       	SensorManager* sensorManager,
-				SensorDatabase* sensorDatabase,
+				DatabaseManager* Database,
 				std::vector<std::unique_ptr<Sensor>>& sensors);
 
 
@@ -29,7 +29,7 @@ class SensorConfigDialog : public wxDialog
 		//send commands to the connected microcontroller
 		SerialComm* m_serialComm;
 
-		SensorDatabase* m_sensorDatabase;
+		DatabaseManager* m_DB;
 
 		//a raw pointer to the vector of sensors is passed into this
 		//dialog, so that this dialog can add or remove sensors from

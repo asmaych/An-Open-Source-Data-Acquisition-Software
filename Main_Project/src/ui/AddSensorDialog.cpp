@@ -9,7 +9,8 @@ AddSensorDialog::AddSensorDialog(
 				wxWindow* parent,
 				const wxString& title,
 				SensorManager* sensorManager,
-				SensorDatabase* sensorDatabase)
+				DatabaseManager* Database,
+				int projectID)
 	: wxDialog(
 			parent,
 			wxID_ANY,
@@ -19,13 +20,14 @@ AddSensorDialog::AddSensorDialog(
 			wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER
 			),
 	m_sensorManager(sensorManager),
-	m_sensorDatabase(sensorDatabase)
+	m_Database(Database),
+	m_projectID(projectID)
 {
 
 	//-----------------------------------------------------------------
 	//ADD CONTROLS
 	//-----------------------------------------------------------------
-	
+
 	wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
 
 	//NAME FIELD:
@@ -60,6 +62,8 @@ void AddSensorDialog::onAddPressed(wxCommandEvent& evt)
 	//get the name from the box and convert to std::string
 	std::string name = name_field->GetValue().ToStdString();
 
+	//trim the str (remove spaces at the end)
+	name.erase(name.find_last_not_of(" \n\r\t")+1);
 	//get and validate the integer pin from pin_field
 	long pinValue = 0;
 	if (!pin_field->GetValue().ToLong(&pinValue) || pinValue < 1 || pinValue > 20)
@@ -78,11 +82,27 @@ void AddSensorDialog::onAddPressed(wxCommandEvent& evt)
 	{
 		std::cout << "Sensor added to project successfully\n";
 
-		//save to db if user wants
-		if(m_saveToDB && m_saveToDB -> IsChecked()){
-			m_sensorDatabase -> saveSensors(name);
-			std::cout << "Sensor saved to db: " << name << "\n";
+		if(m_Database){
+			//always save the template first, unconditionally
+			m_Database -> saveSensorTemplate(name);
+
+			//if checkbox is checked, mark as user-saved, make it appear in "Load from Database".
+    			if(m_saveToDB->GetValue()){
+        			m_Database -> markSensorAsSaved(name);
+        			std::cout << "Sensor '" << name << "' saved to catalogue\n";
+    			}
+
+			//always link to project if one exists
+			if(m_projectID >= 0){
+				//retrieve sensor id from sensors table
+				int sensorID = m_Database -> getSensorID(name);
+
+				if(sensorID >= 0){
+					m_Database -> saveProjectSensor(m_projectID, sensorID, static_cast<int>(pinValue));
+				}
+			}
 		}
+
 		//exit the dialog
 		EndModal(wxID_OK);
 	}
