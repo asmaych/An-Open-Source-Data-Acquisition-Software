@@ -938,7 +938,7 @@ void ProjectPanel::applyTheme(Theme theme)
     	Refresh();
 }
 
-void ProjectPanel::adjustSampleRate(const float rate) const {
+void ProjectPanel::adjustSampleRate(const float rate) {
 	/* \brief	This function handles the event that the button for
 * 		adding a new sensor is pressed in the dialog interface.
 *
@@ -957,15 +957,19 @@ void ProjectPanel::adjustSampleRate(const float rate) const {
 	}
 
 	//convert the desired hz into a millisecond delay value
-	const float ms_delay = 1000/rate;
+	m_sampleRate = 1000/rate;
 
 	//set the arduino sampling rate to the required value
-	m_serial->adjustPollingRate(ms_delay);
+	m_serial->adjustPollingRate(m_sampleRate);
 
 	//now update the value being used in the background thread.
-	m_controller->setInterval(ms_delay);
+	m_controller->setInterval(m_sampleRate);
 }
 
 SensorManager * ProjectPanel::getSensorManager() const {
 	return m_sensorManager.get();
+}
+
+float ProjectPanel::getSampleRate() const{
+	return m_sampleRate;
 }
