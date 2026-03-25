@@ -107,9 +107,11 @@ class ProjectPanel : public wxPanel
 		void updateLayout(); //to handle the new ui logic
 		void onSensors(); //open sensor selection/management dialog
 		void applyTheme(Theme theme); //black/light theme
-		void adjustSampleRate(float rate) const;
+		void adjustSampleRate(float rate);
 
 		SensorManager * getSensorManager() const;
+
+		float getSampleRate() const;
 
 		//MainFrame needs this to change toolbar state
 		void setMainFrame(MainFrame* frame) {m_mainFrame = frame;}
@@ -131,9 +133,6 @@ class ProjectPanel : public wxPanel
 		bool isRunning() const;
 		bool isConnected() const;
 		const std::vector<std::unique_ptr<Sensor>>& getSensors() const;
-
-		//parse csv string into vector<double>
-		std::vector<double> parseSerialFrame(const std::string& frame);
 
 		//used to update layout when buttons pressed
 		void setGraphVisible(bool visible) {graphVisible = visible; }
@@ -195,12 +194,14 @@ class ProjectPanel : public wxPanel
 		double m_runStartTime = 0.0;
 
 		//Events sent from background serial thread
-                void onHandshakeSuccess(wxThreadEvent& evt);
-                void onSerialUpdate(wxThreadEvent& evt);
+		void onHandshakeSuccess(wxThreadEvent& evt);
+		void onSerialUpdate(wxThreadEvent& evt);
 
 		//State flags
 		bool m_isRunning = false;
 
 		//database lives as long as the project
 		SensorDatabase m_sensorDB;
+
+		float m_sampleRate{50};
 };

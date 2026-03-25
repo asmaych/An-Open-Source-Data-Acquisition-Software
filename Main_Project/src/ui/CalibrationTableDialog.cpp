@@ -83,8 +83,6 @@ void CalibrationTableDialog::loadCalibrationPoints(const std::vector<Calibration
 		int rowcounter{0};
 
 		for (auto [raw, mapped] : table) {
-			std::cout << "raw; " << raw << "mapped: " << mapped << "\n";
-
 			m_grid->SetCellValue(rowcounter,0,std::to_wstring(raw));
 			m_grid->SetCellValue(rowcounter,1,std::to_wstring(mapped));
 			rowcounter++;
@@ -152,13 +150,10 @@ void CalibrationTableDialog::onOkPressed(wxCommandEvent& evt)
 		return;
 	}
 
-	std::cout << "testing\n";
-
 	//make an interpolator object, and pass it along to sensorManager to assign it to a sensor
 	std::unique_ptr<Interpolator> interpolator = std::make_unique<Interpolator>(std::move(m_table));
 
-	std::cout << "HEY YA\n";
-
+	//move ownership of the Interpolator object to the Sensor being calibrated
 	m_sensorManager->setCalibration(m_sensor_index, std::move(interpolator));
 
 	this->EndModal(wxID_OK);
