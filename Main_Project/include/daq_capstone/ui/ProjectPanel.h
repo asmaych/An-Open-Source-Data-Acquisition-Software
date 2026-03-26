@@ -107,7 +107,7 @@ class ProjectPanel : public wxPanel
 		void updateLayout(); //to handle the new ui logic
 		void onSensors(); //open sensor selection/management dialog
 		void applyTheme(Theme theme); //black/light theme
-		void adjustSampleRate(float rate);
+		void adjustSampleRate(int rate);
 
 		SensorManager * getSensorManager() const;
 

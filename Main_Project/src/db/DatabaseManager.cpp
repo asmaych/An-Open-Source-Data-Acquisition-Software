@@ -85,7 +85,8 @@ void DatabaseManager::createTables()
     		CREATE TABLE IF NOT EXISTS projects(
         		id INTEGER PRIMARY KEY AUTOINCREMENT,
         		name TEXT UNIQUE,
-        		created_at TEXT
+        		created_at TEXT,
+				sample_rate INTEGER NOT NULL DEFAULT 50
     		);
 
     		CREATE TABLE IF NOT EXISTS project_sensors(
@@ -387,6 +388,85 @@ int DatabaseManager::getProjectID(const std::string& name)
     	return id;
 }
 
+bool DatabaseManager::saveProjectSampleRate(int id, float samplerate) {
+	if (!m_db) {
+		std::cerr << "Database not initialized.\n";
+		return false;
+	}
+
+	// Use a parameterized query safely
+	const char* sql = "UPDATE projects SET sample_rate = ? WHERE id = ?;";
+
+	sqlite3_stmt* stmt = nullptr;
+	if (sqlite3_prepare_v2(m_db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+		std::cerr << "Prepare failed: " << sqlite3_errmsg(m_db) << "\n";
+		return false;
+	}
+
+	// Bind sampleRate
+	if (sqlite3_bind_double(stmt, 1, samplerate) != SQLITE_OK) {
+		std::cerr << "Bind sampleRate failed: " << sqlite3_errmsg(m_db) << "\n";
+		sqlite3_finalize(stmt);
+		return false;
+	}
+
+	// Bind project_id
+	if (sqlite3_bind_int(stmt, 2, id) != SQLITE_OK) {
+		std::cerr << "Bind id failed: " << sqlite3_errmsg(m_db) << "\n";
+		sqlite3_finalize(stmt);
+		return false;
+	}
+
+	// Execute
+	if (sqlite3_step(stmt) != SQLITE_DONE) {
+		std::cerr << "Execution failed: " << sqlite3_errmsg(m_db) << "\n";
+		sqlite3_finalize(stmt);
+		return false;
+	}
+
+	sqlite3_finalize(stmt);
+	return true;
+}
+
+
+bool DatabaseManager::loadProjectSampleRate(int project_id, float& sampleRate)
+{
+	if (!m_db) {
+		std::cerr << "Database not initialized.\n";
+		return false;
+	}
+
+	const char* sql = "SELECT sample_rate FROM projects WHERE id = ?;";
+
+	sqlite3_stmt* stmt = nullptr;
+	if (sqlite3_prepare_v2(m_db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+		std::cerr << "Prepare failed: " << sqlite3_errmsg(m_db) << "\n";
+		return false;
+	}
+
+	// Bind project_id
+	if (sqlite3_bind_int(stmt, 1, project_id) != SQLITE_OK) {
+		std::cerr << "Bind project_id failed: " << sqlite3_errmsg(m_db) << "\n";
+		sqlite3_finalize(stmt);
+		return false;
+	}
+
+	int rc = sqlite3_step(stmt);
+	if (rc == SQLITE_ROW) {
+		sampleRate = static_cast<float>(sqlite3_column_double(stmt, 0));
+	} else if (rc == SQLITE_DONE) {
+		std::cerr << "No project found with project_id = " << project_id << "\n";
+		sqlite3_finalize(stmt);
+		return false;
+	} else {
+		std::cerr << "Execution failed: " << sqlite3_errmsg(m_db) << "\n";
+		sqlite3_finalize(stmt);
+		return false;
+	}
+
+	sqlite3_finalize(stmt);
+	return true;
+}
 
 /*
 	saves a sensor used in a specific project
@@ -708,7 +788,6 @@ bool DatabaseManager::loadRunFrames(int runId, const std::vector<std::unique_ptr
     	sqlite3_finalize(frameStmt);
     	return true;
 }
-
 
 /*
 	loads all collect points for a run as (time, sensor_id, value) tuples

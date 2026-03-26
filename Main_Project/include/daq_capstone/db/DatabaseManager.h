@@ -57,6 +57,10 @@ class DatabaseManager
 		//get projectID by name
 		int getProjectID(const std::string& name);
 
+		bool saveProjectSampleRate(int id, float samplerate);
+
+		bool loadProjectSampleRate(int project_id, float &sampleRate);
+
 		//save sensors for the specific project
 		bool saveProjectSensor(int projectId, int sensorId, int pin);
 

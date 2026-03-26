@@ -1085,6 +1085,12 @@ void ProjectPanel::loadProjectFromDatabase()
         		m_serial -> addSensor(s->getName(), s->getPin());
 	}
 
+	//LOAD SAMPLE RATE FROM DB
+	float temp_rate{0};
+	m_DB -> loadProjectSampleRate(m_projectId, temp_rate);
+	adjustSampleRate(temp_rate);
+
+
 	// ========= UI STATE ==========
         //load user interface state cause the db stores which windows were visible when the project was last saved
         //we load before populating so the user can see the historical data even without running new experiemnt
@@ -1231,7 +1237,7 @@ void ProjectPanel::applyTheme(Theme theme)
     	Refresh();
 }
 
-void ProjectPanel::adjustSampleRate(const float rate) {
+void ProjectPanel::adjustSampleRate(const int rate) {
 	/* \brief	This function handles the event that the button for
 * 		adding a new sensor is pressed in the dialog interface.
 *
@@ -1257,6 +1263,9 @@ void ProjectPanel::adjustSampleRate(const float rate) {
 
 	//now update the value being used in the background thread.
 	m_controller->setInterval(m_sampleRate);
+
+	//and update the database
+	m_DB ->saveProjectSampleRate(m_projectId, m_sampleRate);
 }
 
 SensorManager * ProjectPanel::getSensorManager() const {
