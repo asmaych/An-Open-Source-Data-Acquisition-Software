@@ -3,8 +3,9 @@
 #include <wx/wx.h>
 #include "Sensor.h"
 #include "SensorManager.h"
-#include "sensor/SensorDatabase.h"
+#include "db/DatabaseManager.h"
 #include <string>
+#include "ProjectPanel.h"
 
 /**
  * @brief GUI object used to allow user-entry of new Sensor parameters.
@@ -20,7 +21,9 @@ class AddSensorDialog : public wxDialog
 				wxWindow* parent,
 				const wxString& title,
 				SensorManager* sensorManager,
-				SensorDatabase* sensorDatabase);
+				DatabaseManager* Database,
+				int projectID
+				);
 	private:
 		//------------------------------------------------------
 		//CLASS MEMBERS
@@ -42,7 +45,10 @@ class AddSensorDialog : public wxDialog
 		wxCheckBox* m_saveToDB;
 
 		//pointer to db
-		SensorDatabase* m_sensorDatabase;
+		DatabaseManager* m_Database;
+
+		//id for the project this dialog belongs to
+		int m_projectID;
 
 		//------------------------------------------------------
 		//EVENT HANDLERS
