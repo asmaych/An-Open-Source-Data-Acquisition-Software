@@ -223,4 +223,8 @@ class ProjectPanel : public wxPanel
 		int m_currentRunId = -1;
 
 		float m_sampleRate{50};
+
+		bool projecthasbeenloaded = false;
+
+		int m_hz{0};
 };

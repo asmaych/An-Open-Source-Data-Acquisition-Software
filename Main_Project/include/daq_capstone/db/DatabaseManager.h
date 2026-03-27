@@ -59,7 +59,7 @@ class DatabaseManager
 
 		bool saveProjectSampleRate(int id, float samplerate);
 
-		bool loadProjectSampleRate(int project_id, float &sampleRate);
+		bool loadProjectSampleRate(int project_id, int &sampleRate);
 
 		//save sensors for the specific project
 		bool saveProjectSensor(int projectId, int sensorId, int pin);

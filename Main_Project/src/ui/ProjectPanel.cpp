@@ -132,6 +132,9 @@ void ProjectPanel::onHandshakeSuccess(wxThreadEvent& evt)
 	//Create the session controller
 	m_controller = std::make_unique<SessionController>(m_serial.get(), &m_runs, this, &m_sensors);
 
+	if (projecthasbeenloaded)
+		adjustSampleRate(m_hz);
+
 	//start polling immediately
 	m_controller -> start();
 }
@@ -1024,6 +1027,8 @@ void ProjectPanel::onSensors()
 // ================== LOAD PROJECT FROM DB ==============
 void ProjectPanel::loadProjectFromDatabase()
 {
+	projecthasbeenloaded = true;
+
 	std::cout << "DEBUG load: m_projectId=" << m_projectId << "\n";
 
 	// ========= LOAD PROJECT_SENSORS ==========
@@ -1056,6 +1061,9 @@ void ProjectPanel::loadProjectFromDatabase()
     	liveVisible       = false;
     	collectNowVisible = false;
 
+	m_DB -> loadProjectSampleRate(m_projectId, m_hz);
+	std::cout << "the loaded sample rate is: " << m_hz << "\n";
+
 	//clear existing sensors before loding new ones
 	m_sensorManager -> clearSensors();
 	m_sensors.clear();
@@ -1084,11 +1092,6 @@ void ProjectPanel::loadProjectFromDatabase()
    		for(const auto& s : m_sensors)
         		m_serial -> addSensor(s->getName(), s->getPin());
 	}
-
-	//LOAD SAMPLE RATE FROM DB
-	float temp_rate{0};
-	m_DB -> loadProjectSampleRate(m_projectId, temp_rate);
-	adjustSampleRate(temp_rate);
 
 
 	// ========= UI STATE ==========
@@ -1254,6 +1257,7 @@ void ProjectPanel::adjustSampleRate(const int rate) {
 		wxMessageBox("Please connect with a microcontroller first!");
 		return;
 	}
+
 
 	//convert the desired hz into a millisecond delay value
 	m_sampleRate = 1000/rate;

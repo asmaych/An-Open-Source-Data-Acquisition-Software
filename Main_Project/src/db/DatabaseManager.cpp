@@ -429,7 +429,7 @@ bool DatabaseManager::saveProjectSampleRate(int id, float samplerate) {
 }
 
 
-bool DatabaseManager::loadProjectSampleRate(int project_id, float& sampleRate)
+bool DatabaseManager::loadProjectSampleRate(int project_id, int& sampleRate)
 {
 	if (!m_db) {
 		std::cerr << "Database not initialized.\n";
