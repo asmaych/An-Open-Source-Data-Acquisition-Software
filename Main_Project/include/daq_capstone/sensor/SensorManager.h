@@ -50,6 +50,10 @@ class SensorManager
 
 		std::vector<CalibrationPoint> const *getSensorCalibration(long sensor_index) const;
 
+
+		//clear sensors
+		void clearSensors();
+
 		//helper to get all selected sensors
 		std::vector<Sensor*> getSelectedSensors() const;
 		void setOnChangeCallback(std::function<void()> cb);

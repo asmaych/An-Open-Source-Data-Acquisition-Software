@@ -11,7 +11,7 @@ SensorConfigDialog::SensorConfigDialog(wxWindow* parent,
 					const wxString& title,
 					SerialComm* serialComm,
 					SensorManager* sensorManager,
-					SensorDatabase* sensorDatabase,
+					DatabaseManager* Database,
 					std::vector<std::unique_ptr<Sensor>>& sensors)
 	: wxDialog(
 			parent,
@@ -22,7 +22,7 @@ SensorConfigDialog::SensorConfigDialog(wxWindow* parent,
 			wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER),
 	m_serialComm(serialComm),
 	m_sensorManager(sensorManager),
-	m_sensorDatabase(sensorDatabase),
+	m_DB(Database),
 	m_sensors(sensors)
 		
 {
@@ -120,10 +120,12 @@ void SensorConfigDialog::onAddSensorPressed(wxCommandEvent& evt)
 		return;
 	}
 
+	ProjectPanel* project = dynamic_cast<ProjectPanel*>(GetParent());
+	int projectID = (project && project -> shouldSaveProject()) ? project -> getProjectID() : -1;
 
 	//simply launch the AddSensorDialog and pass along the
 	//SensorManager pointer to the new dialog
-	AddSensorDialog sensor_add_dialog(this, "Configure New Sensor", m_sensorManager, m_sensorDatabase);
+	AddSensorDialog sensor_add_dialog(this, "Configure New Sensor", m_sensorManager, m_DB, projectID);
 
 	//implicitly set the dialog to modal, and see
 	//if it returns wxID_OK to indicate a successful 
@@ -280,7 +282,7 @@ void SensorConfigDialog::onLoadFromDatabasePressed(wxCommandEvent& evt)
 	std::vector<std::string> names;
 
 	//call loadSensorNames function to read the sensors table from the db and fills the vector with all stored names
-	m_sensorDatabase -> loadSensors(names);
+	m_DB -> loadSensorTemplates(names);
 
 	//if db is empty, let the user know
 	if(names.empty()){
@@ -297,6 +299,10 @@ void SensorConfigDialog::onLoadFromDatabasePressed(wxCommandEvent& evt)
 
 	//get selected sensor indexes
 	auto selectedIndexes = selectionDialog.getSelectedIndexes();
+
+	//get the project id from the parent panel so we can link loaded sensors to this project in project_sensors
+	ProjectPanel* project = dynamic_cast<ProjectPanel*>(GetParent());
+	int projectID = (project && project -> shouldSaveProject()) ? project -> getProjectID() : -1;
 
 	//for each sensor template
 	for(int index : selectedIndexes){
@@ -317,10 +323,18 @@ void SensorConfigDialog::onLoadFromDatabasePressed(wxCommandEvent& evt)
 			continue;
 		}
 
-		//create a real sensor object
-		m_sensorManager -> addSensor(std::make_unique<Sensor>(selectedName, pin));
+		//add the sensor to the project in memory.
+        	if(m_sensorManager -> addSensor(std::make_unique<Sensor>(selectedName, pin))){
+           	 	//link this sensor to the project in project_sensors
+            		if(projectID >= 0){
+                		int sensorID = m_DB->getSensorID(selectedName);
+                		if(sensorID >= 0){
+                    			m_DB->saveProjectSensor(projectID, sensorID, pin);
+                    			std::cout << "Loaded sensor '" << selectedName << "' linked to project " << projectID << "\n";
+                		}
+            		}
+		}
 	}
-
 	//refresh the ui table, so the user can see the newly added sensors
 	populateTable();
 }

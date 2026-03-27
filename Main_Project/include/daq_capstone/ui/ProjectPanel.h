@@ -13,7 +13,7 @@
 #include "data/Run.h"
 #include "data/GraphWindow.h"
 #include "data/LiveDataWindow.h"
-#include "sensor/SensorDatabase.h"
+#include "db/DatabaseManager.h"
 #include "Events.h"
 
 /* ProjectPanel class represents one project tab, it contains:
@@ -24,7 +24,7 @@
 class SerialComm;
 class Sensor;
 class SensorManager;
-class SensorDatabase;
+class DatabaseManager;
 class Run;
 class DataSession;
 class LiveDataWindow;
@@ -46,12 +46,12 @@ class ProjectPanel : public wxPanel
 {
 	public:
 		/**
-		 * @brief Used to initialize all wxWidgets controls and class attributes, and bind event handlers to the controls.
-		 *
-		 * @param parent Wxwidgets enforces strict inheritance of other wxwidgets objects. This one inherits from MainFrame
-		 * @param title This is the name that the user is prompted to enter in MainFrame::onNewProject()
-		 */
-		ProjectPanel(wxWindow* parent, const wxString& title);
+		* @brief Used to initialize all wxWidgets controls and class attributes, and bind event handlers to the controls.
+		*
+		* @param parent Wxwidgets enforces strict inheritance of other wxwidgets objects. This one inherits from MainFrame
+		* @param title This is the name that the user is prompted to enter in MainFrame::onNewProject()
+		*/
+		ProjectPanel(wxWindow* parent, const wxString& title, DatabaseManager* db);
 
 		/**
 		 *	@brief	Closes the database, shuts down the background polling thread, and resets the microcontroller
@@ -107,7 +107,7 @@ class ProjectPanel : public wxPanel
 		void updateLayout(); //to handle the new ui logic
 		void onSensors(); //open sensor selection/management dialog
 		void applyTheme(Theme theme); //black/light theme
-		void adjustSampleRate(float rate);
+		void adjustSampleRate(int rate);
 
 		SensorManager * getSensorManager() const;
 
@@ -138,6 +138,13 @@ class ProjectPanel : public wxPanel
 		void setGraphVisible(bool visible) {graphVisible = visible; }
 		void setLiveVisible(bool visible) {liveVisible = visible; }
 		void setCollectNowVisible(bool visible) {collectNowVisible = visible; }
+
+		//functions to save project in db
+		void setProjectId(int id) {m_projectId = id;}
+		int getProjectID() const;
+		void setSaveProject(bool value) { m_saveProjectToDB = value;}
+		void loadProjectFromDatabase();
+		bool shouldSaveProject() const; //used to know if project should persist
 
 		//Mainframe needs access to sensors for selection dialogs
 		std::vector<std::unique_ptr<Sensor>> m_sensors;
@@ -201,7 +208,23 @@ class ProjectPanel : public wxPanel
 		bool m_isRunning = false;
 
 		//database lives as long as the project
-		SensorDatabase m_sensorDB;
+		DatabaseManager* m_DB = nullptr;
+
+		//project id
+		int m_projectId = -1;
+
+		//do we save/not save project to db
+		bool m_saveProjectToDB = false;
+
+		//project name
+		wxString m_projectName;
+
+		//run id for db
+		int m_currentRunId = -1;
 
 		float m_sampleRate{50};
+
+		bool projecthasbeenloaded = false;
+
+		int m_hz{0};
 };

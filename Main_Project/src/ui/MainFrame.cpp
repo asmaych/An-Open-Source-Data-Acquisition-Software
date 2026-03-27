@@ -11,6 +11,11 @@
 //Constructor for MainFrame - sets up the application shell
 MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxSize(1100, 700))
 {
+	//open db at software start
+	if(!m_DB.open("../daq_database.db")){
+		wxMessageBox("Failed to open database!", "Database Error");
+	}
+
 	//set up wxAuiManager to manage this frame
 	m_mgr.SetManagedWindow(this);
 
@@ -18,9 +23,9 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title, w
 	CreateStatusBar();
 
 
-		//--------------------------------------------------------------
-        //      CREATE TOOLBAR:
-        //--------------------------------------------------------------
+	//--------------------------------------------------------------
+	//      CREATE TOOLBAR:
+	//--------------------------------------------------------------
 
 	// The toolbar will appear at the top of the window.
 	toolbar = new Toolbar(this);
@@ -96,6 +101,8 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title, w
 	//listen for "new project" events from sidebar/menu
 	Bind(wxEVT_PROJECT_NEW, &MainFrame::onNewProject, this);
 
+	m_notebook -> Bind(wxEVT_AUINOTEBOOK_PAGE_CLOSE, &MainFrame::onPageClose, this);
+
 	//listen for theme toggle events from toolbar -> ProjectConfigDialog
 	Bind(wxEVT_THEME_TOGGLE, &MainFrame::toggleTheme, this);
 
@@ -118,6 +125,14 @@ Theme MainFrame::getTheme() {
 	return m_theme;
 }
 
+
+//destructor to ensure that the db closes properly
+MainFrame::~MainFrame()
+{
+	m_DB.close();
+}
+
+
 //getCurrentProjectPanel that returns the currently selected projectPanel or nullptr if no project is open
 ProjectPanel* MainFrame::getCurrentProjectPanel()
 {
@@ -136,13 +151,42 @@ void MainFrame::onNewProject(wxCommandEvent&)
 	if(name.IsEmpty())
 		return;
 
-	//create new project panel
-	auto* panel = new ProjectPanel(m_notebook, name);
-	panel -> setMainFrame(this);
+	int projectID = -1;
+
+    	//ask user if they want to save this project
+        int answer = wxMessageBox("Do you want to save this project in the database?", "Save Project", wxYES_NO | wxICON_QUESTION);
+
+	 if(answer == wxYES){
+        	//create the project in db and get its ID
+        	projectID = m_DB.createProject(name.ToStdString());
+
+        	if(projectID < 0){
+            		wxMessageBox("Failed to save project in database!", "Error");
+        	}
+        	else{
+            		wxLogStatus("Project saved in DB with ID: %d", projectID);
+        	}
+    	}
+
+    	//create the project panel
+        auto* panel = new ProjectPanel(m_notebook, name, &m_DB);
+
+	//store db project ID in panel
+    	if(projectID >= 0){
+        	panel -> setProjectId(projectID);
+		panel -> setSaveProject(true);
+	}
+	else{
+		panel -> setProjectId(-1);
+		panel -> setSaveProject(false);
+	}
+
+    	panel -> setMainFrame(this);
 
 	//add it as a new notebook tab
 	m_notebook -> AddPage(panel, name, true);
 
+	//tell toolbar which project is current
 	toolbar -> setCurrentProject(panel);
 
 	wxLogStatus("Project created: %s", name);
@@ -150,10 +194,62 @@ void MainFrame::onNewProject(wxCommandEvent&)
 
 void MainFrame::onOpenProject(wxCommandEvent& evt)
 {
-        //TODO implement this with sqlite
+        //create a vector to store project names
+	std::vector<std::string> projects;
 
-        //Display an informative message to users in status bar
-        wxLogStatus("TODO - Opening an existing project...");
+	//ask the db manager to load all project names from db to the vector
+	m_DB.loadProjects(projects);
+
+	//if the vector is empty, display a message
+	if(projects.empty()){
+		wxMessageBox("No projects found in database!");
+		return;
+	}
+
+	//we create a list of choices for the user
+	wxArrayString choices;
+
+	for(auto& project : projects)
+		choices.Add(project);
+
+	//create the dialog to display the choices
+	wxSingleChoiceDialog dlg(this, "Select project", "Open project", choices);
+
+	//if the user presses cancel, forget about it
+	if(dlg.ShowModal() != wxID_OK)
+		return;
+
+	//get the selected project name
+	wxString name = dlg.GetStringSelection();
+
+	//the projects are saved by id
+	int projectID = m_DB.getProjectID(name.ToStdString());
+
+	if(projectID < 0){
+		wxMessageBox("Could not find project in Database!", "Error");
+		return;
+	}
+
+	//create a new project panel where m_notebook is the parent notebook, name is the project name, and pointer for db manager
+	auto* panel = new ProjectPanel(m_notebook, name, &m_DB);
+
+	//store the project id inside the panel so the panel knows which project it belongs to
+	panel -> setProjectId(projectID);
+	panel -> setSaveProject(true);
+
+	panel -> setMainFrame(this);
+
+	//load all project data from the db
+	panel -> loadProjectFromDatabase();
+
+	//add the new panel as a tab in the notebook
+	m_notebook -> AddPage(panel, name, true);
+
+	//inform the toolbar which project panel is currently active
+	toolbar -> setCurrentProject(panel);
+
+	//display a log status indicating what project was loaded
+	wxLogStatus("Project loaded: %s", name);
 }
 
 
@@ -179,4 +275,40 @@ void MainFrame::applyThemeToAll(Theme theme)
 
 	//force to repaint
 	Refresh();
+}
+
+
+//this fires before the panel is destroyed, so toggleStartStop() runs cleanly, it sends stop to the esp32, calls stopRun which saves
+//the ui state to DB, and clears m_isRunning
+void MainFrame::onPageClose(wxAuiNotebookEvent& evt)
+{
+    	//get the panel that is about to be closed
+    	int pageIndex = evt.GetSelection();
+    	if(pageIndex == wxNOT_FOUND){
+        	evt.Skip();
+        	return;
+    	}
+
+    	ProjectPanel* panel = dynamic_cast<ProjectPanel*>(m_notebook->GetPage(pageIndex));
+
+    	if(!panel){
+        	evt.Skip();
+        	return;
+    	}
+
+    	//if an experiment is running, stop it cleanly before closing, this ensures the esp32 is told to stop streaming, thus ui saved cleanly
+        if(panel -> isRunning()){
+        	//tell the microcontroller to stop streaming
+        	panel -> toggleStartStop();
+
+		toolbar -> setRunning(false);
+
+         	std::cout << "Run stopped on project close\n";
+    	}
+
+    	//update the toolbar if the closed tab was the active one
+    	toolbar -> setCurrentProject(nullptr);
+
+    	//allow the close to proceed
+    	evt.Skip();
 }
