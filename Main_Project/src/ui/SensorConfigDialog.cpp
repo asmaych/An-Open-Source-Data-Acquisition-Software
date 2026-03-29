@@ -171,6 +171,14 @@ void SensorConfigDialog::onRemoveSensorPressed(wxCommandEvent& evt)
 	//get the sensors name corresponding to the selection
 	wxString sensor_name = m_list->GetItemText(selected_sensor);
 
+	//get the pin from column 1 of the list
+    	wxListItem pinItem;
+    	pinItem.SetId(selected_sensor);
+    	pinItem.SetColumn(1);
+    	pinItem.SetMask(wxLIST_MASK_TEXT);
+    	m_list -> GetItem(pinItem);
+    	int pin = wxAtoi(pinItem.GetText());
+
 	//now use sensorManager to remove it after confirming
 	if (wxMessageBox(
 			"Remove selected sensor?",
@@ -178,7 +186,7 @@ void SensorConfigDialog::onRemoveSensorPressed(wxCommandEvent& evt)
 			wxYES_NO | wxICON_QUESTION) ==wxYES)
 	{
 		//remove it
-		m_sensorManager->removeSensor(sensor_name.ToStdString());
+		m_sensorManager->removeSensor(sensor_name.ToStdString(), pin);
 
 	}
 

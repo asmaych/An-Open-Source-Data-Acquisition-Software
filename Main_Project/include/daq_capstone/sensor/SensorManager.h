@@ -33,7 +33,7 @@ class SensorManager
 		bool addSensor(std::unique_ptr<Sensor> s);
 
 		//a general method for removing existing sensors
-		bool removeSensor(const std::string& sensorName);
+		bool removeSensor(const std::string& sensorName, int pin);
 
 		//checker function to make sure we don't have duplicate names
 		bool nameExists(const std::string& name);

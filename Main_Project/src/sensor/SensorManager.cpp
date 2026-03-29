@@ -39,8 +39,8 @@ bool SensorManager::addSensor(std::unique_ptr<Sensor> s)
 
 	std::cout << "oopsy looks like we've been called to add a new sensorrr\n";
 
-	//if either the name or pin already exist:
-	if (nameExists(s->getName()) || pinExists(s->getPin()))
+	//if pin exists throw a message
+	if (pinExists(s->getPin()))
 	{
 		//do not modify the vector, return false
 		std::cout << "Pin already used!\n";
@@ -64,7 +64,7 @@ bool SensorManager::addSensor(std::unique_ptr<Sensor> s)
 	return true;
 }
 
-bool SensorManager::removeSensor(const std::string& sensorName)
+bool SensorManager::removeSensor(const std::string& sensorName, int pin)
 {
 	/* \brief 	This function takes the name of a sensor in the 
 	 * 		vector, and uses it to search for, and remove the
@@ -78,7 +78,7 @@ bool SensorManager::removeSensor(const std::string& sensorName)
 	auto it = std::remove_if(
 			m_sensors.begin(),
 			m_sensors.end(),
-			[&](const std::unique_ptr<Sensor>& s){return s->getName() == sensorName; });
+			[&](const std::unique_ptr<Sensor>& s){return s -> getName() == sensorName && s -> getPin() == pin; });
 
 	//if our iterator got to the end without finding the sensor
 	//then there is some kind of problem with the naming, so we

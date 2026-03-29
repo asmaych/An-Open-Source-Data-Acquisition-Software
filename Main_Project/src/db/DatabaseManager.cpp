@@ -78,15 +78,15 @@ void DatabaseManager::createTables()
 
     		CREATE TABLE IF NOT EXISTS sensors(
         		id INTEGER PRIMARY KEY AUTOINCREMENT,
-        		name TEXT UNIQUE,
+        		name TEXT NOT NULL UNIQUE,
 			user_saved INTEGER NOT NULL DEFAULT 0
 		);
 
     		CREATE TABLE IF NOT EXISTS projects(
         		id INTEGER PRIMARY KEY AUTOINCREMENT,
-        		name TEXT UNIQUE,
+        		name TEXT NOT NULL UNIQUE,
         		created_at TEXT,
-				sample_rate INTEGER NOT NULL DEFAULT 50
+			sample_rate INTEGER NOT NULL DEFAULT 50
     		);
 
     		CREATE TABLE IF NOT EXISTS project_sensors(
@@ -95,7 +95,6 @@ void DatabaseManager::createTables()
         		sensor_id INTEGER NOT NULL,
         		pin INTEGER NOT NULL,
 
-			UNIQUE(project_id, sensor_id),
 			UNIQUE(project_id, pin),
 
 			FOREIGN KEY(project_id) REFERENCES projects(id),
@@ -104,34 +103,37 @@ void DatabaseManager::createTables()
 
     		CREATE TABLE IF NOT EXISTS runs(
         		id INTEGER PRIMARY KEY AUTOINCREMENT,
-        		project_id INTEGER,
+        		project_id INTEGER NOT NULL,
         		start_time TEXT,
         		end_time TEXT,
+
 			FOREIGN KEY(project_id) REFERENCES projects(id)
     		);
 
     		CREATE TABLE IF NOT EXISTS frames(
         		id INTEGER PRIMARY KEY AUTOINCREMENT,
-        		run_id INTEGER,
+        		run_id INTEGER NOT NULL,
         		time REAL,
 			FOREIGN KEY(run_id) REFERENCES runs(id)
     		);
 
 		CREATE TABLE IF NOT EXISTS frame_values(
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
-    			frame_id INTEGER,
-    			sensor_id INTEGER,
+    			frame_id INTEGER NOT NULL,
+    			sensor_id INTEGER NOT NULL,
     			value REAL,
+
 			FOREIGN KEY(frame_id) REFERENCES frames(id),
         		FOREIGN KEY(sensor_id) REFERENCES sensors(id)
 		);
 
     		CREATE TABLE IF NOT EXISTS collect_points(
         		id INTEGER PRIMARY KEY AUTOINCREMENT,
-        		run_id INTEGER,
-        		sensor_id INTEGER,
+        		run_id INTEGER NOT NULL,
+        		sensor_id INTEGER NOT NULL,
 			time REAL,
            		value REAL,
+
 			FOREIGN KEY(run_id) REFERENCES runs(id),
         		FOREIGN KEY(sensor_id) REFERENCES sensors(id)
     		);
@@ -141,6 +143,7 @@ void DatabaseManager::createTables()
         		graph_visible INTEGER,
         		live_visible INTEGER,
         		collect_visible INTEGER,
+
 			FOREIGN KEY(project_id) REFERENCES projects(id)
     		);
 
