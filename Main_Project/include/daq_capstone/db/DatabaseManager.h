@@ -4,6 +4,8 @@
 #include <vector>
 #include <memory>
 #include "sensor/Sensor.h"
+#include "CalibrationPoint.h"
+
 /*
 	DatabaseManager class is responsible for:
 	    - opening a SQLite db
@@ -96,6 +98,24 @@ class DatabaseManager
 
 		//load UI visibility state for a prject
 		bool loadUIState(int projectId, bool& graph, bool& live, bool& collect);
+
+		//saves or overwrites the global calibration for a sensor template
+		bool saveGlobalCalibration(int sensorId, const std::string& type, const std::vector<CalibrationPoint>& points);
+
+		//saves or replaces the calibration for one sensor instance in a project
+		bool saveProjectCalibration(int projectId, int sensorId, int pin, const std::string& type, const std::vector<CalibrationPoint>& points);
+
+		//loads the global calibration for a sensor template
+		bool loadGlobalCalibration(int sensorId, std::string& type, std::vector<CalibrationPoint>& points);
+
+		//loads the calibration for one sensor in a project
+		bool loadProjectCalibration(int projectId, int sensorId, int pin, std::string& type, std::vector<CalibrationPoint>& points);
+
+		//returns true if a global calibration exists for this sensor_id
+		bool hasGlobalCalibration(int sensorId);
+
+		//returns true if a project calibration exists for this specific sensor
+		bool hasProjectCalibration(int projectId, int sensorId, int pin);
 
 		//transaction helpers for DAQ performance cause without them the SQL is super slow
 		void beginTransaction();

@@ -101,6 +101,45 @@ void DatabaseManager::createTables()
 			FOREIGN KEY(sensor_id) REFERENCES sensors(id)
     		);
 
+		CREATE TABLE IF NOT EXISTS sensor_calibrations(
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			sensor_id INTEGER NOT NULL UNIQUE,
+			type TEXT NOT NULL DEFAULT 'table',
+
+			FOREIGN KEY(sensor_id) REFERENCES sensors(id)
+		);
+
+		CREATE TABLE IF NOT EXISTS project_calibrations(
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			project_id INTEGER NOT NULL,
+			sensor_id INTEGER NOT NULL,
+			pin INTEGER NOT NULL,
+			type TEXT NOT NULL DEFAULT 'table',
+
+			UNIQUE(project_id, sensor_id, pin),
+
+			FOREIGN KEY(project_id) REFERENCES projects(id),
+			FOREIGN KEY(sensor_id) REFERENCES sensors(id)
+		);
+
+		CREATE TABLE IF NOT EXISTS sensor_calibration_points(
+    			id INTEGER PRIMARY KEY AUTOINCREMENT,
+    			calibration_id INTEGER NOT NULL,
+    			raw_value REAL NOT NULL,
+    			mapped_value REAL NOT NULL,
+
+			FOREIGN KEY(calibration_id) REFERENCES sensor_calibrations(id)
+		);
+
+		CREATE TABLE IF NOT EXISTS project_calibration_points(
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			calibration_id INTEGER NOT NULL,
+			raw_value REAL NOT NULL,
+			mapped_value REAL NOT NULL,
+
+			FOREIGN KEY(calibration_id) REFERENCES project_calibrations(id)
+		);
+
     		CREATE TABLE IF NOT EXISTS runs(
         		id INTEGER PRIMARY KEY AUTOINCREMENT,
         		project_id INTEGER NOT NULL,
@@ -865,6 +904,366 @@ bool DatabaseManager::loadUIState(int projectId, bool& graph, bool& live, bool& 
     	sqlite3_finalize(stmt);
 
     	return true;
+}
+
+/*
+	saves (or overwrites) the global calibration for a sensor
+*/
+bool DatabaseManager::saveGlobalCalibration(int sensorId, const std::string& type, const std::vector<CalibrationPoint>& points)
+{
+    	if(!m_db || points.empty())
+        	return false;
+
+    	//insert the parent row if it doesn't exist yet, or ignore if it does
+    	const char* upsertSql = "INSERT OR IGNORE INTO sensor_calibrations (sensor_id, type) " "VALUES (?, ?);";
+
+    	sqlite3_stmt* stmt = nullptr;
+    	if(sqlite3_prepare_v2(m_db, upsertSql, -1, &stmt, nullptr) != SQLITE_OK){
+        	std::cerr << "saveGlobalCalibration insert error: " << sqlite3_errmsg(m_db) << "\n";
+        	return false;
+    	}
+    
+	sqlite3_bind_int(stmt,  1, sensorId);
+    	sqlite3_bind_text(stmt, 2, type.c_str(), -1, SQLITE_TRANSIENT);
+    	sqlite3_step(stmt);
+    	sqlite3_finalize(stmt);
+
+    	//update type in case it changed
+    	const char* updateSql = "UPDATE sensor_calibrations SET type = ? WHERE sensor_id = ?;";
+    	sqlite3_stmt* upStmt = nullptr;
+    	if(sqlite3_prepare_v2(m_db, updateSql, -1, &upStmt, nullptr) == SQLITE_OK){
+        	sqlite3_bind_text(upStmt, 1, type.c_str(), -1, SQLITE_TRANSIENT);
+        	sqlite3_bind_int(upStmt,  2, sensorId);
+        	sqlite3_step(upStmt);
+        	sqlite3_finalize(upStmt);
+    	}
+
+    	//fetch the calibration_id
+    	const char* idSql = "SELECT id FROM sensor_calibrations WHERE sensor_id = ?;";
+    	sqlite3_stmt* idStmt = nullptr;
+    	if(sqlite3_prepare_v2(m_db, idSql, -1, &idStmt, nullptr) != SQLITE_OK)
+        	return false;
+
+    	sqlite3_bind_int(idStmt, 1, sensorId);
+    	int calibrationId = -1;
+    	if(sqlite3_step(idStmt) == SQLITE_ROW)
+        	calibrationId = sqlite3_column_int(idStmt, 0);
+    
+	sqlite3_finalize(idStmt);
+
+    	if(calibrationId < 0)
+        	return false;
+
+    	//delete existing points so we replace them cleanly on overwrite
+    	const char* deleteSql =	"DELETE FROM sensor_calibration_points WHERE calibration_id = ?;";
+    	sqlite3_stmt* delStmt = nullptr;
+    	if(sqlite3_prepare_v2(m_db, deleteSql, -1, &delStmt, nullptr) == SQLITE_OK){
+        	sqlite3_bind_int(delStmt, 1, calibrationId);
+        	sqlite3_step(delStmt);
+        	sqlite3_finalize(delStmt);
+    	}
+
+    	//insert all points in a single transaction
+    	sqlite3_exec(m_db, "BEGIN TRANSACTION;", nullptr, nullptr, nullptr);
+
+    	const char* pointSql = "INSERT INTO sensor_calibration_points " "(calibration_id, raw_value, mapped_value) VALUES (?, ?, ?);";
+    	sqlite3_stmt* pointStmt = nullptr;
+    	if(sqlite3_prepare_v2(m_db, pointSql, -1, &pointStmt, nullptr) != SQLITE_OK){
+        	sqlite3_exec(m_db, "ROLLBACK;", nullptr, nullptr, nullptr);
+        	return false;
+    	}
+
+    	for(const auto& point : points){
+        	sqlite3_reset(pointStmt);
+        	sqlite3_bind_int(pointStmt, 1, calibrationId);
+        	sqlite3_bind_double(pointStmt, 2, point.raw);
+        	sqlite3_bind_double(pointStmt, 3, point.mapped);
+
+        	if(sqlite3_step(pointStmt) != SQLITE_DONE){
+            		std::cerr << "saveGlobalCalibration point insert error: " << sqlite3_errmsg(m_db) << "\n";
+            		sqlite3_finalize(pointStmt);
+            		sqlite3_exec(m_db, "ROLLBACK;", nullptr, nullptr, nullptr);
+            		return false;
+        	}
+    	}
+
+    	sqlite3_finalize(pointStmt);
+    	sqlite3_exec(m_db, "COMMIT;", nullptr, nullptr, nullptr);
+
+    	std::cout << "Global calibration saved: " << points.size() << " points for sensor_id=" << sensorId << "\n";
+    	return true;
+}
+
+
+/*
+	saves (or replaces) the calibration for one sensor instance in a project
+*/
+bool DatabaseManager::saveProjectCalibration(int projectId, int sensorId, int pin, const std::string& type, const std::vector<CalibrationPoint>& points)
+{
+    	if(!m_db || points.empty())
+        	return false;
+
+    	//check if a calibration row already exists for this project + sensor + pin combination. If it does, we delete its points and 
+	//reuse the parent row. If it doesn't, we create it.
+
+    	const char* upsertSql = "INSERT OR IGNORE INTO project_calibrations " "(project_id, sensor_id, pin, type) VALUES (?, ?, ?, ?);";
+
+    	sqlite3_stmt* stmt = nullptr;
+    	if(sqlite3_prepare_v2(m_db, upsertSql, -1, &stmt, nullptr) != SQLITE_OK){
+        	std::cerr << "saveProjectCalibration insert prepare error: " << sqlite3_errmsg(m_db) << "\n";
+        	return false;
+    	}
+
+    	sqlite3_bind_int(stmt,  1, projectId);
+    	sqlite3_bind_int(stmt,  2, sensorId);
+    	sqlite3_bind_int(stmt,  3, pin);
+    	sqlite3_bind_text(stmt, 4, type.c_str(), -1, SQLITE_TRANSIENT);
+    	sqlite3_step(stmt);
+    	sqlite3_finalize(stmt);
+
+    	//update the type in case it changed (user switched from table to equation in a future update)
+  	const char* updateTypeSql = "UPDATE project_calibrations SET type = ? " "WHERE project_id = ? AND sensor_id = ? AND pin = ?;";
+
+    	sqlite3_stmt* updateStmt = nullptr;
+    	if(sqlite3_prepare_v2(m_db, updateTypeSql, -1, &updateStmt, nullptr) == SQLITE_OK){
+        	sqlite3_bind_text(updateStmt, 1, type.c_str(), -1, SQLITE_TRANSIENT);
+        	sqlite3_bind_int(updateStmt,  2, projectId);
+        	sqlite3_bind_int(updateStmt,  3, sensorId);
+        	sqlite3_bind_int(updateStmt,  4, pin);
+        	sqlite3_step(updateStmt);
+        	sqlite3_finalize(updateStmt);
+    	}
+
+    	//fetch the calibration_id we just inserted or found
+    	const char* idSql = "SELECT id FROM project_calibrations " "WHERE project_id = ? AND sensor_id = ? AND pin = ?;";
+
+   	sqlite3_stmt* idStmt = nullptr;
+    	if(sqlite3_prepare_v2(m_db, idSql, -1, &idStmt, nullptr) != SQLITE_OK){
+        	std::cerr << "saveProjectCalibration id fetch error: " << sqlite3_errmsg(m_db) << "\n";
+        	return false;
+    	}
+
+    	sqlite3_bind_int(idStmt, 1, projectId);
+    	sqlite3_bind_int(idStmt, 2, sensorId);
+    	sqlite3_bind_int(idStmt, 3, pin);
+
+    	int calibrationId = -1;
+    	if(sqlite3_step(idStmt) == SQLITE_ROW)
+        	calibrationId = sqlite3_column_int(idStmt, 0);
+
+	sqlite3_finalize(idStmt);
+
+    	if(calibrationId < 0){
+        	std::cerr << "saveProjectCalibration: could not get calibration id\n";
+        	return false;
+    	}
+
+    	//delete all existing points for this calibration so we can replace them cleanly
+    	const char* deleteSql = "DELETE FROM project_calibration_points WHERE calibration_id = ?;";
+
+    	sqlite3_stmt* delStmt = nullptr;
+    	if(sqlite3_prepare_v2(m_db, deleteSql, -1, &delStmt, nullptr) == SQLITE_OK){
+        	sqlite3_bind_int(delStmt, 1, calibrationId);
+        	sqlite3_step(delStmt);
+        	sqlite3_finalize(delStmt);
+    	}
+
+    	//insert all calibration points in a single transaction, We reuse one prepared statement for all points instead of
+    	//preparing a new one per row
+    	sqlite3_exec(m_db, "BEGIN TRANSACTION;", nullptr, nullptr, nullptr);
+
+    	const char* pointSql = "INSERT INTO project_calibration_points " "(calibration_id, raw_value, mapped_value) VALUES (?, ?, ?);";
+
+    	sqlite3_stmt* pointStmt = nullptr;
+    	if(sqlite3_prepare_v2(m_db, pointSql, -1, &pointStmt, nullptr) != SQLITE_OK){
+        	std::cerr << "saveProjectCalibration points prepare error: " << sqlite3_errmsg(m_db) << "\n";
+        	sqlite3_exec(m_db, "ROLLBACK;", nullptr, nullptr, nullptr);
+        	return false;
+    	}
+
+    	for(const auto& point : points){
+        	sqlite3_reset(pointStmt);
+        	sqlite3_bind_int(pointStmt, 1, calibrationId);
+        	sqlite3_bind_double(pointStmt, 2, point.raw);
+        	sqlite3_bind_double(pointStmt, 3, point.mapped);
+
+        	if(sqlite3_step(pointStmt) != SQLITE_DONE){
+            		std::cerr << "saveProjectCalibration point insert error: " << sqlite3_errmsg(m_db) << "\n";
+            		sqlite3_finalize(pointStmt);
+            		sqlite3_exec(m_db, "ROLLBACK;", nullptr, nullptr, nullptr);
+            		return false;
+        	}
+    	}
+
+    	sqlite3_finalize(pointStmt);
+    	sqlite3_exec(m_db, "COMMIT;", nullptr, nullptr, nullptr);
+
+    	std::cout << "Calibration saved: " << points.size() << " points for sensor_id=" << sensorId << " pin=" << pin << " project=" << projectId << "\n";
+    	return true;
+}
+
+
+/*
+	loads the global calibration for a sensor template
+*/
+bool DatabaseManager::loadGlobalCalibration(int sensorId, std::string& type, std::vector<CalibrationPoint>& points)
+{
+    	points.clear();
+    	type = "table";
+
+    	if(!m_db)
+        	return false;
+
+    	//find the parent calibration row
+    	const char* idSql = "SELECT id, type FROM sensor_calibrations WHERE sensor_id = ?;";
+    	sqlite3_stmt* idStmt = nullptr;
+    	if(sqlite3_prepare_v2(m_db, idSql, -1, &idStmt, nullptr) != SQLITE_OK)
+        	return false;
+
+    	sqlite3_bind_int(idStmt, 1, sensorId);
+    	int calibrationId = -1;
+    	if(sqlite3_step(idStmt) == SQLITE_ROW){
+        	calibrationId = sqlite3_column_int(idStmt, 0);
+        	const char* t = reinterpret_cast<const char*>(sqlite3_column_text(idStmt, 1));
+        	if(t) 
+			type = t;
+    	}
+    	sqlite3_finalize(idStmt);
+
+    	if(calibrationId < 0)
+        	return false;
+
+    	//load points ordered by raw_value ascending
+    	const char* pointSql = "SELECT raw_value, mapped_value FROM sensor_calibration_points " "WHERE calibration_id = ? ORDER BY raw_value ASC;";
+    	sqlite3_stmt* pointStmt = nullptr;
+    	if(sqlite3_prepare_v2(m_db, pointSql, -1, &pointStmt, nullptr) != SQLITE_OK)
+        	return false;
+
+    	sqlite3_bind_int(pointStmt, 1, calibrationId);
+    	while(sqlite3_step(pointStmt) == SQLITE_ROW){
+        	CalibrationPoint cp;
+        	cp.raw = sqlite3_column_double(pointStmt, 0);
+        	cp.mapped = sqlite3_column_double(pointStmt, 1);
+        	points.push_back(cp);
+    	}
+    	sqlite3_finalize(pointStmt);
+
+    	std::cout << "Global calibration loaded: " << points.size() << " points for sensor_id=" << sensorId << "\n";
+    	return !points.empty();
+}
+
+
+/*
+	loads the calibration for one sensor instance in a project
+*/
+bool DatabaseManager::loadProjectCalibration(int projectId, int sensorId, int pin, std::string& type, std::vector<CalibrationPoint>& points)
+{
+    	points.clear();
+    	type = "table";
+
+    	if(!m_db)
+        	return false;
+
+    	//find the calibration row for this project + sensor + pin combo
+    	const char* idSql = "SELECT id, type FROM project_calibrations " "WHERE project_id = ? AND sensor_id = ? AND pin = ?;";
+
+    	sqlite3_stmt* idStmt = nullptr;
+    	if(sqlite3_prepare_v2(m_db, idSql, -1, &idStmt, nullptr) != SQLITE_OK){
+        	std::cerr << "loadProjectCalibration id prepare error: " << sqlite3_errmsg(m_db) << "\n";
+        	return false;
+    	}
+
+    	sqlite3_bind_int(idStmt, 1, projectId);
+    	sqlite3_bind_int(idStmt, 2, sensorId);
+    	sqlite3_bind_int(idStmt, 3, pin);
+
+    	int calibrationId = -1;
+    	if(sqlite3_step(idStmt) == SQLITE_ROW){
+        	calibrationId = sqlite3_column_int(idStmt, 0);
+        	const char* t = reinterpret_cast<const char*>(sqlite3_column_text(idStmt, 1));
+        	if(t)
+			type = t;
+    	}
+    	sqlite3_finalize(idStmt);
+
+    	//no calibration exists for this sensor instance which is not an error, but simple uncalibrated
+   	if(calibrationId < 0)
+        	return false;
+
+    	//load all points for this calibration ordered by raw_value cause the interpolator expects a sorted table
+    	const char* pointSql = "SELECT raw_value, mapped_value FROM project_calibration_points " "WHERE calibration_id = ? ORDER BY raw_value ASC;";
+
+    	sqlite3_stmt* pointStmt = nullptr;
+    	if(sqlite3_prepare_v2(m_db, pointSql, -1, &pointStmt, nullptr) != SQLITE_OK){
+        	std::cerr << "loadProjectCalibration points prepare error: " << sqlite3_errmsg(m_db) << "\n";
+        	return false;
+    	}
+
+    	sqlite3_bind_int(pointStmt, 1, calibrationId);
+
+    	while(sqlite3_step(pointStmt) == SQLITE_ROW){
+        	CalibrationPoint cp;
+        	cp.raw = sqlite3_column_double(pointStmt, 0);
+        	cp.mapped = sqlite3_column_double(pointStmt, 1);
+        	points.push_back(cp);
+    	}
+
+    	sqlite3_finalize(pointStmt);
+
+    	std::cout << "Calibration loaded: " << points.size() << " points for sensor_id=" << sensorId  << " pin=" << pin << " project=" << projectId << "\n";
+    	return !points.empty();
+}
+
+
+/*
+	returns true if a global calibration exists for this sensor_id
+*/
+bool DatabaseManager::hasGlobalCalibration(int sensorId)
+{
+    	if(!m_db)
+        	return false;
+
+    	const char* sql = "SELECT COUNT(*) FROM sensor_calibrations WHERE sensor_id = ?;";
+    	sqlite3_stmt* stmt = nullptr;
+    	if(sqlite3_prepare_v2(m_db, sql, -1, &stmt, nullptr) != SQLITE_OK)
+        	return false;
+
+    	sqlite3_bind_int(stmt, 1, sensorId);
+    	int count = 0;
+    	if(sqlite3_step(stmt) == SQLITE_ROW)
+        	count = sqlite3_column_int(stmt, 0);
+    
+	sqlite3_finalize(stmt);
+    	return count > 0;
+}
+
+
+/*
+	returns true if a project calibration exists for this sensor instance
+*/
+
+bool DatabaseManager::hasProjectCalibration(int projectId, int sensorId, int pin)
+{
+    	if(!m_db)
+        	return false;
+
+    	//simply check if a row exists for this combination
+    	const char* sql = "SELECT COUNT(*) FROM project_calibrations " "WHERE project_id = ? AND sensor_id = ? AND pin = ?;";
+
+    	sqlite3_stmt* stmt = nullptr;
+    	if(sqlite3_prepare_v2(m_db, sql, -1, &stmt, nullptr) != SQLITE_OK)
+        	return false;
+
+    	sqlite3_bind_int(stmt, 1, projectId);
+    	sqlite3_bind_int(stmt, 2, sensorId);
+    	sqlite3_bind_int(stmt, 3, pin);
+
+    	int count = 0;
+    	if(sqlite3_step(stmt) == SQLITE_ROW)
+        	count = sqlite3_column_int(stmt, 0);
+
+    	sqlite3_finalize(stmt);
+    	return count > 0;
 }
 
 

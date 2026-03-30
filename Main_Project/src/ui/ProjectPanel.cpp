@@ -13,11 +13,13 @@
 #include "data/DataSession.h"
 #include "sensor/Sensor.h"
 #include "sensor/SensorManager.h"
+#include "sensor/Interpolator.h"
 #include "serial/SerialComm.h"
 #include "SensorSelectionDialog.h"
 #include "data/Run.h"
 #include "controllers/SessionController.h"
 #include "MainFrame.h"
+#include "CalibrationPoint.h"
 
 ProjectPanel::ProjectPanel(wxWindow* parent, const wxString& title, DatabaseManager* db)
 	: wxPanel(parent, wxID_ANY)
@@ -1139,6 +1141,40 @@ void ProjectPanel::loadProjectFromDatabase()
     		}
 
 		std::cout << " Run " << runNumber << " loaded with " << run -> getFrames().size() << " frames\n";
+	}
+
+	// ======= RESTORE CALIBRATION =======
+	/* After sensors are in m_sensors, check if each one has a saved calibration in project_calibrations. If it does,
+	reconstruct the interpolator and assign it to the sensor so readings are calibrated immediately when the project loads, if no 
+	calibration exists for a sensor, it runs uncalibrated
+	*/
+	for(size_t i = 0; i < m_sensors.size(); ++i){
+    		int sensorId = m_DB -> getSensorID(m_sensors[i] -> getName());
+    		int pin = m_sensors[i] -> getPin();
+
+    		std::string type;
+    		std::vector<CalibrationPoint> points;
+
+		bool found = m_DB -> loadProjectCalibration(m_projectId, sensorId, pin, type, points);
+
+		if(!found){
+			//no project specific calibration, try global template
+			found = m_DB -> loadGlobalCalibration(sensorId, type, points);
+			if(found)
+				std::cout << "Using global calibration for '" << m_sensors[i] -> getName() << "' pin=" << pin << "\n";
+		}
+		else{
+			std::cout << "Using project calibration for '" << m_sensors[i] -> getName() << "' pin=" << pin << "\n";
+		}
+
+    		if(found && !points.empty()){
+        		//currently only "table" type is implemented, when equation and datasheet are added, we need tobranch on type here
+        		auto table = std::make_unique<std::vector<CalibrationPoint>>(points);
+        		auto calibrator = std::make_unique<Interpolator>(std::move(table));
+       			 m_sensorManager -> setCalibration(i, std::move(calibrator));
+
+        		std::cout << "Calibration restored for '" << m_sensors[i] -> getName() << "' pin=" << pin << "\n";
+    		}
 	}
 
 	// ========= UI STATE ==========

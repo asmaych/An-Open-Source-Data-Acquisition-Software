@@ -209,7 +209,7 @@ void SensorConfigDialog::onCalibratePressed(wxCommandEvent& evt)
 	 */
 
 	//find the sensor entry corresponding to the user selection:
-	long selected_sensor = m_list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+	long selected_sensor = m_list -> GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
 
 	//check to see if the user actually has made a selection.
 	//If they have not, prompt them to do so, and do nothing
@@ -222,11 +222,25 @@ void SensorConfigDialog::onCalibratePressed(wxCommandEvent& evt)
 	//otherwise, we proceed to open a calibration dialog for the selected sensor
 	
 	//get the name of the sensor that corresponds to the selection
-	wxString sensor_name = m_list->GetItemText(selected_sensor);
+	wxString sensor_name = m_list -> GetItemText(selected_sensor);
 
+	//get the pin from column 1 so we can identify the exact sensor instance — same name can appear on multiple pins
+    	wxListItem pinItem;
+    	pinItem.SetId(selected_sensor);
+    	pinItem.SetColumn(1);
+    	pinItem.SetMask(wxLIST_MASK_TEXT);
+    	m_list -> GetItem(pinItem);
+    	int pin = wxAtoi(pinItem.GetText());
+
+    	//look up the sensor ID from the DB so CalibrationTableDialog can save the calibration against the right sensor row
+    	int sensorId = m_DB -> getSensorID(sensor_name.ToStdString());
+
+    	//get project context from parent panel
+    	ProjectPanel* project = dynamic_cast<ProjectPanel*>(GetParent());
+    	int projectId = (project && project -> shouldSaveProject()) ? project -> getProjectID() : -1;
 
 	//now call the calibration dialog for further steps
-	CalibrateSensorDialog sensor_calibrator(this, "Sensor Calibration", m_sensorManager, selected_sensor);
+	CalibrateSensorDialog sensor_calibrator(this, "Sensor Calibration", m_sensorManager, selected_sensor, m_DB, projectId, sensorId, pin);
 	//make the dialog visible and modal:
 	sensor_calibrator.ShowModal();
 
@@ -335,11 +349,30 @@ void SensorConfigDialog::onLoadFromDatabasePressed(wxCommandEvent& evt)
         	if(m_sensorManager -> addSensor(std::make_unique<Sensor>(selectedName, pin))){
            	 	//link this sensor to the project in project_sensors
             		if(projectID >= 0){
-                		int sensorID = m_DB->getSensorID(selectedName);
+                		int sensorID = m_DB -> getSensorID(selectedName);
                 		if(sensorID >= 0){
-                    			m_DB->saveProjectSensor(projectID, sensorID, pin);
+                    			m_DB -> saveProjectSensor(projectID, sensorID, pin);
                     			std::cout << "Loaded sensor '" << selectedName << "' linked to project " << projectID << "\n";
-                		}
+
+					//auto-apply global calibration if one exists for this sensor type
+            				std::string type;
+            				std::vector<CalibrationPoint> points;
+
+            				if(m_DB -> loadGlobalCalibration(sensorID, type, points)){
+                				//save a project-local copy for this pin
+                				m_DB -> saveProjectCalibration(projectID, sensorID, pin, type, points);
+
+                				//find the sensor we just added it's the last one in m_sensors since addSensor pushes 
+						//to the back, apply calibration to the in-memory sensor object so readings are 
+						//calibrated immediately without needing a full project reload
+                				size_t sensorIndex = m_sensors.size() - 1;
+                				auto table = std::make_unique<std::vector<CalibrationPoint>>(points);
+                				auto calibrator = std::make_unique<Interpolator>(std::move(table));
+                				m_sensorManager -> setCalibration(sensorIndex, std::move(calibrator));
+
+                				std::cout << "Global calibration auto-applied to '" << selectedName << "' pin=" << pin << "\n";
+            				}
+				}
             		}
 		}
 	}

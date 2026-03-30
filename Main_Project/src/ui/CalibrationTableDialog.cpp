@@ -5,7 +5,11 @@
 CalibrationTableDialog::CalibrationTableDialog(
 		wxWindow* parent, 
 		SensorManager* sensorManager,
-		long sensor_index)
+		long sensor_index,
+		DatabaseManager* db,
+    		int projectId,
+    		int sensorId,
+    		int pin)
 	: wxDialog(
 			parent,
 			wxID_ANY,
@@ -13,10 +17,21 @@ CalibrationTableDialog::CalibrationTableDialog(
 			wxDefaultPosition,
 			wxSize(400,300)),
 	m_sensorManager(sensorManager),
-	m_sensor_index(sensor_index)
+	m_sensor_index(sensor_index),
+	m_db(db),
+      	m_projectId(projectId),
+      	m_sensorId(sensorId),
+      	m_pin(pin)
 {
 	//first, make the main sizer
 	auto* mainSizer = new wxBoxSizer(wxVERTICAL);
+
+	//checkbox that lets the user save this calibration to the global sensor template, making it accessible to all projects and only
+	//shows when the sensor exists in the db
+	if(m_sensorId >= 0){
+    		m_saveToTemplate = new wxCheckBox(this, wxID_ANY, "Save calibration to sensor template (accessible to all projects)");
+    		mainSizer->Add(m_saveToTemplate, 0, wxALL, 10);
+	}
 
 	//now define the grid bounds
 	m_grid = new wxGrid(this, wxID_ANY);
@@ -45,10 +60,11 @@ CalibrationTableDialog::CalibrationTableDialog(
 	m_grid->Bind(wxEVT_KEY_DOWN, &CalibrationTableDialog::onEnterPressed, this);
 
 	//lock in the reference to local scope
-	m_calibrationPoints = m_sensorManager->getSensorCalibration(m_sensor_index);
+	m_calibrationPoints = m_sensorManager -> getSensorCalibration(m_sensor_index);
 
-	//call the function that gets the calibration data if it exists:
-	loadCalibrationPoints(*m_calibrationPoints);
+	//only load points if calibration exists, nullptr means uncalibrated
+	if(m_calibrationPoints && !m_calibrationPoints -> empty())
+		loadCalibrationPoints(*m_calibrationPoints);
 }
 
 void CalibrationTableDialog::getCalibrationPoints()
@@ -150,11 +166,44 @@ void CalibrationTableDialog::onOkPressed(wxCommandEvent& evt)
 		return;
 	}
 
-	//make an interpolator object, and pass it along to sensorManager to assign it to a sensor
-	std::unique_ptr<Interpolator> interpolator = std::make_unique<Interpolator>(std::move(m_table));
+	//make a copy of the points before moving m_table into the Interpolator meaning before becoming null
+    	std::vector<CalibrationPoint> pointsCopy = *m_table;
 
-	//move ownership of the Interpolator object to the Sensor being calibrated
-	m_sensorManager->setCalibration(m_sensor_index, std::move(interpolator));
+    	//create the interpolator and assign it to the sensor
+    	auto interpolator = std::make_unique<Interpolator>(std::move(m_table));
+    	m_sensorManager->setCalibration(m_sensor_index, std::move(interpolator));
 
-	this->EndModal(wxID_OK);
+    	//save calibration to DB if we have a valid project context.
+    	if(m_db && m_projectId >= 0 && m_sensorId >= 0 && m_pin >= 0){
+        	bool saved = m_db -> saveProjectCalibration(m_projectId, m_sensorId, m_pin, "table", pointsCopy);
+
+        	if(saved)
+            		std::cout << "Calibration saved to DB for sensor_id = " << m_sensorId << " pin = " << m_pin << "\n";
+        	else
+            		std::cerr << "Calibration DB save failed\n";
+    	}
+
+	//save to global sensor template if the checkbox is checked
+	if(m_saveToTemplate && m_saveToTemplate -> GetValue() && m_db && m_sensorId >= 0){
+    		//check if a global calibration already exists for this sensor, if yes, warn the user before overwriting
+		//cause a global calibration affects all projects that use this sensor type
+    		if(m_db -> hasGlobalCalibration(m_sensorId)){
+        		int answer = wxMessageBox( "A global calibration already exists for this sensor template.\n"
+            					   "Overwriting it will affect all projects that use this sensor.\n\n"
+            					   "Do you want to overwrite it?",
+            					   "Overwrite Global Calibration", wxYES_NO | wxICON_WARNING);
+
+        		if(answer == wxYES){
+            			m_db -> saveGlobalCalibration(m_sensorId, "table", pointsCopy);
+            			std::cout << "Global calibration overwritten for sensor_id = " << m_sensorId << "\n";
+        		}
+        		//if NO, we skip the global save but the project save alreadyhappened above — the local calibration is still applied.
+    		}
+    		else{
+        	//no existing global calibration, save directly without warning
+        	m_db -> saveGlobalCalibration(m_sensorId, "table", pointsCopy);
+        	std::cout << "Global calibration saved for sensor_id=" << m_sensorId << "\n";
+    		}
+	}
+    	this->EndModal(wxID_OK);
 }

@@ -6,6 +6,7 @@
 #include <string>
 #include "CalibrationPoint.h"
 #include "SensorManager.h"
+#include "db/DatabaseManager.h"
 
 /**
  * @brief GUI object used to allow user entry of raw-mapped pairs into a table for use in an Interpolator
@@ -24,7 +25,12 @@ class CalibrationTableDialog : public wxDialog
 		CalibrationTableDialog(
 				wxWindow* parent, 
 				SensorManager* sensorManager, 
-				long sensor_index);
+				long sensor_index,
+				DatabaseManager* db,
+				int projectId,
+				int sensorId,
+				int pin
+				);
 
 		//helper function to convert the data from the table into a vector
 		void getCalibrationPoints();
@@ -40,6 +46,12 @@ class CalibrationTableDialog : public wxDialog
 
 		long m_sensor_index;
 		SensorManager* m_sensorManager;
+		DatabaseManager* m_db = nullptr;
+		int m_projectId = -1;
+		int m_sensorId = -1;
+		int m_pin = -1;
+
+		wxCheckBox* m_saveToTemplate = nullptr;
 
 		std::unique_ptr<std::vector<CalibrationPoint>> m_table;
 		std::unique_ptr<Interpolator> m_interpolator;

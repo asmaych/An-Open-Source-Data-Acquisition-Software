@@ -10,7 +10,11 @@ CalibrateSensorDialog::CalibrateSensorDialog(
 						wxWindow* parent,
 						const wxString& title,
 						SensorManager* sensorManager,
-						const long sensor_index)
+						long sensor_index,
+						DatabaseManager* db,
+    						int projectId,
+    						int sensorId,
+    						int pin)
 	: wxDialog(
 			parent,
 			wxID_ANY,
@@ -20,7 +24,11 @@ CalibrateSensorDialog::CalibrateSensorDialog(
 			wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER
 		  ),
 	m_sensorManager(sensorManager),
-	m_sensor_index(sensor_index)
+	m_sensor_index(sensor_index),
+	m_db(db),
+      	m_projectId(projectId),
+      	m_sensorId(sensorId),
+      	m_pin(pin)
 {
 	
 	//-----------------------------------------------------------------
@@ -60,9 +68,8 @@ CalibrateSensorDialog::CalibrateSensorDialog(
 
 void CalibrateSensorDialog::onManualTablePressed(wxCommandEvent& evt)
 {
-	//TODO implement logic
 	//call the table-based calibration dialog
-	CalibrationTableDialog calibration_table(this,m_sensorManager, m_sensor_index);
+	CalibrationTableDialog calibration_table(this,m_sensorManager, m_sensor_index, m_db, m_projectId, m_sensorId, m_pin);
 	if (calibration_table.ShowModal() == wxID_OK)
 	{
 		EndModal(wxID_OK);
