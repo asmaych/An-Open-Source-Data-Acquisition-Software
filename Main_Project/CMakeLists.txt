@@ -10,6 +10,20 @@ project(daq_capstone)
 
 set(CMAKE_CXX_STANDARD 20)
 
+# Detect platform and set library path
+if(WIN32)
+	set(SERIALPORT_LIB "${CMAKE_SOURCE_DIR}/third_party/libserialport/windows/libserialport.lib")
+elseif(APPLE)
+	set(SERIALPORT_LIB "${CMAKE_SOURCE_DIR}/third_party/libserialport/mac/libserialport.a")
+elseif(UNIX)
+	set(SERIALPORT_LIB "${CMAKE_SOURCE_DIR}/third_party/libserialport/linux/libserialport.a")
+endif()
+
+# Declare the library as imported STATIC
+add_library(serialport STATIC IMPORTED)
+set_target_properties(serialport PROPERTIES
+		IMPORTED_LOCATION ${SERIALPORT_LIB}
+)
 
 include_directories(
 	${PROJECT_SOURCE_DIR}/src
@@ -24,7 +38,7 @@ include_directories(
 	${PROJECT_SOURCE_DIR}/include/daq_capstone/ui
 	${PROJECT_SOURCE_DIR}/include/daq_capstone/db
 	${PROJECT_SOURCE_DIR}/include/daq_capstone/processing
-
+	${PROJECT_SOURCE_DIR}/third_party/libserialport/include
 )
 
 # Add the source files
@@ -59,15 +73,7 @@ add_executable(daq_capstone
 	src/sensor/MappedReader.cpp
 )
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(SERIALPORT REQUIRED libserialport)
-
-target_include_directories(daq_capstone PRIVATE ${SERIALPORT_INCLUDE_DIRS})
-link_directories(${SERIALPORT_LIBRARY_DIRS})
-add_definitions(${SERIALPORT_CFLAGS_OTHER})
-
-target_link_libraries(daq_capstone PRIVATE ${SERIALPORT_LIBRARIES})
-
+target_link_libraries(daq_capstone PRIVATE serialport)
 
 # Find wxWidgets
 find_package(wxWidgets REQUIRED COMPONENTS core base aui REQUIRED)

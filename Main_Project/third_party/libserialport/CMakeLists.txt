@@ -1,23 +1,22 @@
-# Create a static library for libserialport
-add_library(libserialport STATIC
-    src/serialport.c
-    src/serialport_unix.c   # example, add all source files
-    src/serialport_win.c    # platform-specific
+cmake_minimum_required(VERSION 3.10)
+project(libserialport C)
+
+# -----------------------------
+# Sources
+# -----------------------------
+add_library(serialport STATIC
+    serialport.c
+    timing.c
 )
 
-# Include the headers
-target_include_directories(libserialport
-    PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
-
-# Platform-specific flags
+# Platform-specific
 if(WIN32)
-    target_compile_definitions(libserialport PRIVATE _WINDOWS)
+    target_sources(serialport PRIVATE windows.c)
+    target_link_libraries(serialport PRIVATE setupapi)
 elseif(APPLE)
-    target_compile_definitions(libserialport PRIVATE _MACOS)
-    target_link_libraries(libserialport PRIVATE pthread)
+    target_sources(serialport PRIVATE macosx.c)
 elseif(UNIX)
-    target_compile_definitions(libserialport PRIVATE _LINUX)
-    target_link_libraries(libserialport PRIVATE pthread)
+    target_sources(serialport PRIVATE linux.c linux_termios.c)
 endif()
+
+target_include_directories(serialport PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
