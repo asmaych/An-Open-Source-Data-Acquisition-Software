@@ -1268,6 +1268,71 @@ bool DatabaseManager::hasProjectCalibration(int projectId, int sensorId, int pin
 
 
 /*
+	updates the pin for a sensor in project_sensors
+*/
+bool DatabaseManager::updateProjectSensorPin(int projectId, int sensorId, int oldPin, int newPin)
+{
+    	if(!m_db) 
+		return false;
+
+    	//update the pin directly! The UNIQUE(project_id, pin) constraint is safe here because we already validated uniqueness 
+	//in the dialog before calling this function
+    	const char* sql = "UPDATE project_sensors SET pin = ? " "WHERE project_id = ? AND sensor_id = ? AND pin = ?;";
+
+    	sqlite3_stmt* stmt = nullptr;
+    	if(sqlite3_prepare_v2(m_db, sql, -1, &stmt, nullptr) != SQLITE_OK){
+        	std::cerr << "updateProjectSensorPin prepare error: " << sqlite3_errmsg(m_db) << "\n";
+        	return false;
+    	}
+
+    	sqlite3_bind_int(stmt, 1, newPin);
+    	sqlite3_bind_int(stmt, 2, projectId);
+    	sqlite3_bind_int(stmt, 3, sensorId);
+    	sqlite3_bind_int(stmt, 4, oldPin);
+
+    	bool ok = (sqlite3_step(stmt) == SQLITE_DONE);
+    	sqlite3_finalize(stmt);
+
+    	if(ok)
+        	std::cout << "project_sensors pin updated: sensorId = " << sensorId << " " << oldPin << " -> " << newPin << "\n";
+
+	return ok;
+}
+
+
+/*
+	migrates the project_calibrations row from oldPin to newPin
+*/
+bool DatabaseManager::migrateCalibrationPin(int projectId, int sensorId, int oldPin, int newPin)
+{
+    	if(!m_db) 
+		return false;
+
+    	//update the pin in project_calibrations so the calibration row follows the sensor to its new physical pin. If no calibration
+    	//exists for this sensor, this is a no-op but not an error.
+    	const char* sql = "UPDATE project_calibrations SET pin = ? " "WHERE project_id = ? AND sensor_id = ? AND pin = ?;";
+
+    	sqlite3_stmt* stmt = nullptr;
+    	if(sqlite3_prepare_v2(m_db, sql, -1, &stmt, nullptr) != SQLITE_OK){
+        	std::cerr << "migrateCalibrationPin prepare error: " << sqlite3_errmsg(m_db) << "\n";
+        	return false;
+    	}
+
+    	sqlite3_bind_int(stmt, 1, newPin);
+    	sqlite3_bind_int(stmt, 2, projectId);
+    	sqlite3_bind_int(stmt, 3, sensorId);
+    	sqlite3_bind_int(stmt, 4, oldPin);
+
+    	bool ok = (sqlite3_step(stmt) == SQLITE_DONE);
+    	sqlite3_finalize(stmt);
+
+    	if(ok)
+        	std::cout << "project_calibrations pin migrated: sensorId = " << sensorId << " " << oldPin << " -> " << newPin << "\n";
+    	return ok;
+}
+
+
+/*
 	transaction helpers for high-speed DAQ writes
 */
 

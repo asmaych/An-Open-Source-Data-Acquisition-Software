@@ -117,6 +117,12 @@ class DatabaseManager
 		//returns true if a project calibration exists for this specific sensor
 		bool hasProjectCalibration(int projectId, int sensorId, int pin);
 
+		//updates the pin for a sensor in project_sensors, called whenever the user changes a pin in hardwareConfirmDialog
+		bool updateProjectSensorPin(int projectId, int sensorId, int oldPin, int newPin);
+
+		//migrates the project_calibrations row from oldPin to newPin
+		bool migrateCalibrationPin(int projectId, int sensorId, int oldPin, int newPin);
+
 		//transaction helpers for DAQ performance cause without them the SQL is super slow
 		void beginTransaction();
 		void commitTransaction();

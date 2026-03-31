@@ -20,6 +20,7 @@
 #include "controllers/SessionController.h"
 #include "MainFrame.h"
 #include "CalibrationPoint.h"
+#include "HardwareConfirmDialog.h"
 
 ProjectPanel::ProjectPanel(wxWindow* parent, const wxString& title, DatabaseManager* db)
 	: wxPanel(parent, wxID_ANY)
@@ -1088,6 +1089,27 @@ void ProjectPanel::loadProjectFromDatabase()
 	}
 
 	std::cout << "SensorManager now has: " << sensors.size() << " sensors\n";
+
+	// ====  Hardware setup confirmation ====
+	//shows the dialog every time a project is loaded so the user can verify or update pin assignments before the experiment starts.
+	//if the user changes a pin, the DB and m_sensors are updated here before calibration is restored, so calibration always loads
+	//against the correct final pin values
+	if(!sensors.empty()){
+    		HardwareConfirmDialog hwDlg(nullptr, sensors, m_projectId, m_DB);
+
+    		if(hwDlg.ShowModal() == wxID_CANCEL){
+        		//user cancelled means abort the load entirely and clear the sensors we just pushed so the panel stays clean
+        		m_sensorManager -> clearSensors();
+        		m_sensors.clear();
+        		return;
+    		}
+
+    		//if any pins changed, sensors[] now has the updated values, thus we need to rebuild m_sensors with the corrected pins
+		//so everything downstream (calibration restore, microcontroller registration...) uses the new assignments
+    		m_sensors.clear();
+    		for(auto& [name, pin] : sensors)
+        		m_sensors.push_back(std::make_unique<Sensor>(name, pin));
+	}
 
 	//send loaded sensors to microcontroller if connected
 	if(m_serial && m_serial->handshakeresult){
