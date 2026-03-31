@@ -15,7 +15,7 @@ CalibrationTableDialog::CalibrationTableDialog(
 			wxID_ANY,
 			"Enter Calibration reference points",
 			wxDefaultPosition,
-			wxSize(400,300)),
+			wxSize(350,300)),
 	m_sensorManager(sensorManager),
 	m_sensor_index(sensor_index),
 	m_db(db),
@@ -29,7 +29,7 @@ CalibrationTableDialog::CalibrationTableDialog(
 	//checkbox that lets the user save this calibration to the global sensor template, making it accessible to all projects and only
 	//shows when the sensor exists in the db
 	if(m_sensorId >= 0){
-    		m_saveToTemplate = new wxCheckBox(this, wxID_ANY, "Save calibration to sensor template (accessible to all projects)");
+    		m_saveToTemplate = new wxCheckBox(this, wxID_ANY, "Save this calibration to sensor template");
     		mainSizer->Add(m_saveToTemplate, 0, wxALL, 10);
 	}
 
@@ -44,6 +44,7 @@ CalibrationTableDialog::CalibrationTableDialog(
 	m_grid->SetColFormatFloat(1,6,2);
 	m_grid->EnableEditing(true);
 
+	m_grid -> SetMinSize(wxSize(-1, 150));
 	mainSizer->Add(m_grid, 1, wxEXPAND | wxALL, 10);
 
 	//now add some controls
@@ -53,6 +54,10 @@ CalibrationTableDialog::CalibrationTableDialog(
 
 	SetSizer(mainSizer);
 	Layout();
+
+	//SetMinSize(wxSize(400,300));
+	//Fit();
+	//Centre();
 
 	//now bind the ok button to an event handler
 	Bind(wxEVT_BUTTON, &CalibrationTableDialog::onOkPressed, this, wxID_OK);
@@ -94,15 +99,21 @@ void CalibrationTableDialog::getCalibrationPoints()
 
 void CalibrationTableDialog::loadCalibrationPoints(const std::vector<CalibrationPoint> & table) {
 
-	if (m_calibrationPoints) {
+	if(!m_calibrationPoints || table.empty())
+        	return;
 
-		int rowcounter{0};
+    	//the grid starts with 5 rows by default. If the calibration has more points than rows, append the extra rows first without 
+	//this, writing to row index >= GetNumberRows() triggers a wxGrid assertion failure
+    	int needed = static_cast<int>(table.size());
+    	int existing = m_grid->GetNumberRows();
 
-		for (auto [raw, mapped] : table) {
-			m_grid->SetCellValue(rowcounter,0,std::to_wstring(raw));
-			m_grid->SetCellValue(rowcounter,1,std::to_wstring(mapped));
-			rowcounter++;
-		}
+    	if(needed > existing)
+        	m_grid -> AppendRows(needed - existing);
+
+    	//now fill each row safely, the grid is guaranteed to have enough rows for all the calibration points
+    	for(int i = 0; i < needed; ++i){
+        	m_grid -> SetCellValue(i, 0, wxString::Format("%.6f", table[i].raw));
+        	m_grid -> SetCellValue(i, 1, wxString::Format("%.6f", table[i].mapped));
 	}
 }
 

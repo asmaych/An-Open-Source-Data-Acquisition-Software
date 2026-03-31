@@ -4,6 +4,8 @@
 #include "CalibrateSensorDialog.h"
 #include "SerialComm.h"
 #include "SensorManager.h"
+#include "sensor/Interpolator.h"
+#include "CalibrationPoint.h"
 #include <wx/listctrl.h>
 #include <wx/wx.h>
 
@@ -313,7 +315,7 @@ void SensorConfigDialog::onLoadFromDatabasePressed(wxCommandEvent& evt)
 	}
 
 	//we create a dialog window that shows all sensor names where the user can check the ones they wanna add
-	SensorSelectionDialog selectionDialog(this, names, m_DB);
+	SensorSelectionDialog selectionDialog(this, names);
 
 	//show dialog modally (blocks until user presses ok or cancel)
 	if(selectionDialog.ShowModal() != wxID_OK)
