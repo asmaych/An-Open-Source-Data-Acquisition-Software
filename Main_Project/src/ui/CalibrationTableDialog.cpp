@@ -1,9 +1,10 @@
 #include "CalibrationTableDialog.h"
+#include "CalibrationCompareDialog.h"
 #include <wx/wx.h>
 #include <wx/grid.h>
 
 CalibrationTableDialog::CalibrationTableDialog(
-		wxWindow* parent, 
+		wxWindow* parent,
 		SensorManager* sensorManager,
 		long sensor_index,
 		DatabaseManager* db,
@@ -15,7 +16,7 @@ CalibrationTableDialog::CalibrationTableDialog(
 			wxID_ANY,
 			"Enter Calibration reference points",
 			wxDefaultPosition,
-			wxSize(350,300)),
+			wxSize(400,300)),
 	m_sensorManager(sensorManager),
 	m_sensor_index(sensor_index),
 	m_db(db),
@@ -29,7 +30,7 @@ CalibrationTableDialog::CalibrationTableDialog(
 	//checkbox that lets the user save this calibration to the global sensor template, making it accessible to all projects and only
 	//shows when the sensor exists in the db
 	if(m_sensorId >= 0){
-    		m_saveToTemplate = new wxCheckBox(this, wxID_ANY, "Save this calibration to sensor template");
+    		m_saveToTemplate = new wxCheckBox(this, wxID_ANY, "Save/update this calibration to sensor template");
     		mainSizer->Add(m_saveToTemplate, 0, wxALL, 10);
 	}
 
@@ -54,10 +55,6 @@ CalibrationTableDialog::CalibrationTableDialog(
 
 	SetSizer(mainSizer);
 	Layout();
-
-	//SetMinSize(wxSize(400,300));
-	//Fit();
-	//Centre();
 
 	//now bind the ok button to an event handler
 	Bind(wxEVT_BUTTON, &CalibrationTableDialog::onOkPressed, this, wxID_OK);
@@ -196,25 +193,31 @@ void CalibrationTableDialog::onOkPressed(wxCommandEvent& evt)
 
 	//save to global sensor template if the checkbox is checked
 	if(m_saveToTemplate && m_saveToTemplate -> GetValue() && m_db && m_sensorId >= 0){
-    		//check if a global calibration already exists for this sensor, if yes, warn the user before overwriting
-		//cause a global calibration affects all projects that use this sensor type
     		if(m_db -> hasGlobalCalibration(m_sensorId)){
-        		int answer = wxMessageBox( "A global calibration already exists for this sensor template.\n"
-            					   "Overwriting it will affect all projects that use this sensor.\n\n"
-            					   "Do you want to overwrite it?",
-            					   "Overwrite Global Calibration", wxYES_NO | wxICON_WARNING);
+        		//load the existing global calibration so we can show it alongside the new one in the comparison dialog
+        		std::string existingType;
+        		std::vector<CalibrationPoint> existingPoints;
+        		m_db -> loadGlobalCalibration(m_sensorId, existingType, existingPoints);
 
-        		if(answer == wxYES){
+        		//show the side-by-side comparison dialog so the user can see exactly what changes before overwriting
+        		CalibrationCompareDialog compareDlg(this, existingPoints, pointsCopy);
+
+        		if(compareDlg.ShowModal() == wxID_OK){
+            			//user confirmed the overwrite
             			m_db -> saveGlobalCalibration(m_sensorId, "table", pointsCopy);
             			std::cout << "Global calibration overwritten for sensor_id = " << m_sensorId << "\n";
         		}
-        		//if NO, we skip the global save but the project save alreadyhappened above — the local calibration is still applied.
+        		else{
+            			//user cancelled means global untouched, project save already done
+            			std::cout << "Global calibration overwrite cancelled\n";
+        		}
     		}
     		else{
-        	//no existing global calibration, save directly without warning
-        	m_db -> saveGlobalCalibration(m_sensorId, "table", pointsCopy);
-        	std::cout << "Global calibration saved for sensor_id=" << m_sensorId << "\n";
+        		//no existing global calibration means save directly, no dialog needed
+        		m_db -> saveGlobalCalibration(m_sensorId, "table", pointsCopy);
+        		std::cout << "Global calibration saved for sensor_id = " << m_sensorId << "\n";
     		}
 	}
-    	this->EndModal(wxID_OK);
+
+	this -> EndModal(wxID_OK);
 }
