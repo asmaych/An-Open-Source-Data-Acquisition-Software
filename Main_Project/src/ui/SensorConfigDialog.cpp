@@ -121,6 +121,12 @@ void SensorConfigDialog::onAddSensorPressed(wxCommandEvent& evt)
 	}
 
 	ProjectPanel* project = dynamic_cast<ProjectPanel*>(GetParent());
+	if(project && project -> isRunning()){
+		wxMessageBox("Cannot add sensors while an experiment is running.\n" "Please stop the experiment first.", "Experiment Running",
+            			wxOK | wxICON_WARNING);
+        	return;
+	}
+
 	int projectID = (project && project -> shouldSaveProject()) ? project -> getProjectID() : -1;
 
 	//simply launch the AddSensorDialog and pass along the
@@ -166,8 +172,15 @@ void SensorConfigDialog::onRemoveSensorPressed(wxCommandEvent& evt)
 		return;
 	}
 
+	//prevent removing sensors while an experiment is running for the same reason as adding
+    	ProjectPanel* project = dynamic_cast<ProjectPanel*>(GetParent());
+    	if(project && project -> isRunning()){
+        	wxMessageBox("Cannot remove sensors while an experiment is running.\n" "Please stop the experiment first.", "Experiment Running",
+            			wxOK | wxICON_WARNING);
+        	return;
+	}
+
 	//otherwise, we proceed to remove the coresponding sensor
-	
 	//get the sensors name corresponding to the selection
 	wxString sensor_name = m_list->GetItemText(selected_sensor);
 
@@ -324,6 +337,12 @@ void SensorConfigDialog::onLoadFromDatabasePressed(wxCommandEvent& evt)
 
 	//get the project id from the parent panel so we can link loaded sensors to this project in project_sensors
 	ProjectPanel* project = dynamic_cast<ProjectPanel*>(GetParent());
+	if(project && project -> isRunning()){
+        	wxMessageBox("Cannot load sensors while an experiment is running.\n" "Please stop the experiment first.", "Experiment Running",
+            			wxOK | wxICON_WARNING);
+        	return;
+    	}
+
 	int projectID = (project && project -> shouldSaveProject()) ? project -> getProjectID() : -1;
 
 	//for each sensor template
