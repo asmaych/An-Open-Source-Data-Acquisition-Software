@@ -5,8 +5,21 @@ if (CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
          Please create a build directory and run cmake from there.")
 endif()
 
-cmake_minimum_required(VERSION 3.10)
-project(daq_capstone)
+cmake_minimum_required(VERSION 3.14)
+project(daq_capstone LANGUAGES CXX)
+
+find_package(SQLite3 REQUIRED)
+
+include(FetchContent)
+
+set(wxBUILD_SHARED OFF)
+
+FetchContent_Declare(
+		wxWidgets
+		GIT_REPOSITORY https://github.com/wxWidgets/wxWidgets.git
+		GIT_SHALLOW ON
+)
+FetchContent_MakeAvailable(wxWidgets)
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -74,17 +87,20 @@ add_executable(daq_capstone
 )
 
 target_link_libraries(daq_capstone PRIVATE serialport)
+target_link_libraries(daq_capstone PRIVATE wxcore wxaui wxbase)
 
-# Find wxWidgets
-find_package(wxWidgets REQUIRED COMPONENTS core base aui REQUIRED)
-if(wxWidgets_FOUND)
-    include(${wxWidgets_USE_FILE})
-endif()
-
-
-# Link wxwidgets
-target_link_libraries(daq_capstone PRIVATE ${wxWidgets_LIBRARIES} ${LIBUSB_LIBRARIES})
+## Find wxWidgets
+#find_package(wxWidgets REQUIRED COMPONENTS core base aui REQUIRED)
+#if(wxWidgets_FOUND)
+#    include(${wxWidgets_USE_FILE})
+#endif()
+#
+#
+## Link wxwidgets
+#target_link_libraries(daq_capstone PRIVATE ${wxWidgets_LIBRARIES} ${LIBUSB_LIBRARIES})
 
 # Link sqlite3
+
+
 target_link_libraries(daq_capstone PRIVATE sqlite3)
 
