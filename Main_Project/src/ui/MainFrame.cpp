@@ -1,6 +1,7 @@
 #include "MainFrame.h"
 #include "ProjectPanel.h"
 #include "SensorSelectionDialog.h"
+#include "OpenProjectDialog.h"
 #include <wx/wx.h>
 #include <wx/artprov.h> //this one provides default system icons for toolbar items
 #include "Sidebar.h"
@@ -206,50 +207,42 @@ void MainFrame::onOpenProject(wxCommandEvent& evt)
 		return;
 	}
 
-	//we create a list of choices for the user
-	wxArrayString choices;
-
-	for(auto& project : projects)
-		choices.Add(project);
-
-	//create the dialog to display the choices
-	wxSingleChoiceDialog dlg(this, "Select project", "Open project", choices);
-
-	//if the user presses cancel, forget about it
+	OpenProjectDialog dlg(this, &m_DB);
 	if(dlg.ShowModal() != wxID_OK)
-		return;
+        	return;
 
-	//get the selected project name
-	wxString name = dlg.GetStringSelection();
+    	wxString name = dlg.getSelectedProject();
+    	if(name.IsEmpty())
+        	return;
 
-	//the projects are saved by id
-	int projectID = m_DB.getProjectID(name.ToStdString());
+    	int projectID = m_DB.getProjectID(name.ToStdString());
+    	if(projectID < 0){
+        	wxMessageBox("Could not find project in database!", "Error");
+        	return;
+    	}
 
-	if(projectID < 0){
-		wxMessageBox("Could not find project in Database!", "Error");
-		return;
-	}
-
-	//create a new project panel where m_notebook is the parent notebook, name is the project name, and pointer for db manager
+    	//create a new project panel where m_notebook is the parent notebook, name is the project name, and pointer for db manager
 	auto* panel = new ProjectPanel(m_notebook, name, &m_DB);
 
 	//store the project id inside the panel so the panel knows which project it belongs to
-	panel -> setProjectId(projectID);
-	panel -> setSaveProject(true);
 
-	panel -> setMainFrame(this);
+    	panel -> setProjectId(projectID);
+    	panel -> setSaveProject(true);
+
+    	panel -> setMainFrame(this);
 
 	//load all project data from the db
-	panel -> loadProjectFromDatabase();
+
+    	panel -> loadProjectFromDatabase();
 
 	//add the new panel as a tab in the notebook
-	m_notebook -> AddPage(panel, name, true);
+   	m_notebook -> AddPage(panel, name, true);
 
 	//inform the toolbar which project panel is currently active
 	toolbar -> setCurrentProject(panel);
 
 	//display a log status indicating what project was loaded
-	wxLogStatus("Project loaded: %s", name);
+    	wxLogStatus("Project loaded: %s", name);
 }
 
 

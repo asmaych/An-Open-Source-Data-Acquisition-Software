@@ -1333,9 +1333,193 @@ bool DatabaseManager::migrateCalibrationPin(int projectId, int sensorId, int old
 
 
 /*
+	removes the sensor from the global sensors catalogue by setting user_saved = 0 but keep the row of FK integrity to the project
+*/
+bool DatabaseManager::unlistSensor(int sensorId)
+{
+    	if(!m_db)
+		return false;
+
+    	//set user_saved = 0 so the sensor no longer appears in the catalogue but keep it in the projects used in
+    	const char* sql = "UPDATE sensors SET user_saved = 0 WHERE id = ?;";
+
+    	sqlite3_stmt* stmt = nullptr;
+    	if(sqlite3_prepare_v2(m_db, sql, -1, &stmt, nullptr) != SQLITE_OK){
+        	std::cerr << "unlistSensor prepare error: " << sqlite3_errmsg(m_db) << "\n";
+        	return false;
+    	}
+
+    	sqlite3_bind_int(stmt, 1, sensorId);
+    	bool ok = (sqlite3_step(stmt) == SQLITE_DONE);
+    	sqlite3_finalize(stmt);
+
+    	std::cout << "Sensor " << sensorId << " removed from catalogue (user_saved=0)\n";
+    	return ok;
+}
+
+
+/*
+	deletes all data for a project (runs, frames, frame_values, collect_points, ui_state) but keeps the hardware setup
+*/
+bool DatabaseManager::deleteProjectData(int projectId)
+{
+    	if(!m_db)
+		return false;
+
+    	//delete all experimental data for this project while keeping the project entry and sensor setup so the user can start fresh 
+	//experiments with the same configuration. Here, deletion order matters, child rows must be deleted before their parent rows 
+	//due to foreign key constraints. Order:
+    	//frame_values → frames → runs
+     	//collect_points
+    	//ui_state
+
+    	sqlite3_exec(m_db, "BEGIN TRANSACTION;", nullptr, nullptr, nullptr);
+
+    	//delete frame_values for all frames belonging to this project's runs
+    	const char* frameValuesSql = "DELETE FROM frame_values WHERE frame_id IN (" "    SELECT frames.id FROM frames "
+        			     "    JOIN runs ON frames.run_id = runs.id " "    WHERE runs.project_id = ?" ");";
+
+    	sqlite3_stmt* stmt = nullptr;
+    	if(sqlite3_prepare_v2(m_db, frameValuesSql, -1, &stmt, nullptr) == SQLITE_OK){
+        	sqlite3_bind_int(stmt, 1, projectId);
+        	sqlite3_step(stmt);
+        	sqlite3_finalize(stmt);
+    	}
+
+    	//delete frames belonging to this project's runs
+    	const char* framesSql = "DELETE FROM frames WHERE run_id IN (" "    SELECT id FROM runs WHERE project_id = ?" ");";
+
+    	if(sqlite3_prepare_v2(m_db, framesSql, -1, &stmt, nullptr) == SQLITE_OK){
+        	sqlite3_bind_int(stmt, 1, projectId);
+        	sqlite3_step(stmt);
+        	sqlite3_finalize(stmt);
+    	}
+
+    	//delete collect_points for this project's runs
+    	const char* collectSql = "DELETE FROM collect_points WHERE run_id IN (" "    SELECT id FROM runs WHERE project_id = ?" ");";
+
+    	if(sqlite3_prepare_v2(m_db, collectSql, -1, &stmt, nullptr) == SQLITE_OK){
+        	sqlite3_bind_int(stmt, 1, projectId);
+        	sqlite3_step(stmt);
+        	sqlite3_finalize(stmt);
+    	}
+
+    	//delete runs
+    	const char* runsSql = "DELETE FROM runs WHERE project_id = ?;";
+
+    	if(sqlite3_prepare_v2(m_db, runsSql, -1, &stmt, nullptr) == SQLITE_OK){
+        	sqlite3_bind_int(stmt, 1, projectId);
+        	sqlite3_step(stmt);
+        	sqlite3_finalize(stmt);
+    	}
+
+    	//delete ui_state
+    	const char* uiSql = "DELETE FROM ui_state WHERE project_id = ?;";
+
+    	if(sqlite3_prepare_v2(m_db, uiSql, -1, &stmt, nullptr) == SQLITE_OK){
+        	sqlite3_bind_int(stmt, 1, projectId);
+        	sqlite3_step(stmt);
+        	sqlite3_finalize(stmt);
+    	}
+
+    	sqlite3_exec(m_db, "COMMIT;", nullptr, nullptr, nullptr);
+
+    	std::cout << "Project data deleted for projectId=" << projectId << "\n";
+    	return true;
+}
+
+
+/*
+	deletes a project completely including its sensor links, local-only sensors (user_saved=0) that belong exclusively to this 
+	project are also deleted while global sensors (user_saved=1) are left untouched in the catalogue
+*/
+bool DatabaseManager::deleteProject(int projectId)
+{
+    	if(!m_db)
+		return false;
+
+    	//first delete all data (runs, frames, calibrations, ui_state)
+    	deleteProjectData(projectId);
+
+    	sqlite3_exec(m_db, "BEGIN TRANSACTION;", nullptr, nullptr, nullptr);
+
+    	//find sensors that are local-only (user_saved=0) AND used exclusively by this project, they should be deleted since no other 
+	//project or catalogue entry references them while again global sensors (user_saved=1) are left completely untouched.
+    	const char* localSensorsSql = "SELECT sensor_id FROM project_sensors " "WHERE project_id = ? AND sensor_id IN ("
+        			      "    SELECT id FROM sensors WHERE user_saved = 0" ") AND sensor_id NOT IN ("
+        			      "    SELECT sensor_id FROM project_sensors " "    WHERE project_id != ?" ");";
+
+    	sqlite3_stmt* stmt = nullptr;
+    	std::vector<int> localSensorIds;
+
+    	if(sqlite3_prepare_v2(m_db, localSensorsSql, -1, &stmt, nullptr) == SQLITE_OK){
+        	sqlite3_bind_int(stmt, 1, projectId);
+        	sqlite3_bind_int(stmt, 2, projectId);
+
+		while(sqlite3_step(stmt) == SQLITE_ROW)
+            		localSensorIds.push_back(sqlite3_column_int(stmt, 0));
+
+		sqlite3_finalize(stmt);
+    	}
+
+    	//delete project_sensors links for this project
+    	const char* projectSensorsSql = "DELETE FROM project_sensors WHERE project_id = ?;";
+
+    	if(sqlite3_prepare_v2(m_db, projectSensorsSql, -1, &stmt, nullptr) == SQLITE_OK){
+        	sqlite3_bind_int(stmt, 1, projectId);
+        	sqlite3_step(stmt);
+        	sqlite3_finalize(stmt);
+    	}
+
+    	//delete the local only sensors that were especifically used by this project, they have no reason to exist anymore
+    	for(int sensorId : localSensorIds){
+        	//delete global calibration for this sensor if it exists
+        	const char* delGlobalCalibPoints = "DELETE FROM sensor_calibration_points WHERE calibration_id IN ("
+            					   "    SELECT id FROM sensor_calibrations WHERE sensor_id = ?" ");";
+
+		if(sqlite3_prepare_v2(m_db, delGlobalCalibPoints, -1, &stmt, nullptr) == SQLITE_OK){
+            		sqlite3_bind_int(stmt, 1, sensorId);
+            		sqlite3_step(stmt);
+            		sqlite3_finalize(stmt);
+        	}
+
+        	const char* delGlobalCalib = "DELETE FROM sensor_calibrations WHERE sensor_id = ?;";
+        	if(sqlite3_prepare_v2(m_db, delGlobalCalib, -1, &stmt, nullptr) == SQLITE_OK){
+            		sqlite3_bind_int(stmt, 1, sensorId);
+            		sqlite3_step(stmt);
+            		sqlite3_finalize(stmt);
+        	}
+
+        	//delete the sensor row itself
+        	const char* delSensor = "DELETE FROM sensors WHERE id = ?;";
+        	if(sqlite3_prepare_v2(m_db, delSensor, -1, &stmt, nullptr) == SQLITE_OK){
+            		sqlite3_bind_int(stmt, 1, sensorId);
+            		sqlite3_step(stmt);
+            		sqlite3_finalize(stmt);
+        	}
+
+        	std::cout << "Local sensor " << sensorId << " deleted with project\n";
+    	}
+
+    	//finally delete the project row itself
+    	const char* projectSql = "DELETE FROM projects WHERE id = ?;";
+
+    	if(sqlite3_prepare_v2(m_db, projectSql, -1, &stmt, nullptr) == SQLITE_OK){
+        	sqlite3_bind_int(stmt, 1, projectId);
+        	sqlite3_step(stmt);
+        	sqlite3_finalize(stmt);
+    	}
+
+    	sqlite3_exec(m_db, "COMMIT;", nullptr, nullptr, nullptr);
+
+    	std::cout << "Project " << projectId << " deleted completely\n";
+    	return true;
+}
+
+
+/*
 	transaction helpers for high-speed DAQ writes
 */
-
 void DatabaseManager::beginTransaction()
 {
     	sqlite3_exec(m_db,"BEGIN TRANSACTION;",nullptr,nullptr,nullptr);

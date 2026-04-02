@@ -123,6 +123,16 @@ class DatabaseManager
 		//migrates the project_calibrations row from oldPin to newPin
 		bool migrateCalibrationPin(int projectId, int sensorId, int oldPin, int newPin);
 
+		//sets user_saved = 0 for a sensor meaning removes it from the global sensors catalogue but keeps the row for FK
+		bool unlistSensor(int sensorId);
+
+		//deletes all data for a project (runs, frames, frame_values, collect_points, ui_state) but keeps the project setup
+		bool deleteProjectData(int projectId);
+
+		//deletes a project completely including its sensor links, local-only sensors (user_saved=0) that belong exclusively 
+		//to this project are also deleted but global sensors (user_saved=1) are left untouched in the catalogue
+		bool deleteProject(int projectId);
+
 		//transaction helpers for DAQ performance cause without them the SQL is super slow
 		void beginTransaction();
 		void commitTransaction();

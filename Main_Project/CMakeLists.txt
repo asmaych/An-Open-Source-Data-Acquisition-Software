@@ -55,6 +55,7 @@ add_executable(daq_capstone
 	src/ui/CalibrationCompareDialog.cpp
 	src/ui/ProjectConfigDialog.cpp
 	src/ui/HardwareConfirmDialog.cpp
+	src/ui/OpenProjectDialog.cpp
 	src/db/DatabaseManager.cpp
 	src/sensor/RawReader.cpp
 	src/sensor/VoltageReader.cpp
