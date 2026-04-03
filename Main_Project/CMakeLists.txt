@@ -56,6 +56,8 @@ add_executable(daq_capstone
 	src/ui/ProjectConfigDialog.cpp
 	src/ui/HardwareConfirmDialog.cpp
 	src/ui/OpenProjectDialog.cpp
+	src/ui/ExportManager.cpp
+	src/ui/CalibrationRestorer.cpp
 	src/db/DatabaseManager.cpp
 	src/sensor/RawReader.cpp
 	src/sensor/VoltageReader.cpp
@@ -70,7 +72,8 @@ link_directories(${SERIALPORT_LIBRARY_DIRS})
 add_definitions(${SERIALPORT_CFLAGS_OTHER})
 
 target_link_libraries(daq_capstone PRIVATE ${SERIALPORT_LIBRARIES})
-
+set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
 
 # Find wxWidgets
 find_package(wxWidgets REQUIRED COMPONENTS core base aui REQUIRED)

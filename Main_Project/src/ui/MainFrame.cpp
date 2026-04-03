@@ -91,10 +91,11 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title, w
 	m_notebook = new wxAuiNotebook(this, wxID_ANY);
 
 	//dock sidebar to the left
-	m_mgr.AddPane(sidebar, wxAuiPaneInfo().Left().BestSize(200, -1));
+	m_mgr.AddPane(sidebar, wxAuiPaneInfo().Left().BestSize(200, -1).CloseButton(false).CaptionVisible(false).Floatable(false).Movable(false));
+
 
 	//main workspace in the center
-	m_mgr.AddPane(m_notebook, wxAuiPaneInfo().Center());
+	m_mgr.AddPane(m_notebook, wxAuiPaneInfo().Center().CloseButton(false).CaptionVisible(false));
 
 	//apply aui layout
 	m_mgr.Update();
