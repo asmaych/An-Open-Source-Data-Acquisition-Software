@@ -113,12 +113,17 @@ void SensorConfigDialog::onAddSensorPressed(wxCommandEvent& evt)
 	 * 		this or any other dialog.
 	 */
 
+	/*
+	Im commenting this part cause I believe, a user can create/save a project template by adding/removing/loading which ever sensor
+	they want, and then whenever they feel ready to run an exp they just load the project, connect and start
+
 	//add a check to see if we have connected with a device yet
 	if (!m_serialComm->handshakeresult)
 	{
 		wxMessageBox("Please connect with a microcontroller first!");
 		return;
 	}
+	*/
 
 	ProjectPanel* project = dynamic_cast<ProjectPanel*>(GetParent());
 	if(project && project -> isRunning()){
