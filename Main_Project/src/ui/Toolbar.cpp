@@ -183,13 +183,16 @@ void Toolbar::applyTheme(Theme theme)
 //timer callback called once per second & updates the elapsed time display
 void Toolbar::onTimer(wxTimerEvent&)
 {
-	//increment total elapsed time (in seconds)
-	m_elapsedSeconds++;
+	//read elapsed time directly from the active project rather than maintaining a separate counter in the toolbar. This means the
+    	//display stays accurate even when the user switches tabs because ProjectPanel tracks the absolute run start time independently.
+    	if(!m_currentProject || !m_currentProject -> isRunning())
+        	return;
 
-	//convert elapsed seconds to hours, minutes, and seconds
-	int h = m_elapsedSeconds / 3600;
-	int m = (m_elapsedSeconds % 3600) / 60;
-	int s = m_elapsedSeconds % 60;
+    	int elapsed = m_currentProject -> getElapsedSeconds();
+
+    	int h = elapsed / 3600;
+    	int m = (elapsed % 3600) / 60;
+    	int s = elapsed % 60;
 
 	//update the timer label with zero padded time
 	m_timerDisplay -> SetLabel(wxString::Format("%02d:%02d:%02d", h, m, s));
@@ -198,9 +201,6 @@ void Toolbar::onTimer(wxTimerEvent&)
 //resets and starts the elapsed time timer
 void Toolbar::startTimer()
 {
-	//reset elapsed time counter
-	m_elapsedSeconds = 0;
-
 	//reset timer display to zero
 	m_timerDisplay -> SetLabel("00:00:00");
 
@@ -257,3 +257,50 @@ void Toolbar::toggleCollectNow()
 
 }
 
+// ================ Syncs all toolbar visual state to match the given tab/project ==========
+void Toolbar::syncFromProject(ProjectPanel* panel)
+{
+    	//always update which project the toolbar is pointing at
+    	m_currentProject = panel;
+
+    	if(!panel){
+        	//no project open, reset everything to default
+        	setRunning(false);
+        	m_toolbar -> ToggleTool(ID_ToggleTable,  false);
+        	m_toolbar -> ToggleTool(ID_ToggleGraph,  false);
+        	m_toolbar -> ToggleTool(ID_CollectNow,   false);
+        	stopTimer();
+        	m_timerDisplay -> SetLabel("00:00:00");
+        	return;
+    	}
+
+    	//sync start/stop button and timer without going through setRunning() because setRunning() has a guard that skips if state
+	//hasn't changed, which would prevent the button from updating when switching tabs, in other words, we force a full rebuild by
+	//resetting m_isRunning first.
+    	m_isRunning = !panel -> isRunning();
+    	setRunning(panel -> isRunning());
+
+    	//sync the timer, if the project is running, the timer should be ticking. If not, it should show 00:00:00
+        if(panel -> isRunning()){
+		if(!m_timer.IsRunning())
+            		m_timer.Start(1000);
+
+        	int elapsed = panel-> getElapsedSeconds();
+        	int h = elapsed / 3600;
+        	int m = (elapsed % 3600) / 60;
+        	int s = elapsed % 60;
+        	m_timerDisplay -> SetLabel(wxString::Format("%02d:%02d:%02d", h, m, s));
+    	}
+    	else{
+        	//project is not running, stop timer and reset display
+        	stopTimer();
+        	m_timerDisplay->SetLabel("00:00:00");
+    	}
+
+    	//sync the toggle button states to match the project's visibility flags
+    	m_toolbar -> ToggleTool(ID_ToggleTable, panel -> isRunning() ? true : m_toolbar -> GetToolState(ID_ToggleTable));
+    	m_toolbar -> ToggleTool(ID_ToggleGraph, panel -> isRunning() ? true : m_toolbar -> GetToolState(ID_ToggleGraph));
+    	m_toolbar -> ToggleTool(ID_CollectNow, panel -> getTableWindow() != nullptr);
+
+    	m_toolbar -> Realize();
+}

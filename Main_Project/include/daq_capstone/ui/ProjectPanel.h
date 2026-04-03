@@ -134,6 +134,7 @@ class ProjectPanel : public wxPanel
 		bool isRunning() const;
 		bool isConnected() const;
 		const std::vector<std::unique_ptr<Sensor>>& getSensors() const;
+		int getElapsedSeconds() const;
 
 		//used to update layout when buttons pressed
 		void setGraphVisible(bool visible) {graphVisible = visible; }

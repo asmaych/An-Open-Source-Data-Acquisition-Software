@@ -991,3 +991,13 @@ float ProjectPanel::getSampleRate() const
 {
 	return m_sampleRate;
 }
+
+/** @brief returns elapsed seconds since the current run started, if no run is active return 0. */
+int ProjectPanel::getElapsedSeconds() const
+{
+    	if(!m_isRunning || m_runStartTime <= 0.0)
+        	return 0;
+
+    	double now = wxGetUTCTimeMillis().ToDouble() / 1000.0;
+    	return static_cast<int>(now - m_runStartTime);
+}

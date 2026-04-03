@@ -47,6 +47,8 @@ class MainFrame : public wxFrame
 		void applyThemeToAll(Theme theme);
 
 		void onPageClose(wxAuiNotebookEvent& evt);
+
+		void onPageChanged(wxAuiNotebookEvent& evt);
 		//----------------------------------------------------
                 //      HELPER: returns currently selected ProjectPanel
                 //----------------------------------------------------

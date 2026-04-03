@@ -105,6 +105,8 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title, w
 
 	m_notebook -> Bind(wxEVT_AUINOTEBOOK_PAGE_CLOSE, &MainFrame::onPageClose, this);
 
+	m_notebook -> Bind(wxEVT_AUINOTEBOOK_PAGE_CHANGED, &MainFrame::onPageChanged, this);
+
 	//listen for theme toggle events from toolbar -> ProjectConfigDialog
 	Bind(wxEVT_THEME_TOGGLE, &MainFrame::toggleTheme, this);
 
@@ -189,7 +191,7 @@ void MainFrame::onNewProject(wxCommandEvent&)
 	m_notebook -> AddPage(panel, name, true);
 
 	//tell toolbar which project is current
-	toolbar -> setCurrentProject(panel);
+	toolbar -> syncFromProject(panel);
 
 	wxLogStatus("Project created: %s", name);
 }
@@ -239,11 +241,43 @@ void MainFrame::onOpenProject(wxCommandEvent& evt)
 	//add the new panel as a tab in the notebook
    	m_notebook -> AddPage(panel, name, true);
 
-	//inform the toolbar which project panel is currently active
-	toolbar -> setCurrentProject(panel);
+	//inform the toolbar which project panel is currently active to update toolbar appearance
+	toolbar -> syncFromProject(panel);
 
 	//display a log status indicating what project was loaded
     	wxLogStatus("Project loaded: %s", name);
+}
+
+
+//this fires before the panel is destroyed, so toggleStartStop() runs cleanly, it sends stop to the esp32, calls stopRun which saves
+//the ui state to DB, and clears m_isRunning
+void MainFrame::onPageClose(wxAuiNotebookEvent& evt)
+{
+    	//get the panel that is about to be closed
+    	int pageIndex = evt.GetSelection();
+    	if(pageIndex == wxNOT_FOUND){
+        	evt.Skip();
+        	return;
+    	}
+
+    	ProjectPanel* panel = dynamic_cast<ProjectPanel*>(m_notebook -> GetPage(pageIndex));
+
+    	if(!panel){
+        	evt.Skip();
+        	return;
+    	}
+
+    	//if an experiment is running, stop it cleanly before closing, this ensures the esp32 is told to stop streaming, thus ui saved cleanly
+        if(panel -> isRunning()){
+        	//tell the microcontroller to stop streaming
+        	panel -> toggleStartStop();
+    	}
+
+    	//reset toolbar, the closed tab's project is going away
+    	toolbar -> syncFromProject(nullptr);
+
+    	//allow the close to proceed
+    	evt.Skip();
 }
 
 
@@ -272,37 +306,13 @@ void MainFrame::applyThemeToAll(Theme theme)
 }
 
 
-//this fires before the panel is destroyed, so toggleStartStop() runs cleanly, it sends stop to the esp32, calls stopRun which saves
-//the ui state to DB, and clears m_isRunning
-void MainFrame::onPageClose(wxAuiNotebookEvent& evt)
+//updates the toolbar tools states in case we jump from one project/tab to another
+void MainFrame::onPageChanged(wxAuiNotebookEvent& evt)
 {
-    	//get the panel that is about to be closed
-    	int pageIndex = evt.GetSelection();
-    	if(pageIndex == wxNOT_FOUND){
-        	evt.Skip();
-        	return;
-    	}
+    	ProjectPanel* panel = getCurrentProjectPanel();
 
-    	ProjectPanel* panel = dynamic_cast<ProjectPanel*>(m_notebook->GetPage(pageIndex));
+	//syncFromProject handles nullptr cleanly, resets toolbar to default
+    	toolbar -> syncFromProject(panel);
 
-    	if(!panel){
-        	evt.Skip();
-        	return;
-    	}
-
-    	//if an experiment is running, stop it cleanly before closing, this ensures the esp32 is told to stop streaming, thus ui saved cleanly
-        if(panel -> isRunning()){
-        	//tell the microcontroller to stop streaming
-        	panel -> toggleStartStop();
-
-		toolbar -> setRunning(false);
-
-         	std::cout << "Run stopped on project close\n";
-    	}
-
-    	//update the toolbar if the closed tab was the active one
-    	toolbar -> setCurrentProject(nullptr);
-
-    	//allow the close to proceed
     	evt.Skip();
 }
