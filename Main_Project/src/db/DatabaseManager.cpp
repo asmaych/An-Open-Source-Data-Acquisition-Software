@@ -1014,9 +1014,9 @@ bool DatabaseManager::saveProjectCalibration(int projectId, int sensorId, int pi
         	return false;
     	}
 
-    	sqlite3_bind_int(stmt,  1, projectId);
-    	sqlite3_bind_int(stmt,  2, sensorId);
-    	sqlite3_bind_int(stmt,  3, pin);
+    	sqlite3_bind_int(stmt, 1, projectId);
+    	sqlite3_bind_int(stmt, 2, sensorId);
+    	sqlite3_bind_int(stmt, 3, pin);
     	sqlite3_bind_text(stmt, 4, type.c_str(), -1, SQLITE_TRANSIENT);
     	sqlite3_step(stmt);
     	sqlite3_finalize(stmt);
@@ -1027,9 +1027,9 @@ bool DatabaseManager::saveProjectCalibration(int projectId, int sensorId, int pi
     	sqlite3_stmt* updateStmt = nullptr;
     	if(sqlite3_prepare_v2(m_db, updateTypeSql, -1, &updateStmt, nullptr) == SQLITE_OK){
         	sqlite3_bind_text(updateStmt, 1, type.c_str(), -1, SQLITE_TRANSIENT);
-        	sqlite3_bind_int(updateStmt,  2, projectId);
-        	sqlite3_bind_int(updateStmt,  3, sensorId);
-        	sqlite3_bind_int(updateStmt,  4, pin);
+        	sqlite3_bind_int(updateStmt, 2, projectId);
+        	sqlite3_bind_int(updateStmt, 3, sensorId);
+        	sqlite3_bind_int(updateStmt, 4, pin);
         	sqlite3_step(updateStmt);
         	sqlite3_finalize(updateStmt);
     	}
@@ -1373,13 +1373,15 @@ bool DatabaseManager::deleteProjectData(int projectId)
      	//collect_points
     	//ui_state
 
-    	sqlite3_exec(m_db, "BEGIN TRANSACTION;", nullptr, nullptr, nullptr);
+ 	//sqlite3_exec(m_db, "BEGIN TRANSACTION;", nullptr, nullptr, nullptr);
+
+	sqlite3_stmt* stmt = nullptr;
 
     	//delete frame_values for all frames belonging to this project's runs
     	const char* frameValuesSql = "DELETE FROM frame_values WHERE frame_id IN (" "    SELECT frames.id FROM frames "
         			     "    JOIN runs ON frames.run_id = runs.id " "    WHERE runs.project_id = ?" ");";
 
-    	sqlite3_stmt* stmt = nullptr;
+    	//sqlite3_stmt* stmt = nullptr;
     	if(sqlite3_prepare_v2(m_db, frameValuesSql, -1, &stmt, nullptr) == SQLITE_OK){
         	sqlite3_bind_int(stmt, 1, projectId);
         	sqlite3_step(stmt);
@@ -1438,10 +1440,11 @@ bool DatabaseManager::deleteProject(int projectId)
     	if(!m_db)
 		return false;
 
-    	//first delete all data (runs, frames, calibrations, ui_state)
-    	deleteProjectData(projectId);
+      	sqlite3_exec(m_db, "BEGIN TRANSACTION;", nullptr, nullptr, nullptr);
 
-    	sqlite3_exec(m_db, "BEGIN TRANSACTION;", nullptr, nullptr, nullptr);
+	//first delete all data (runs, frames, calibrations, ui_state)
+        deleteProjectData(projectId);
+
 
     	//find sensors that are local-only (user_saved=0) AND used exclusively by this project, they should be deleted since no other 
 	//project or catalogue entry references them while again global sensors (user_saved=1) are left completely untouched.

@@ -1,11 +1,15 @@
 #include "OpenProjectDialog.h"
+#include "ProjectPanel.h"
 #include <wx/menu.h>
 #include <algorithm>
 #include <wx/checklst.h>
+#include <wx/aui/auibook.h>
 
-OpenProjectDialog::OpenProjectDialog(wxWindow* parent, DatabaseManager* db)
+OpenProjectDialog::OpenProjectDialog(wxWindow* parent, DatabaseManager* db, const std::vector<std::string>& openProjects, wxAuiNotebook* notebook)
     		  : wxDialog(parent, wxID_ANY, "Open Project", wxDefaultPosition, wxSize(400, 450), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER),
-      		    m_db(db)
+      		    m_db(db),
+		    m_openProjects(openProjects),
+		    m_notebook(notebook)
 {
     	//load all projects from DB
     	m_db -> loadProjects(m_allProjects);
@@ -161,7 +165,19 @@ void OpenProjectDialog::openEditDialog()
             								return;
         							}
 
-        							int confirm = wxMessageBox(wxString::Format(
+        							//warn if any selected project is currently open
+    								for(auto& name : selected){
+        								if(std::find(m_openProjects.begin(), m_openProjects.end(), name) != m_openProjects.end()){
+            									wxMessageBox(wxString::Format("'%s' is currently open.\n"
+													    "Continue anyway?", name),
+                											   "Project Is Open",
+                											   wxYES_NO | wxICON_INFORMATION);
+
+            									break;
+        								}
+    								}
+
+								int confirm = wxMessageBox(wxString::Format(
 											"Delete run data for %zu project(s)?\n" 
 											"Sensor setup and calibrations will be kept.",
                 				    					selected.size()), "Confirm Delete Data", 
@@ -174,9 +190,23 @@ void OpenProjectDialog::openEditDialog()
             								int id = m_db -> getProjectID(name);
             								if(id >= 0)
 										m_db -> deleteProjectData(id);
-        							}
+        								//capture name and m_notebook explicitly for the inner scope
+    									wxAuiNotebook* nb = m_notebook;
+    									std::string projectName = name;
 
-        							wxMessageBox("Run data deleted successfully.", "Done");
+    									if(nb){
+        									for(size_t i = 0; i < nb -> GetPageCount(); ++i){
+            										if(nb -> GetPageText(i).ToStdString() == projectName){
+                										auto* panel = dynamic_cast<ProjectPanel*>(nb -> GetPage(i));
+                										if(panel)
+                    											panel -> resetSessionData();
+                										break;
+            										}
+        									}
+    									}
+								}
+
+								wxMessageBox("Run data deleted successfully.", "Done");
         							editDlg.EndModal(wxID_OK);
     								});
 
@@ -190,6 +220,16 @@ void OpenProjectDialog::openEditDialog()
             								wxMessageBox("No projects selected.", "Delete Everything");
             								return;
         							}
+
+								//block deletion of any project that is currently open
+								for(auto& name : selected){
+        								if(std::find(m_openProjects.begin(), m_openProjects.end(), name) != m_openProjects.end()){
+            									wxMessageBox(wxString::Format("'%s' is currently open.\n"
+                    									"Please close the tab before deleting it.", name),
+                									"Project Is Open", wxOK | wxICON_WARNING);
+            									return;
+        								}
+    								}
 
         							int confirm = wxMessageBox(wxString::Format(
                 							"Permanently delete %zu project(s) and ALL their data?\n"
@@ -219,10 +259,9 @@ void OpenProjectDialog::openEditDialog()
     	editDlg.Centre();
 
     	//always reload after edit dialog closes regardless how it was closed
-	if(editDlg.ShowModal() == wxID_OK){
-	    	m_db -> loadProjects(m_allProjects);
-    		m_filteredProjects = m_allProjects;
-    		rebuildList();
-	}
-
+	editDlg.ShowModal();
+    	m_db -> loadProjects(m_allProjects);
+    	m_filteredProjects = m_allProjects;
+    	rebuildList();
+	
 }

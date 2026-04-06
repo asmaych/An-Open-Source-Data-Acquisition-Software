@@ -3,6 +3,7 @@
 #include <wx/listctrl.h>
 #include <vector>
 #include <string>
+#include <wx/aui/auibook.h>
 #include "db/DatabaseManager.h"
 
 /*
@@ -15,7 +16,7 @@
 class OpenProjectDialog : public wxDialog
 {
     	public:
-        	OpenProjectDialog(wxWindow* parent, DatabaseManager* db);
+        	OpenProjectDialog(wxWindow* parent, DatabaseManager* db, const std::vector<std::string>& openProjects, wxAuiNotebook* notebook);
 
         	//returns the selected project name, empty if none selected
         	wxString getSelectedProject() const;
@@ -25,6 +26,10 @@ class OpenProjectDialog : public wxDialog
 
         	//all project names loaded from DB
         	std::vector<std::string> m_allProjects;
+
+		std::vector<std::string> m_openProjects;
+
+		wxAuiNotebook* m_notebook = nullptr;
 
         	//currently displayed (filtered) project names
         	std::vector<std::string> m_filteredProjects;

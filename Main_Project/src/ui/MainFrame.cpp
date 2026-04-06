@@ -24,9 +24,7 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title, w
 	CreateStatusBar();
 
 
-	//--------------------------------------------------------------
-	//      CREATE TOOLBAR:
-	//--------------------------------------------------------------
+	// ============ CREATE TOOLBAR ================
 
 	// The toolbar will appear at the top of the window.
 	toolbar = new Toolbar(this);
@@ -155,12 +153,28 @@ void MainFrame::onNewProject(wxCommandEvent&)
 	if(name.IsEmpty())
 		return;
 
+	//check if a tab with this name is already open
+	for(size_t i = 0; i < m_notebook -> GetPageCount(); ++i){
+    		if(m_notebook -> GetPageText(i) == name){
+       			wxMessageBox(wxString::Format("A project named '%s' is already open!", name), "Project Already Open",
+            				wxOK | wxICON_WARNING);
+        		return;
+    		}
+	}
+
 	int projectID = -1;
 
     	//ask user if they want to save this project
         int answer = wxMessageBox("Do you want to save this project in the database?", "Save Project", wxYES_NO | wxICON_QUESTION);
 
 	 if(answer == wxYES){
+		//check if a project with this name already exists in the DB
+    		if(m_DB.getProjectID(name.ToStdString()) >= 0){
+        		wxMessageBox(wxString::Format("A project named '%s' already exists in the database!\n" "Please choose a different name.", name),
+            						"Name Already Taken", wxOK | wxICON_WARNING);
+        		return;
+    		}
+
         	//create the project in db and get its ID
         	projectID = m_DB.createProject(name.ToStdString());
 
@@ -210,13 +224,30 @@ void MainFrame::onOpenProject(wxCommandEvent& evt)
 		return;
 	}
 
-	OpenProjectDialog dlg(this, &m_DB);
-	if(dlg.ShowModal() != wxID_OK)
+	//build list of currently open tab names so the dialog can block deletion of open projects and warn on data only delete
+    	std::vector<std::string> openProjects;
+    	for(size_t i = 0; i < m_notebook -> GetPageCount(); ++i)
+        	openProjects.push_back(m_notebook -> GetPageText(i).ToStdString());
+
+    	OpenProjectDialog dlg(this, &m_DB, openProjects, m_notebook);
+    	if(dlg.ShowModal() != wxID_OK)
         	return;
 
     	wxString name = dlg.getSelectedProject();
     	if(name.IsEmpty())
         	return;
+
+	//check if this project is already open in another tab, If it is, just switch to that tab instead of opening a duplicate
+    	for(size_t i = 0; i < m_notebook -> GetPageCount(); ++i){
+        	if(m_notebook -> GetPageText(i) == name){
+            		wxMessageBox(wxString::Format("'%s' is already open!\n""Switching to that tab.", name), "Project Already Open",
+                			wxOK | wxICON_INFORMATION);
+
+            		m_notebook -> SetSelection(i);
+            		toolbar -> syncFromProject(dynamic_cast<ProjectPanel*>(m_notebook -> GetPage(i)));
+            		return;
+        	}
+    	}
 
     	int projectID = m_DB.getProjectID(name.ToStdString());
     	if(projectID < 0){
