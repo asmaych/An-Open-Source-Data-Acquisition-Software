@@ -24,7 +24,7 @@ SensorManager::SensorManager(std::vector<std::unique_ptr<Sensor>>& sensors, Seri
 }
 
 void SensorManager::setOnChangeCallback(std::function<void()> cb) {
-    m_onChange = std::move(cb);
+    	m_onChange = std::move(cb);
 }
 
 
@@ -39,8 +39,8 @@ bool SensorManager::addSensor(std::unique_ptr<Sensor> s)
 
 	std::cout << "oopsy looks like we've been called to add a new sensorrr\n";
 
-	//if either the name or pin already exist:
-	if (nameExists(s->getName()) || pinExists(s->getPin()))
+	//if pin exists throw a message
+	if (pinExists(s->getPin()))
 	{
 		//do not modify the vector, return false
 		std::cout << "Pin already used!\n";
@@ -49,9 +49,14 @@ bool SensorManager::addSensor(std::unique_ptr<Sensor> s)
 
 	std::cout << "looks like the name and pin for the new sensor are okay!\n";
 
-	//we register it with the microcontroller:
-	m_serialComm->addSensor(s->getName(), s->getPin());
-	std::cout << "successfully registered the sensor with the arduino!\n";	
+	//we register it with the microcontroller, if a serial connection exists
+	if(m_serialComm && m_serialComm -> handshakeresult){
+        	m_serialComm -> addSensor(s -> getName(), s -> getPin());
+        	std::cout << "Sensor registered with microcontroller\n";
+    	}
+    	else{
+        	std::cout << "No connection — sensor added to memory only, will register with hardware on connect\n";
+    	}
 
 	//otherwise, we add the Sensor to the vector:
 	m_sensors.push_back(std::move(s));
@@ -64,7 +69,7 @@ bool SensorManager::addSensor(std::unique_ptr<Sensor> s)
 	return true;
 }
 
-bool SensorManager::removeSensor(const std::string& sensorName)
+bool SensorManager::removeSensor(const std::string& sensorName, int pin)
 {
 	/* \brief 	This function takes the name of a sensor in the 
 	 * 		vector, and uses it to search for, and remove the
@@ -78,7 +83,7 @@ bool SensorManager::removeSensor(const std::string& sensorName)
 	auto it = std::remove_if(
 			m_sensors.begin(),
 			m_sensors.end(),
-			[&](const std::unique_ptr<Sensor>& s){return s->getName() == sensorName; });
+			[&](const std::unique_ptr<Sensor>& s){return s -> getName() == sensorName && s -> getPin() == pin; });
 
 	//if our iterator got to the end without finding the sensor
 	//then there is some kind of problem with the naming, so we
@@ -93,8 +98,9 @@ bool SensorManager::removeSensor(const std::string& sensorName)
 	//the registry in the microcontroller, and return true
 	m_sensors.erase(it, m_sensors.end());
 
-	//remove the sensor from the microcontroller as well
-	m_serialComm->removeSensor(sensorName);
+	//only send remove command to hardware if connected
+    	if(m_serialComm && m_serialComm->handshakeresult)
+        	m_serialComm->removeSensor(sensorName);
 	
 	if(m_onChange) m_onChange();
 

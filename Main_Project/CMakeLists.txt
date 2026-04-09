@@ -79,28 +79,24 @@ add_executable(daq_capstone
 	src/ui/SensorSelectionDialog.cpp
 	src/ui/CalibrateSensorDialog.cpp
 	src/ui/CalibrationTableDialog.cpp
+	src/ui/CalibrationCompareDialog.cpp
 	src/ui/ProjectConfigDialog.cpp
+	src/ui/HardwareConfirmDialog.cpp
+	src/ui/OpenProjectDialog.cpp
+	src/ui/ExportManager.cpp
+	src/ui/CalibrationRestorer.cpp
 	src/db/DatabaseManager.cpp
 	src/sensor/RawReader.cpp
 	src/sensor/VoltageReader.cpp
 	src/sensor/MappedReader.cpp
 )
 
+#link libserialport and wxwidgets
 target_link_libraries(daq_capstone PRIVATE serialport)
 target_link_libraries(daq_capstone PRIVATE wxcore wxaui wxbase)
 
-## Find wxWidgets
-#find_package(wxWidgets REQUIRED COMPONENTS core base aui REQUIRED)
-#if(wxWidgets_FOUND)
-#    include(${wxWidgets_USE_FILE})
-#endif()
-#
-#
-## Link wxwidgets
-#target_link_libraries(daq_capstone PRIVATE ${wxWidgets_LIBRARIES} ${LIBUSB_LIBRARIES})
 
 # Link sqlite3
-
 
 target_link_libraries(daq_capstone PRIVATE sqlite3)
 

@@ -1,6 +1,7 @@
 #include "MainFrame.h"
 #include "ProjectPanel.h"
 #include "SensorSelectionDialog.h"
+#include "OpenProjectDialog.h"
 #include <wx/wx.h>
 #include <wx/artprov.h> //this one provides default system icons for toolbar items
 #include "Sidebar.h"
@@ -23,9 +24,7 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title, w
 	CreateStatusBar();
 
 
-	//--------------------------------------------------------------
-	//      CREATE TOOLBAR:
-	//--------------------------------------------------------------
+	// ============ CREATE TOOLBAR ================
 
 	// The toolbar will appear at the top of the window.
 	toolbar = new Toolbar(this);
@@ -90,10 +89,11 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title, w
 	m_notebook = new wxAuiNotebook(this, wxID_ANY);
 
 	//dock sidebar to the left
-	m_mgr.AddPane(sidebar, wxAuiPaneInfo().Left().BestSize(200, -1).CloseButton(false));
+	m_mgr.AddPane(sidebar, wxAuiPaneInfo().Left().BestSize(200, -1).CloseButton(false).CaptionVisible(false).Floatable(false).Movable(false));
+
 
 	//main workspace in the center
-	m_mgr.AddPane(m_notebook, wxAuiPaneInfo().Center().CloseButton(false));
+	m_mgr.AddPane(m_notebook, wxAuiPaneInfo().Center().CloseButton(false).CaptionVisible(false));
 
 	//apply aui layout
 	m_mgr.Update();
@@ -102,6 +102,8 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title, w
 	Bind(wxEVT_PROJECT_NEW, &MainFrame::onNewProject, this);
 
 	m_notebook -> Bind(wxEVT_AUINOTEBOOK_PAGE_CLOSE, &MainFrame::onPageClose, this);
+
+	m_notebook -> Bind(wxEVT_AUINOTEBOOK_PAGE_CHANGED, &MainFrame::onPageChanged, this);
 
 	//listen for theme toggle events from toolbar -> ProjectConfigDialog
 	Bind(wxEVT_THEME_TOGGLE, &MainFrame::toggleTheme, this);
@@ -151,12 +153,28 @@ void MainFrame::onNewProject(wxCommandEvent&)
 	if(name.IsEmpty())
 		return;
 
+	//check if a tab with this name is already open
+	for(size_t i = 0; i < m_notebook -> GetPageCount(); ++i){
+    		if(m_notebook -> GetPageText(i) == name){
+       			wxMessageBox(wxString::Format("A project named '%s' is already open!", name), "Project Already Open",
+            				wxOK | wxICON_WARNING);
+        		return;
+    		}
+	}
+
 	int projectID = -1;
 
     	//ask user if they want to save this project
         int answer = wxMessageBox("Do you want to save this project in the database?", "Save Project", wxYES_NO | wxICON_QUESTION);
 
 	 if(answer == wxYES){
+		//check if a project with this name already exists in the DB
+    		if(m_DB.getProjectID(name.ToStdString()) >= 0){
+        		wxMessageBox(wxString::Format("A project named '%s' already exists in the database!\n" "Please choose a different name.", name),
+            						"Name Already Taken", wxOK | wxICON_WARNING);
+        		return;
+    		}
+
         	//create the project in db and get its ID
         	projectID = m_DB.createProject(name.ToStdString());
 
@@ -187,7 +205,7 @@ void MainFrame::onNewProject(wxCommandEvent&)
 	m_notebook -> AddPage(panel, name, true);
 
 	//tell toolbar which project is current
-	toolbar -> setCurrentProject(panel);
+	toolbar -> syncFromProject(panel);
 
 	wxLogStatus("Project created: %s", name);
 }
@@ -206,50 +224,91 @@ void MainFrame::onOpenProject(wxCommandEvent& evt)
 		return;
 	}
 
-	//we create a list of choices for the user
-	wxArrayString choices;
+	//build list of currently open tab names so the dialog can block deletion of open projects and warn on data only delete
+    	std::vector<std::string> openProjects;
+    	for(size_t i = 0; i < m_notebook -> GetPageCount(); ++i)
+        	openProjects.push_back(m_notebook -> GetPageText(i).ToStdString());
 
-	for(auto& project : projects)
-		choices.Add(project);
+    	OpenProjectDialog dlg(this, &m_DB, openProjects, m_notebook);
+    	if(dlg.ShowModal() != wxID_OK)
+        	return;
 
-	//create the dialog to display the choices
-	wxSingleChoiceDialog dlg(this, "Select project", "Open project", choices);
+    	wxString name = dlg.getSelectedProject();
+    	if(name.IsEmpty())
+        	return;
 
-	//if the user presses cancel, forget about it
-	if(dlg.ShowModal() != wxID_OK)
-		return;
+	//check if this project is already open in another tab, If it is, just switch to that tab instead of opening a duplicate
+    	for(size_t i = 0; i < m_notebook -> GetPageCount(); ++i){
+        	if(m_notebook -> GetPageText(i) == name){
+            		wxMessageBox(wxString::Format("'%s' is already open!\n""Switching to that tab.", name), "Project Already Open",
+                			wxOK | wxICON_INFORMATION);
 
-	//get the selected project name
-	wxString name = dlg.GetStringSelection();
+            		m_notebook -> SetSelection(i);
+            		toolbar -> syncFromProject(dynamic_cast<ProjectPanel*>(m_notebook -> GetPage(i)));
+            		return;
+        	}
+    	}
 
-	//the projects are saved by id
-	int projectID = m_DB.getProjectID(name.ToStdString());
+    	int projectID = m_DB.getProjectID(name.ToStdString());
+    	if(projectID < 0){
+        	wxMessageBox("Could not find project in database!", "Error");
+        	return;
+    	}
 
-	if(projectID < 0){
-		wxMessageBox("Could not find project in Database!", "Error");
-		return;
-	}
-
-	//create a new project panel where m_notebook is the parent notebook, name is the project name, and pointer for db manager
+    	//create a new project panel where m_notebook is the parent notebook, name is the project name, and pointer for db manager
 	auto* panel = new ProjectPanel(m_notebook, name, &m_DB);
 
 	//store the project id inside the panel so the panel knows which project it belongs to
-	panel -> setProjectId(projectID);
-	panel -> setSaveProject(true);
 
-	panel -> setMainFrame(this);
+    	panel -> setProjectId(projectID);
+    	panel -> setSaveProject(true);
+
+    	panel -> setMainFrame(this);
 
 	//load all project data from the db
-	panel -> loadProjectFromDatabase();
+
+    	panel -> loadProjectFromDatabase();
 
 	//add the new panel as a tab in the notebook
-	m_notebook -> AddPage(panel, name, true);
+   	m_notebook -> AddPage(panel, name, true);
 
-	//inform the toolbar which project panel is currently active
-	toolbar -> setCurrentProject(panel);
+	//inform the toolbar which project panel is currently active to update toolbar appearance
+	toolbar -> syncFromProject(panel);
 
 	//display a log status indicating what project was loaded
-	wxLogStatus("Project loaded: %s", name);
+    	wxLogStatus("Project loaded: %s", name);
+}
+
+
+//this fires before the panel is destroyed, so toggleStartStop() runs cleanly, it sends stop to the esp32, calls stopRun which saves
+//the ui state to DB, and clears m_isRunning
+void MainFrame::onPageClose(wxAuiNotebookEvent& evt)
+{
+    	//get the panel that is about to be closed
+    	int pageIndex = evt.GetSelection();
+    	if(pageIndex == wxNOT_FOUND){
+        	evt.Skip();
+        	return;
+    	}
+
+    	ProjectPanel* panel = dynamic_cast<ProjectPanel*>(m_notebook -> GetPage(pageIndex));
+
+    	if(!panel){
+        	evt.Skip();
+        	return;
+    	}
+
+    	//if an experiment is running, stop it cleanly before closing, this ensures the esp32 is told to stop streaming, thus ui saved cleanly
+        if(panel -> isRunning()){
+        	//tell the microcontroller to stop streaming
+        	panel -> toggleStartStop();
+    	}
+
+    	//reset toolbar, the closed tab's project is going away
+    	toolbar -> syncFromProject(nullptr);
+
+    	//allow the close to proceed
+    	evt.Skip();
 }
 
 
@@ -278,37 +337,13 @@ void MainFrame::applyThemeToAll(Theme theme)
 }
 
 
-//this fires before the panel is destroyed, so toggleStartStop() runs cleanly, it sends stop to the esp32, calls stopRun which saves
-//the ui state to DB, and clears m_isRunning
-void MainFrame::onPageClose(wxAuiNotebookEvent& evt)
+//updates the toolbar tools states in case we jump from one project/tab to another
+void MainFrame::onPageChanged(wxAuiNotebookEvent& evt)
 {
-    	//get the panel that is about to be closed
-    	int pageIndex = evt.GetSelection();
-    	if(pageIndex == wxNOT_FOUND){
-        	evt.Skip();
-        	return;
-    	}
+    	ProjectPanel* panel = getCurrentProjectPanel();
 
-    	ProjectPanel* panel = dynamic_cast<ProjectPanel*>(m_notebook->GetPage(pageIndex));
+	//syncFromProject handles nullptr cleanly, resets toolbar to default
+    	toolbar -> syncFromProject(panel);
 
-    	if(!panel){
-        	evt.Skip();
-        	return;
-    	}
-
-    	//if an experiment is running, stop it cleanly before closing, this ensures the esp32 is told to stop streaming, thus ui saved cleanly
-        if(panel -> isRunning()){
-        	//tell the microcontroller to stop streaming
-        	panel -> toggleStartStop();
-
-		toolbar -> setRunning(false);
-
-         	std::cout << "Run stopped on project close\n";
-    	}
-
-    	//update the toolbar if the closed tab was the active one
-    	toolbar -> setCurrentProject(nullptr);
-
-    	//allow the close to proceed
     	evt.Skip();
 }

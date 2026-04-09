@@ -5,6 +5,7 @@
 #include "Sensor.h"
 #include "string"
 #include "CalibrationTableDialog.h"
+#include "db/DatabaseManager.h"
 
 /**
  * @brief GUI object used to allow user to select which Calibrator implementation to configure for a selected Sensor
@@ -20,7 +21,11 @@ class CalibrateSensorDialog : public wxDialog
 					wxWindow* parent,
 					const wxString& title,
 					SensorManager* sensorManager,
-					const long sensor_index); 
+					long sensor_index,
+					DatabaseManager* db,
+    					int projectId,
+					int sensorId,
+    					int pin); 
 
 	private:
 		//------------------------------------------------------
@@ -36,6 +41,10 @@ class CalibrateSensorDialog : public wxDialog
 		//this is used to hold the index of the sensor we wish
 		//to assign a calibrator to.
 		long m_sensor_index;
+		DatabaseManager* m_db = nullptr;
+		int m_projectId = -1;
+		int m_sensorId = -1;
+		int m_pin = -1;
 
 
 		//------------------------------------------------------

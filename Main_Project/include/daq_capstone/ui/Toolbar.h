@@ -71,6 +71,9 @@ class Toolbar : public wxEvtHandler
                 void toggleGraph();
 		void toggleCollectNow();
 
+		//syncs all toolbar visual state to match the given project, called by mainFRame whenever the active tab changes
+		void syncFromProject(ProjectPanel* panel);
+
 	private:
 
 		wxToolBar* m_toolbar = nullptr;
@@ -79,7 +82,6 @@ class Toolbar : public wxEvtHandler
 
 		//timer state
 		wxTimer m_timer;
-		int m_elapsedSeconds = 0;
 
 		ProjectPanel* m_currentProject = nullptr;
 

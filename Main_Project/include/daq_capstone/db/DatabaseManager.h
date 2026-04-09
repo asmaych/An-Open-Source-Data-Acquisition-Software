@@ -4,6 +4,8 @@
 #include <vector>
 #include <memory>
 #include "sensor/Sensor.h"
+#include "CalibrationPoint.h"
+
 /*
 	DatabaseManager class is responsible for:
 	    - opening a SQLite db
@@ -96,6 +98,40 @@ class DatabaseManager
 
 		//load UI visibility state for a prject
 		bool loadUIState(int projectId, bool& graph, bool& live, bool& collect);
+
+		//saves or overwrites the global calibration for a sensor template
+		bool saveGlobalCalibration(int sensorId, const std::string& type, const std::vector<CalibrationPoint>& points);
+
+		//saves or replaces the calibration for one sensor instance in a project
+		bool saveProjectCalibration(int projectId, int sensorId, int pin, const std::string& type, const std::vector<CalibrationPoint>& points);
+
+		//loads the global calibration for a sensor template
+		bool loadGlobalCalibration(int sensorId, std::string& type, std::vector<CalibrationPoint>& points);
+
+		//loads the calibration for one sensor in a project
+		bool loadProjectCalibration(int projectId, int sensorId, int pin, std::string& type, std::vector<CalibrationPoint>& points);
+
+		//returns true if a global calibration exists for this sensor_id
+		bool hasGlobalCalibration(int sensorId);
+
+		//returns true if a project calibration exists for this specific sensor
+		bool hasProjectCalibration(int projectId, int sensorId, int pin);
+
+		//updates the pin for a sensor in project_sensors, called whenever the user changes a pin in hardwareConfirmDialog
+		bool updateProjectSensorPin(int projectId, int sensorId, int oldPin, int newPin);
+
+		//migrates the project_calibrations row from oldPin to newPin
+		bool migrateCalibrationPin(int projectId, int sensorId, int oldPin, int newPin);
+
+		//sets user_saved = 0 for a sensor meaning removes it from the global sensors catalogue but keeps the row for FK
+		bool unlistSensor(int sensorId);
+
+		//deletes all data for a project (runs, frames, frame_values, collect_points, ui_state) but keeps the project setup
+		bool deleteProjectData(int projectId);
+
+		//deletes a project completely including its sensor links, local-only sensors (user_saved=0) that belong exclusively 
+		//to this project are also deleted but global sensors (user_saved=1) are left untouched in the catalogue
+		bool deleteProject(int projectId);
 
 		//transaction helpers for DAQ performance cause without them the SQL is super slow
 		void beginTransaction();

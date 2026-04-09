@@ -15,6 +15,7 @@
 #include "data/LiveDataWindow.h"
 #include "db/DatabaseManager.h"
 #include "Events.h"
+#include "ExportManager.h"
 
 /* ProjectPanel class represents one project tab, it contains:
    All sensors in a project, SerialComm instance for readings, Runs (continuous acquisition buffers)
@@ -133,6 +134,7 @@ class ProjectPanel : public wxPanel
 		bool isRunning() const;
 		bool isConnected() const;
 		const std::vector<std::unique_ptr<Sensor>>& getSensors() const;
+		int getElapsedSeconds() const;
 
 		//used to update layout when buttons pressed
 		void setGraphVisible(bool visible) {graphVisible = visible; }
@@ -154,17 +156,15 @@ class ProjectPanel : public wxPanel
 
 	private:
 		//splitter for live graph (top) live table (bottom)
-		std::unique_ptr<wxSplitterWindow> m_splitter;
-		std::unique_ptr<wxSplitterWindow> m_bottom_splitter; //for splitting the buttom space when collect now is used
+		wxSplitterWindow* m_splitter;
+		wxSplitterWindow* m_bottom_splitter; //for splitting the buttom space when collect now is used
 
 		//graph helpers
 		void graphTable(DataTableWindow*); //graph collect on demand table
 		void graphRun(const std::shared_ptr<Run>& run); //graph a full run
 
-		//export helpers
-		void exportRun(const std::shared_ptr<Run>& run, const wxString& path);
-		void exportTable(DataTableWindow* table, const wxString& path);
-		void exportGraph(GraphWindow* graph, const wxString& path);
+		//export handler
+		std::unique_ptr<ExportManager> m_exporter;
 
 		wxListCtrl* m_sensorList{}; //display all available sensors
 		wxButton* m_connect_button{}; //button to open handshake dialog
@@ -175,10 +175,10 @@ class ProjectPanel : public wxPanel
 		std::unique_ptr<SessionController> m_controller;
 
 		//live display & tables
-		std::unique_ptr<LiveDataWindow> m_liveWindow; //single embedded live window
-		std::unique_ptr<DataTableWindow> m_tableWindow; //single collect on demand window collection
+		LiveDataWindow* m_liveWindow = nullptr; //single embedded live window
+		DataTableWindow* m_tableWindow = nullptr; //single collect on demand window collection
 		std::unique_ptr<DataTableWindow> m_continuousTableWindow; //table for run
-		std::unique_ptr<GraphWindow> m_graphWindow; //current graph window
+		GraphWindow* m_graphWindow = nullptr; //current graph window
 
 		//state flags
 		bool graphVisible = false; //assigned to true cause when pressing start both graph and collect continuous are displayed
