@@ -5,7 +5,7 @@
 #include <iosfwd>
 #include <mutex>
 #include <memory>
-#include <bits/stl_vector.h>
+#include <vector>
 
 #include "CalibrationPoint.h"
 #include "Calibrator.h"

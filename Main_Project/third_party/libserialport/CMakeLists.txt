@@ -9,7 +9,10 @@ add_library(serialport STATIC
 # Platform backend
 if (WIN32)
     target_sources(serialport PRIVATE windows.c)
-    target_compile_definitions(serialport PRIVATE _CRT_SECURE_NO_WARNINGS)
+    target_compile_definitions(serialport PRIVATE
+            LIBSERIALPORT_STATIC
+            _CRT_SECURE_NO_WARNINGS
+    )
     target_link_libraries(serialport PUBLIC setupapi advapi32)
 elseif (APPLE)
     target_sources(serialport PRIVATE macosx.c)
