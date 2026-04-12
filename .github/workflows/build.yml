@@ -34,8 +34,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y \
             libgtk-3-dev libgl1-mesa-dev \
-            pkg-config
+            pkg-config \
             gcc-13 g++-13
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 13
+          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-13 13
 
       - name: Install macOS dependencies
         if: startsWith(matrix.os, 'macos')
@@ -47,8 +49,6 @@ jobs:
         run: |
           cmake -S Main_Project -B build \
             -DCMAKE_BUILD_TYPE=Release
-            -DCMAKE_C_COMPILER=gcc-13 \
-            -DCMAKE_CXX_COMPILER=g++-13
 
       - name: Configure (macOS)
         if: startsWith(matrix.os, 'macos')
