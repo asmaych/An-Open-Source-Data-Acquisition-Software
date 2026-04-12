@@ -10,8 +10,10 @@ add_library(serialport STATIC
 if (WIN32)
     target_sources(serialport PRIVATE windows.c)
     target_compile_definitions(serialport PUBLIC
-            LIBSERIALPORT_STATIC
-            _CRT_SECURE_NO_WARNINGS
+        LIBSERIALPORT_STATIC
+        _CRT_SECURE_NO_WARNINGS
+        SP_PRIV=
+        HAVE_WINDOWS_H=1
     )
     target_link_libraries(serialport PUBLIC setupapi advapi32)
 elseif (APPLE)
@@ -40,11 +42,11 @@ file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/config.h [=[
 #endif
 ]=])
 
-# Force-include config.h before every source file — compiler flag differs by toolchain
-if (MSVC)
-    target_compile_options(serialport PRIVATE /FI${CMAKE_CURRENT_BINARY_DIR}/config.h)
-else()
-    target_compile_options(serialport PRIVATE -include ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+# Force-include config.h on non-Windows only
+if (NOT WIN32)
+    target_compile_options(serialport PRIVATE
+        -include ${CMAKE_CURRENT_BINARY_DIR}/config.h
+    )
 endif()
 
 target_include_directories(serialport PRIVATE
