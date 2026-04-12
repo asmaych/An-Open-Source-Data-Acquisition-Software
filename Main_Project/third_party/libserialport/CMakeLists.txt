@@ -9,7 +9,7 @@ add_library(serialport STATIC
 # Platform backend
 if (WIN32)
     target_sources(serialport PRIVATE windows.c)
-    target_compile_definitions(serialport PRIVATE
+    target_compile_definitions(serialport PUBLIC
             LIBSERIALPORT_STATIC
             _CRT_SECURE_NO_WARNINGS
     )
