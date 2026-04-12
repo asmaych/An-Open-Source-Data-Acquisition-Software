@@ -1,6 +1,13 @@
 # CMake stuff
 /Main_Project/build/
 
+#igoring the build directory
+/Main_Project/cmake-build-debug
+
+#ignoring the database
+/Main_Project/*.db
+
+
 # Prerequisites
 *.d
 
