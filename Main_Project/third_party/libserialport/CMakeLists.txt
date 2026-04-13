@@ -11,11 +11,10 @@ if (WIN32)
     target_sources(serialport PRIVATE windows.c)
     target_compile_definitions(serialport PUBLIC
         _CRT_SECURE_NO_WARNINGS
+        LIBSERIALPORT_MSBUILD
         SP_PRIV=
         HAVE_WINDOWS_H=1
-        SP_API=
     )
-    target_link_libraries(serialport PUBLIC setupapi advapi32)
     target_link_libraries(serialport PUBLIC setupapi advapi32)
 elseif (APPLE)
     target_sources(serialport PRIVATE macosx.c)
