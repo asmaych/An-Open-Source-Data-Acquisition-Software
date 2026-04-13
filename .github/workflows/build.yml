@@ -5,6 +5,9 @@ on:
     tags: ["v*"]          # trigger on version tags, e.g. v1.0.0
   workflow_dispatch:       # allow manual runs
 
+permissions:
+  contents: write
+
 jobs:
   build:
     strategy:
