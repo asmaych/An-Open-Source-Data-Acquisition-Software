@@ -84,6 +84,10 @@ add_executable(daq_capstone
 		src/sensor/MappedReader.cpp
 )
 
+if (WIN32)
+    set_target_properties(daq_capstone PROPERTIES WIN32_EXECUTABLE TRUE)
+endif()
+
 #link libserialport and wxwidgets
 target_link_libraries(daq_capstone PRIVATE
 		wxcore wxaui wxbase
