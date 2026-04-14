@@ -187,7 +187,7 @@ bool SerialComm::handshake(std::string portname)
 
 	if (strcmp("pong", buffer) == 0)
 	{
-		printf("Success, expected: \"pong\", received: %n\n", buffer);
+		printf("Success, expected: \"pong\", received: %s\n", buffer);
 		this->handshakeresult = true;
 		//add the port name to the global list so no other instances try to use it
 		g_ports_in_use.insert(portname);
