@@ -5,6 +5,10 @@
 #include <wx/checklst.h>
 #include <wx/aui/auibook.h>
 
+/**
+ * @brief builds the dialog with a search bar, a 3-column project list (Name | Runs | Created), and a ⋮ menu button that gives access 
+ *        to edit DB and sort options.
+ */
 OpenProjectDialog::OpenProjectDialog(wxWindow* parent, DatabaseManager* db, const std::vector<std::string>& openProjects, wxAuiNotebook* notebook)
     		  : wxDialog(parent, wxID_ANY, "Open Project", wxDefaultPosition, wxSize(400, 450), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER),
       		    m_db(db),
@@ -12,8 +16,15 @@ OpenProjectDialog::OpenProjectDialog(wxWindow* parent, DatabaseManager* db, cons
 		    m_notebook(notebook)
 {
     	//load all projects from DB
-    	m_db -> loadProjects(m_allProjects);
-    	m_filteredProjects = m_allProjects;
+    	m_db -> loadProjectsWithInfo(m_allInfos);
+
+	//populate m_allProjects string list for openEditDialog
+	for(auto& info : m_allInfos)
+        	m_allProjects.push_back(info.name);
+
+	//start with no filter applied
+	m_filteredInfos = m_allInfos;
+	m_filteredProjects = m_allProjects;
 
     	wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
 
@@ -31,9 +42,15 @@ OpenProjectDialog::OpenProjectDialog(wxWindow* parent, DatabaseManager* db, cons
     	topSizer -> Add(m_menuBtn, 0);
     	mainSizer -> Add(topSizer, 0, wxEXPAND | wxALL, 10);
 
-    	//project list
-    	m_list = new wxListBox(this, wxID_ANY);
-    	m_list -> Bind(wxEVT_LISTBOX_DCLICK, &OpenProjectDialog::onDoubleClick, this);
+    	//project list (wxLC_REPORT = table/grid view)
+	//three cols: name(left), runs(right aligned count), created(date)
+    	m_list = new wxListCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_SINGLE_SEL | wxBORDER_SIMPLE);
+	m_list -> AppendColumn("Name", wxLIST_FORMAT_LEFT, 150);
+    	m_list -> AppendColumn("Runs", wxLIST_FORMAT_RIGHT, 60);
+    	m_list -> AppendColumn("Created", wxLIST_FORMAT_LEFT, 160);
+
+	//double-click on a row selects the project and closes the dialog
+    	m_list -> Bind(wxEVT_LIST_ITEM_ACTIVATED, &OpenProjectDialog::onDoubleClick, this);
     	mainSizer -> Add(m_list, 1, wxEXPAND | wxLEFT | wxRIGHT, 10);
 
     	//Hint
@@ -47,31 +64,59 @@ OpenProjectDialog::OpenProjectDialog(wxWindow* parent, DatabaseManager* db, cons
 }
 
 
+/**
+ * @brief returns the name of the project the user selected, empty if none
+ */
+
 wxString OpenProjectDialog::getSelectedProject() const
 {
     	return m_selectedProject;
 }
 
 
+/**
+ * @brief clears and refills the wxListCtrl from m_filteredInfos, called after every search query change or sort operation
+ */
+
 void OpenProjectDialog::rebuildList()
 {
-    	m_list -> Clear();
-    	for(auto& name : m_filteredProjects)
-        	m_list -> Append(name);
+    	m_list->DeleteAllItems();
+
+	for(size_t i = 0; i < m_filteredInfos.size(); ++i){
+       		auto& info = m_filteredInfos[i];
+
+        	//insert the project name in column 0
+        	long idx = m_list -> InsertItem((long)i, info.name);
+
+        	//run count in column 1
+        	m_list -> SetItem(idx, 1, wxString::Format("%d", info.runCount));
+
+        	//creation date in column 2 (already trimmed to "YYYY-MM-DD HH:MM")
+        	m_list -> SetItem(idx, 2, info.createdAt);
+    	}
 }
 
+
+/**
+ * @brief filters the project list in real time as the user types in the search box, matches against project name 
+	  (case-insensitive substring)
+ */
 
 void OpenProjectDialog::onSearch(wxCommandEvent& evt)
 {
     	wxString query = m_search -> GetValue().Lower();
-    	m_filteredProjects.clear();
+
+	m_filteredInfos.clear();
+	m_filteredProjects.clear();
 
 	std::cout << "searching projects: query = '" << query << "' allProjects = " << m_allProjects.size();
 
-	for(auto& name : m_allProjects){
-        	wxString wx = wxString(name).Lower();
-        	if(query.IsEmpty() || wx.Contains(query))
-            		m_filteredProjects.push_back(name);
+	for(auto& proj : m_allInfos){
+        	wxString wx = wxString(proj.name).Lower();
+        	if(query.IsEmpty() || wx.Contains(query)){
+			m_filteredInfos.push_back(proj);
+            		m_filteredProjects.push_back(proj.name);
+		}
     	}
 
 	std::cout << " filtered = " << m_filteredProjects.size() << "\n";
@@ -80,30 +125,131 @@ void OpenProjectDialog::onSearch(wxCommandEvent& evt)
 }
 
 
-void OpenProjectDialog::onDoubleClick(wxCommandEvent& evt)
+/**
+ * @brief called when the user double-clicks a row in the list, stores the selected project name and closes the dialog with wxID_OK
+ */
+void OpenProjectDialog::onDoubleClick(wxListEvent& evt)
 {
-    	int sel = m_list -> GetSelection();
-    	if(sel == wxNOT_FOUND)
+    	long idx = evt.GetIndex();
+    	if(idx < 0 || idx >= (long)m_filteredInfos.size())
         	return;
 
-    	m_selectedProject = m_list -> GetString(sel);
+    	m_selectedProject = m_filteredInfos[idx].name;
     	EndModal(wxID_OK);
 }
 
 
-void OpenProjectDialog::onMenuButton(wxCommandEvent& evt)
+/**
+ * @brief called whenever the user wants to duplicate a project that already exists
+ */
+void OpenProjectDialog::duplicateSelected()
 {
-    	//show a small popup menu below the ⋮ button
-    	wxMenu menu;
-    	menu.Append(1, "Edit Database");
+    	//get currently highlighted row
+    	long idx = m_list -> GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+    	if(idx < 0 || idx >= (long)m_filteredInfos.size()){
+        	wxMessageBox("Please select a project to duplicate first.", "No Selection");
+        	return;
+    	}
 
-    	int choice = GetPopupMenuSelectionFromUser(menu, m_menuBtn -> GetPosition() + wxPoint(0, m_menuBtn -> GetSize().GetHeight()));
+    	std::string originalName = m_filteredInfos[idx].name;
 
-    	if(choice == 1)
-        	openEditDialog();
+    	//generate a unique name: hello → hello_2 → hello_3 ...
+    	std::string newName = originalName + "_2";
+    	int suffix = 2;
+    	while(m_db -> getProjectID(newName) >= 0){
+        	suffix++;
+        	newName = originalName + "_" + std::to_string(suffix);
+    	}
+
+    	int originalId = m_db -> getProjectID(originalName);
+    	if(originalId < 0){
+        	wxMessageBox("Could not find original project.", "Error");
+        	return;
+    	}
+
+    	//duplicate in DB
+    	int newId = m_db -> duplicateProject(originalId, newName);
+    	if(newId < 0){
+        	wxMessageBox("Failed to duplicate project.", "Error");
+        	return;
+    	}
+
+    	wxMessageBox(wxString::Format("Project duplicated as '%s'.\n" "Same sensors and calibrations, no run data.", newName), "Duplicate Created", wxOK | wxICON_INFORMATION);
+
+    	//reload list
+    	m_db -> loadProjectsWithInfo(m_allInfos);
+    	m_allProjects.clear();
+    	for(auto& info : m_allInfos)
+        	m_allProjects.push_back(info.name);
+
+    	wxCommandEvent dummy;
+    	onSearch(dummy);
 }
 
 
+/**
+ * @brief shows the ⋮ popup menu with three options:
+ *          1. Edit Database, opens the delete/manage dialog
+ *          2. Sort by newest first, re-sorts the list descending by created_at
+ *          3. Sort by oldest first, re-sorts the list ascending by created_at
+ */
+
+void OpenProjectDialog::onMenuButton(wxCommandEvent& evt)
+{
+    	wxMenu menu;
+   	menu.Append(1, "Edit Database");
+    	menu.AppendSeparator();
+    	menu.Append(2, "Sort: Newest first");
+    	menu.Append(3, "Sort: Oldest first");
+	menu.AppendSeparator();
+    	menu.Append(4, "Duplicate Project");
+
+    	int choice = GetPopupMenuSelectionFromUser(menu, m_menuBtn -> GetPosition() + wxPoint(0, m_menuBtn -> GetSize().GetHeight()));
+
+    	if(choice == 1){
+        	openEditDialog();
+    	}
+    	else if(choice == 2){
+        	//sort descending, larger date string = more recent
+        	m_sortNewest = true;
+
+		std::sort(m_filteredInfos.begin(), m_filteredInfos.end(), [](const DatabaseManager::ProjectInfo& a, const DatabaseManager::ProjectInfo& b){ 
+				return a.createdAt > b.createdAt;
+				});
+
+		//keep m_filteredProjects in sync for openEditDialog
+        	m_filteredProjects.clear();
+        	for(auto& info : m_filteredInfos)
+            		m_filteredProjects.push_back(info.name);
+ 
+        	rebuildList();
+    	}
+    	else if(choice == 3){
+        	//sort ascending, smaller date string = older
+        	m_sortNewest = false;
+        	std::sort(m_filteredInfos.begin(), m_filteredInfos.end(), [](const DatabaseManager::ProjectInfo& a, const DatabaseManager::ProjectInfo& b){ 
+				return a.createdAt < b.createdAt;
+            			});
+        	//keep m_filteredProjects in sync
+        	m_filteredProjects.clear();
+        	for(auto& info : m_filteredInfos)
+            		m_filteredProjects.push_back(info.name);
+ 
+        	rebuildList();
+    	}
+	else if(choice == 4)
+		duplicateSelected();
+}
+
+
+/**
+ * @brief opens a secondary dialog that lets the user select projects from a checklist and either delete their run data or delete 
+ *        them entirely.
+ *        "Delete Data Only": removes runs, frames, collect_points, ui_state, keeps project row, sensors, and calibrations.
+ *                             Allowed even if the project is currently open cause the open panel is reset immediately.
+ *        "Delete Everything": removes the project row and everything under it. Blocked if the project is currently open in a tab.
+ *        The outer project list is always reloaded after this dialog closes regardless of how it was dismissed.
+ */
 void OpenProjectDialog::openEditDialog()
 {
     	//reload fresh project list for the edit dialog
@@ -260,8 +406,12 @@ void OpenProjectDialog::openEditDialog()
 
     	//always reload after edit dialog closes regardless how it was closed
 	editDlg.ShowModal();
-    	m_db -> loadProjects(m_allProjects);
-    	m_filteredProjects = m_allProjects;
-    	rebuildList();
-	
+    	m_db -> loadProjectsWithInfo(m_allInfos);
+    	m_allProjects.clear();
+    	for(auto& info : m_allInfos)
+        	m_allProjects.push_back(info.name);
+ 
+    	//reapply current search filter so the list stays consistent
+    	wxCommandEvent dummy;
+    	onSearch(dummy);
 }

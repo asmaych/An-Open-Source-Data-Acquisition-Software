@@ -133,6 +133,19 @@ class DatabaseManager
 		//to this project are also deleted but global sensors (user_saved=1) are left untouched in the catalogue
 		bool deleteProject(int projectId);
 
+		//used to return some info(name, created at..) about the project when loading it
+		struct ProjectInfo{
+			std::string name;
+			std::string createdAt;
+			int runCount;
+		};
+
+		//loads all of that info
+		bool loadProjectsWithInfo(std::vector<ProjectInfo>& projects);
+
+		//duplicates an already existing project
+		int duplicateProject(int sourceId, const std::string& newName);
+
 		//transaction helpers for DAQ performance cause without them the SQL is super slow
 		void beginTransaction();
 		void commitTransaction();
