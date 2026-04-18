@@ -94,8 +94,8 @@ void GraphWindow::OnPaint(wxPaintEvent& evt)
     	wxMemoryDC memDC(buffer);
 
     	//fill background
-    	wxColour bg = (m_currentTheme == Theme::Dark) ? wxColour(30, 30, 30) : *wxWHITE;
-    	memDC.SetBackground(wxBrush(bg));
+    	//wxColour bg = (m_currentTheme == Theme::Dark) ? wxColour(30, 30, 30) : *wxWHITE;
+    	memDC.SetBackground(wxBrush(m_panel -> GetBackgroundColour()));
     	memDC.Clear();
 
     	//draw everything into the off-screen buffer
@@ -295,19 +295,14 @@ void GraphWindow::exportImage(const wxString& path)
 	int w,h;
 	m_panel -> GetSize(&w, &h);
 
-	//using higher fixed resolution for export so it doesn't depend on current window size
-	int exportW = std::max(w, 1200);
-    	int exportH = std::max(h, 800);
-
-	//create an off screen bitmap  with the fixed size and 24-bit explicit depth (the control the user has over the number of bits per pixel)
-	wxBitmap bitmap(exportW, exportH, 24);
+	//create an off screen bitmap with the size of the panel
+	wxBitmap bitmap(w, h);
 
 	//create a memory device context to draw into the bitmap
-	wxMemoryDC memDC;
-	memDC.SelectObject(bitmap);
+	wxMemoryDC memDC(bitmap);
 
 	//set background color based on the current theme
-	memDC.SetBackground(m_currentTheme == Theme::Dark ? wxBrush(wxColour(30,30,30)) : wxBrush(*wxWHITE));
+	memDC.SetBackground(wxBrush(m_panel -> GetBackgroundColour()));
 
 	//clear the bitmap using the backgrounf brush
 	memDC.Clear();
