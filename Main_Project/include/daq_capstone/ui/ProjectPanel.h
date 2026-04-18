@@ -227,4 +227,6 @@ class ProjectPanel : public wxPanel
 		bool projecthasbeenloaded = false;
 
 		int m_hz{0};
+
+		wxTimer m_graphRefreshTimer;
 };
