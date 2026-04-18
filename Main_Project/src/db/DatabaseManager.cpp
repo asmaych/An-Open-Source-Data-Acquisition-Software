@@ -328,7 +328,7 @@ int DatabaseManager::getSensorID(const std::string& name)
 int DatabaseManager::createProject(const std::string& name)
 {
 	//SQL query to insert a new project by name and creation time
-	const char* sql = "INSERT INTO projects (name, created_at) VALUES (?, datetime('now'));";
+	const char* sql = "INSERT INTO projects (name, created_at) VALUES (?, datetime('now', 'localtime'));";
 
     	sqlite3_stmt* stmt = nullptr;
 
@@ -592,7 +592,7 @@ bool DatabaseManager::loadProjectSensors(int projectId, std::vector<std::pair<st
 */
 int DatabaseManager::createRun(int projectId)
 {
-    	const char* sql = "INSERT INTO runs (project_id, start_time) " "VALUES (?, datetime('now'));";
+    	const char* sql = "INSERT INTO runs (project_id, start_time) " "VALUES (?, datetime('now', 'localtime')));";
 
     	sqlite3_stmt* stmt = nullptr;
 

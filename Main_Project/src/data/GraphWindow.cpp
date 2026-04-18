@@ -16,7 +16,7 @@ GraphWindow::GraphWindow(wxWindow* parent)
 	wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 
 	// ========== Graph panel ==========
-	m_panel = new wxPanel(this, wxID_ANY);
+	m_panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE);
 	m_panel -> SetMinSize(wxSize(200,150));
 	m_panel -> Bind(wxEVT_PAINT, &GraphWindow::OnPaint, this);
 

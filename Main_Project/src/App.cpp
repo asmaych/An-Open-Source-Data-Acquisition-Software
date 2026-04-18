@@ -5,6 +5,10 @@
 wxIMPLEMENT_APP(App);
 bool App::OnInit()
 {
+	wxImage::AddHandler(new wxPNGHandler());
+
+    	setenv("GTK_THEME", "Adwaita:dark", 1);
+
         MainFrame* mainFrame = new MainFrame("Testing main gui");
 
         //Set the mainFrame visibility to true (false by default)
