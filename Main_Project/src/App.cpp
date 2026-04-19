@@ -5,7 +5,7 @@
 wxIMPLEMENT_APP(App);
 bool App::OnInit()
 {
-		wxInitAllImageHandlers();
+		//wxInitAllImageHandlers();
 
         MainFrame* mainFrame = new MainFrame("Testing main gui");
 
