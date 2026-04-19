@@ -16,7 +16,7 @@ GraphWindow::GraphWindow(wxWindow* parent)
 	wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 
 	// ========== Graph panel ==========
-	m_panel = new wxPanel(this, wxID_ANY);
+	m_panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE);
 	m_panel -> SetMinSize(wxSize(200,150));
 	m_panel -> Bind(wxEVT_PAINT, &GraphWindow::OnPaint, this);
 
@@ -83,8 +83,26 @@ void GraphWindow::OnPaint(wxPaintEvent& evt)
 {
 	//for drawing
 	wxPaintDC dc(m_panel);
-	dc.Clear(); //clear panel background
-	draw(dc);
+
+	int w, h;
+    	m_panel -> GetClientSize(&w, &h);
+    	if(w <= 0 || h <= 0)
+		return;
+
+    	//draw into an off-screen bitmap first, no flicker because the panel is never shown blank between erase and redraw(fingers crossed)
+    	wxBitmap buffer(w, h);
+    	wxMemoryDC memDC(buffer);
+
+    	//fill background
+    	//wxColour bg = (m_currentTheme == Theme::Dark) ? wxColour(30, 30, 30) : *wxWHITE;
+    	memDC.SetBackground(wxBrush(m_panel -> GetBackgroundColour()));
+    	memDC.Clear();
+
+    	//draw everything into the off-screen buffer
+    	draw(memDC);
+
+    	//blit the completed frame to screen in one atomic operation
+    	dc.Blit(0, 0, w, h, &memDC, 0, 0);
 }
 
 
@@ -277,14 +295,14 @@ void GraphWindow::exportImage(const wxString& path)
 	int w,h;
 	m_panel -> GetSize(&w, &h);
 
-	//create an off screen bitmap  with the same size as the panel
+	//create an off screen bitmap with the size of the panel
 	wxBitmap bitmap(w, h);
 
 	//create a memory device context to draw into the bitmap
 	wxMemoryDC memDC(bitmap);
 
 	//set background color based on the current theme
-	memDC.SetBackground(m_currentTheme == Theme::Dark ? wxBrush(wxColour(30,30,30)) : wxBrush(*wxWHITE));
+	memDC.SetBackground(wxBrush(m_panel -> GetBackgroundColour()));
 
 	//clear the bitmap using the backgrounf brush
 	memDC.Clear();

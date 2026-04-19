@@ -24,6 +24,10 @@ class OpenProjectDialog : public wxDialog
     	private:
         	DatabaseManager* m_db = nullptr;
 
+		//all project infos loaded from DB
+	    	std::vector<DatabaseManager::ProjectInfo> m_allInfos;
+    		std::vector<DatabaseManager::ProjectInfo> m_filteredInfos;
+
         	//all project names loaded from DB
         	std::vector<std::string> m_allProjects;
 
@@ -35,10 +39,12 @@ class OpenProjectDialog : public wxDialog
         	std::vector<std::string> m_filteredProjects;
 
         	wxTextCtrl*  m_search  = nullptr;
-        	wxListBox*   m_list    = nullptr;
+        	wxListCtrl*   m_list    = nullptr;
        	 	wxButton*    m_menuBtn = nullptr; // the ⋮ button
 
         	wxString m_selectedProject;
+
+		bool m_sortNewest = false;
 
         	//rebuilds m_list from m_filteredProjects
         	void rebuildList();
@@ -47,7 +53,10 @@ class OpenProjectDialog : public wxDialog
         	void onSearch(wxCommandEvent& evt);
 
         	//double click on a project → select and close
-        	void onDoubleClick(wxCommandEvent& evt);
+        	void onDoubleClick(wxListEvent& evt);
+
+		//duplicates an existing project
+		void duplicateSelected();
 
         	// ⋮ button → show popup menu
         	void onMenuButton(wxCommandEvent& evt);

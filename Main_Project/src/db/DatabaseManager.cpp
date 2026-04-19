@@ -328,7 +328,7 @@ int DatabaseManager::getSensorID(const std::string& name)
 int DatabaseManager::createProject(const std::string& name)
 {
 	//SQL query to insert a new project by name and creation time
-	const char* sql = "INSERT INTO projects (name, created_at) VALUES (?, datetime('now'));";
+	const char* sql = "INSERT INTO projects (name, created_at) VALUES (?, datetime('now', 'localtime'));";
 
     	sqlite3_stmt* stmt = nullptr;
 
@@ -592,7 +592,7 @@ bool DatabaseManager::loadProjectSensors(int projectId, std::vector<std::pair<st
 */
 int DatabaseManager::createRun(int projectId)
 {
-    	const char* sql = "INSERT INTO runs (project_id, start_time) " "VALUES (?, datetime('now'));";
+    	const char* sql = "INSERT INTO runs (project_id, start_time) " "VALUES (?, datetime('now', 'localtime')));";
 
     	sqlite3_stmt* stmt = nullptr;
 
@@ -1517,6 +1517,138 @@ bool DatabaseManager::deleteProject(int projectId)
 
     	std::cout << "Project " << projectId << " deleted completely\n";
     	return true;
+}
+
+
+/*
+	loads all projects from the db along with basic info as project name, creation timestamp and number of associated runs
+*/
+bool DatabaseManager::loadProjectsWithInfo(std::vector<ProjectInfo>& projects)
+{
+   	//check if the database connection is valid
+    	if(!m_db)
+		return false;
+
+    	//clear the output vector to avoid mixing old and new data
+    	projects.clear();
+
+    	//SQL query: Select project name and creation date, count how many runs belong to each project, LEFT JOIN ensures projects 
+	//with 0 runs are still included, GROUP BY aggregates runs per project, ORDER BY sorts projects by creation date (default oldest first)
+    	const char* sql = "SELECT p.name, p.created_at, COUNT(r.id) " "FROM projects p " "LEFT JOIN runs r ON r.project_id = p.id "
+        		  "GROUP BY p.id " "ORDER BY p.created_at ASC;";
+
+    	sqlite3_stmt* stmt = nullptr;
+
+    	//prepare the SQL statement(compile it into bytecode)
+    	if(sqlite3_prepare_v2(m_db, sql, -1, &stmt, nullptr) != SQLITE_OK)
+        	return false;
+
+    	//execute the query row by row
+   	 while(sqlite3_step(stmt) == SQLITE_ROW){
+        	ProjectInfo info;
+
+        	//column 0: project name(TEXT)
+        	info.name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
+
+        	//column 1: creation timestamp(TEXT again)
+        	const char* ca = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+
+        	//handle possible NULL value safely
+        	info.createdAt = ca ? ca : "";
+
+        	//trim timestamp to "YYYY-MM-DD HH:MM", in other words "2025-03-14 10:22:01" → "2025-03-14 10:22"
+        	if(info.createdAt.size() > 16)
+            		info.createdAt = info.createdAt.substr(0, 16);
+
+		//column 2: number of runs(INTEGER)
+        	info.runCount = sqlite3_column_int(stmt, 2);
+
+        	//add the populated struct to the output vector
+        	projects.push_back(info);
+    	}
+
+    	//clean up the prepared statement to avoid memory leaks
+    	sqlite3_finalize(stmt);
+
+    	//indicate success
+    	return true;
+}
+
+
+/*
+	creates a copy of a project with the same name_number, copies project row, project_sensors, project_calibrations + points but
+	not runs and frames or collect points
+*/
+int DatabaseManager::duplicateProject(int sourceId, const std::string& newName)
+{
+    	if(!m_db)
+		return -1;
+
+    	sqlite3_exec(m_db, "BEGIN TRANSACTION;", nullptr, nullptr, nullptr);
+
+    	//create the new project row with current timestamp
+    	const char* projSql = "INSERT INTO projects (name, created_at, sample_rate) " "SELECT ?, datetime('now'), sample_rate "
+        		      "FROM projects WHERE id = ?;";
+
+    	sqlite3_stmt* stmt = nullptr;
+    	if(sqlite3_prepare_v2(m_db, projSql, -1, &stmt, nullptr) != SQLITE_OK){
+        	sqlite3_exec(m_db, "ROLLBACK;", nullptr, nullptr, nullptr);
+        	return -1;
+    	}
+
+    	sqlite3_bind_text(stmt, 1, newName.c_str(), -1, SQLITE_TRANSIENT);
+    	sqlite3_bind_int(stmt, 2, sourceId);
+
+    	if(sqlite3_step(stmt) != SQLITE_DONE){
+        	sqlite3_finalize(stmt);
+        	sqlite3_exec(m_db, "ROLLBACK;", nullptr, nullptr, nullptr);
+        	return -1;
+    	}
+
+	sqlite3_finalize(stmt);
+
+    	int newId = (int)sqlite3_last_insert_rowid(m_db);
+
+    	//copy project_sensors (same sensors, same pins)
+    	const char* sensorSql = "INSERT INTO project_sensors (project_id, sensor_id, pin) " "SELECT ?, sensor_id, pin "
+        			"FROM project_sensors WHERE project_id = ?;";
+
+    	if(sqlite3_prepare_v2(m_db, sensorSql, -1, &stmt, nullptr) == SQLITE_OK){
+        	sqlite3_bind_int(stmt, 1, newId);
+        	sqlite3_bind_int(stmt, 2, sourceId);
+        	sqlite3_step(stmt);
+        	sqlite3_finalize(stmt);
+    	}
+
+    	//copy project_calibrations parent rows
+    	const char* calibSql = "INSERT INTO project_calibrations (project_id, sensor_id, pin, type) " "SELECT ?, sensor_id, pin, type "
+        			"FROM project_calibrations WHERE project_id = ?;";
+
+    	if(sqlite3_prepare_v2(m_db, calibSql, -1, &stmt, nullptr) == SQLITE_OK){
+        	sqlite3_bind_int(stmt, 1, newId);
+        	sqlite3_bind_int(stmt, 2, sourceId);
+        	sqlite3_step(stmt);
+        	sqlite3_finalize(stmt);
+    	}
+
+    	//copy project_calibration_points for each new calibration row, we match source calibration → new calibration by sensor_id + pin
+    	const char* pointsSql = "INSERT INTO project_calibration_points (calibration_id, raw_value, mapped_value) "
+        			"SELECT nc.id, pcp.raw_value, pcp.mapped_value " "FROM project_calibration_points pcp "
+        			"JOIN project_calibrations sc ON sc.id = pcp.calibration_id " "JOIN project_calibrations nc "
+        			"  ON nc.project_id = ? " "  AND nc.sensor_id = sc.sensor_id " "  AND nc.pin = sc.pin " "WHERE sc.project_id = ?;";
+
+    	if(sqlite3_prepare_v2(m_db, pointsSql, -1, &stmt, nullptr) == SQLITE_OK){
+        	sqlite3_bind_int(stmt, 1, newId);
+        	sqlite3_bind_int(stmt, 2, sourceId);
+        	sqlite3_step(stmt);
+        	sqlite3_finalize(stmt);
+    	}
+
+    	sqlite3_exec(m_db, "COMMIT;", nullptr, nullptr, nullptr);
+
+    	std::cout << "Project " << sourceId << " duplicated as '" << newName << "' with id = " << newId << "\n";
+
+    	return newId;
 }
 
 

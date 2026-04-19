@@ -78,6 +78,9 @@ ProjectPanel::ProjectPanel(wxWindow* parent, const wxString& title, DatabaseMana
     	m_graphWindow -> Hide();
     	m_liveWindow -> Hide();
 
+	m_graphRefreshTimer.Bind(wxEVT_TIMER, [this](wxTimerEvent&){
+    		if(m_isRunning && m_currentRun && m_graphWindow) graphRun(m_currentRun);});
+
     	sizer -> Add(m_splitter, 1, wxEXPAND);
     	Layout();
 }
@@ -223,6 +226,8 @@ void ProjectPanel::startRun()
         	std::cout << "Run created in DB: runId=" << m_currentRunId << " for projectId=" << m_projectId << "\n";
     	}
 
+	m_graphRefreshTimer.Start(100); // refresh graph at 10fps max
+
     	Layout();
 }
 
@@ -241,6 +246,8 @@ void ProjectPanel::stopRun()
     	//persist which panels were visible so they are restored on next load
     	if(m_saveProjectToDB && m_projectId >= 0)
         	m_DB -> saveUIState(m_projectId, graphVisible, liveVisible, collectNowVisible);
+
+	m_graphRefreshTimer.Stop();
 }
 
 
@@ -315,8 +322,8 @@ void ProjectPanel::onNewDataFrame()
 
     	if(m_liveWindow)
 		m_liveWindow -> addFrame(t, values);
-    	if(m_graphWindow)
-		graphRun(m_currentRun);
+    	//if(m_graphWindow)
+	//	graphRun(m_currentRun);
 }
 
 
