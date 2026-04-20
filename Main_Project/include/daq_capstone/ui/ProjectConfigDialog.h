@@ -20,6 +20,10 @@ class ProjectConfigDialog : public wxDialog
     void onChangeReadStrategy(wxCommandEvent &event);
 
 private:
+    //private helper function to get image assets for the theme icons
+    static wxBitmapBundle LoadEmbeddedSVG(const std::string& path, wxSize size);
+
+
     ProjectPanel* m_project = nullptr;
 
     //control for theme

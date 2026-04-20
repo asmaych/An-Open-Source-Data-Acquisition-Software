@@ -3,6 +3,19 @@
 #include "SensorManager.h"
 #include "Theme.h"
 
+#include <cmrc/cmrc.hpp>
+CMRC_DECLARE(daq_resources);
+
+wxBitmapBundle ProjectConfigDialog::LoadEmbeddedSVG(const std::string& path, wxSize size) {
+    auto fs = cmrc::daq_resources::get_filesystem();
+    auto file = fs.open(path);
+    return wxBitmapBundle::FromSVG(
+        reinterpret_cast<const wxByte *>(file.begin()),
+        file.end() - file.begin(),
+        size
+    );
+}
+
 ProjectConfigDialog::ProjectConfigDialog(wxWindow* parent,
                                          ProjectPanel* project,
                                          MainFrame* mainframe)
@@ -26,10 +39,10 @@ ProjectConfigDialog::ProjectConfigDialog(wxWindow* parent,
     //create and add the setting for the application theme. Set the button icon to the current value
     m_theme_button = new wxButton(this, wxID_ANY);
     if (m_darkmode) {
-        m_theme_button->SetBitmap(wxBitmapBundle::FromSVGFile("../Assets/dark.svg", wxSize(48,48)));
+        m_theme_button->SetBitmap(LoadEmbeddedSVG("Assets/dark.svg", wxSize(48,48)));
     }
     else {
-        m_theme_button->SetBitmap(wxBitmapBundle::FromSVGFile("../Assets/light.svg", wxSize(48,48)));
+        m_theme_button->SetBitmap(LoadEmbeddedSVG("Assets/light.svg", wxSize(48,48)));
     }
     mainSizer->Add(m_theme_button, 0, wxALL, 10);
     //add a binding to handle the button being pressed
@@ -147,9 +160,9 @@ void ProjectConfigDialog::onToggleTheme(wxCommandEvent& evt) {
 
     // Update button icon locally for feedback
     if (m_darkmode)
-        m_theme_button->SetBitmap(wxBitmapBundle::FromSVGFile("../Assets/light.svg", wxSize(48,48)));
+        m_theme_button->SetBitmap(LoadEmbeddedSVG("Assets/light.svg", wxSize(48,48)));
     else
-        m_theme_button->SetBitmap(wxBitmapBundle::FromSVGFile("../Assets/dark.svg", wxSize(48,48)));
+        m_theme_button->SetBitmap(LoadEmbeddedSVG("Assets/dark.svg", wxSize(48,48)));
 
     m_darkmode = !m_darkmode;
 }

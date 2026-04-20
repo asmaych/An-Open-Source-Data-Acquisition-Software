@@ -36,6 +36,23 @@ target_include_directories(sqlite3 PUBLIC
 # ── libserialport (vendored source) ───────────────────────────────────────────
 add_subdirectory(third_party/libserialport)
 
+# Now get cmrc (cmake resource compiler) to be able to make a library and link against it for images in Assets
+FetchContent_Declare(
+		cmrc
+		GIT_REPOSITORY https://github.com/vector-of-bool/cmrc.git
+		GIT_SHALLOW ON
+)
+FetchContent_MakeAvailable(cmrc)
+include(${cmrc_SOURCE_DIR}/CMakeRC.cmake)
+
+#including the assets to be compiled
+cmrc_add_resource_library(
+		daq_resources
+		ALIAS daq::rc
+		Assets/light.svg
+		Assets/dark.svg
+)
+
 include_directories(
 		${PROJECT_SOURCE_DIR}/src
 		${PROJECT_SOURCE_DIR}/src/sensor
@@ -97,4 +114,5 @@ endif()
 target_link_libraries(daq_capstone PRIVATE
 		wxcore wxaui wxbase
 		sqlite3
-		serialport)
+		serialport
+		daq::rc)
