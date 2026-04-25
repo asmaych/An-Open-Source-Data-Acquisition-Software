@@ -5,10 +5,9 @@
 wxIMPLEMENT_APP(App);
 bool App::OnInit()
 {
-		//wxInitAllImageHandlers();
-		wxImage::AddHandler(new wxPNGHandler());
+	wxImage::AddHandler(new wxPNGHandler());
 
-        MainFrame* mainFrame = new MainFrame("Testing main gui");
+        MainFrame* mainFrame = new MainFrame("OSdaq");
 
         //Set the mainFrame visibility to true (false by default)
         mainFrame->Show();

@@ -592,7 +592,7 @@ bool DatabaseManager::loadProjectSensors(int projectId, std::vector<std::pair<st
 */
 int DatabaseManager::createRun(int projectId)
 {
-    	const char* sql = "INSERT INTO runs (project_id, start_time) " "VALUES (?, datetime('now', 'localtime')));";
+    	const char* sql = "INSERT INTO runs (project_id, start_time) " "VALUES (?, datetime('now', 'localtime'));";
 
     	sqlite3_stmt* stmt = nullptr;
 
