@@ -44,7 +44,7 @@ OpenProjectDialog::OpenProjectDialog(wxWindow* parent, DatabaseManager* db, cons
 
     	//project list (wxLC_REPORT = table/grid view)
 	//three cols: name(left), runs(right aligned count), created(date)
-    	m_list = new wxListCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_SINGLE_SEL | wxBORDER_SIMPLE);
+    	m_list = new wxListCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_SINGLE_SEL | wxBORDER_NONE);
 	m_list -> AppendColumn("Name", wxLIST_FORMAT_LEFT, 150);
     	m_list -> AppendColumn("Runs", wxLIST_FORMAT_RIGHT, 60);
     	m_list -> AppendColumn("Created", wxLIST_FORMAT_LEFT, 160);
